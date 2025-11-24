@@ -109,7 +109,8 @@ export class ArticleStore {
   getSources(): SourceWithCount[] {
     const sourceCounts = new Map<string, number>();
 
-    for (const article of this.articles.values()) {
+    const articles = Array.from(this.articles.values());
+    for (const article of articles) {
       sourceCounts.set(
         article.sourceId,
         (sourceCounts.get(article.sourceId) || 0) + 1
