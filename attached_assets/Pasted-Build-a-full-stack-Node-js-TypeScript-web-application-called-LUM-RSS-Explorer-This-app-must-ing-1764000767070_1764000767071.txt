@@ -1,0 +1,172 @@
+Build a full-stack Node.js + TypeScript web application called “LUM RSS Explorer”.
+This app must ingest and display articles from the following RSS feeds:
+
+BBC News – World: http://feeds.bbci.co.uk/news/world/rss.xml
+
+CNN – World: http://rss.cnn.com/rss/edition_world.rss
+
+CNBC – International: https://www.cnbc.com/id/100727362/device/rss/rss.html
+
+NDTV – World News: http://feeds.feedburner.com/ndtvnews-world-news
+
+NYT – World News: https://rss.nytimes.com/services/xml/rss/nyt/World.xml
+
+Google News – Top Stories: https://news.google.com/rss
+
+Washington Post – World: http://feeds.washingtonpost.com/rss/world
+
+Reddit – World News: https://www.reddit.com/r/worldnews/.rss
+
+Times of India – World News: https://timesofindia.indiatimes.com/rssfeeds/296589292.cms
+
+The Guardian – World News: https://www.theguardian.com/world/rss
+
+Stack & structure
+
+Backend: Node.js + TypeScript + Express (or a similar minimal HTTP framework).
+
+Frontend: Server-rendered HTML with a modern JS frontend (React or plain TS + template engine is fine).
+
+Use a simple in-memory cache at first (e.g., Map/Redis stub), but structure the code so it’s easy to swap in a database later.
+
+Backend behaviour
+
+RSS ingestion service
+
+Implement a reusable RSS ingestion module using a library such as rss-parser or similar.
+
+Maintain a configuration list of feeds with:
+
+id
+
+name
+
+url
+
+sourceType (e.g. rss)
+
+country (if known) and category (e.g. world).
+
+For each feed, fetch the RSS XML, parse it, and normalise items into a common article object:
+
+id (string, from guid/link + hash)
+
+title
+
+link
+
+sourceName
+
+sourceId
+
+publishedAt
+
+summary or snippet
+
+imageUrl if present
+
+Implement simple deduplication by link or guid.
+
+Scheduled refresh
+
+Create a background job (e.g. setInterval or a lightweight scheduler) that refreshes all feeds periodically (e.g. every 10–15 minutes).
+
+Store results in an in-memory cache or simple datastore:
+
+articles list
+
+sources list derived from feeds.
+
+REST API endpoints
+
+GET /api/articles:
+
+Returns a list of normalised articles, with optional query params:
+
+sourceId
+
+search (filter by keyword in title/summary)
+
+since (ISO date)
+
+Paginate results (e.g. page, pageSize).
+
+GET /api/sources:
+
+Returns the list of feeds/sources and counts of articles per source.
+
+Frontend / UI
+
+Create a desktop-focused UI with a layout similar to a modern news dashboard:
+
+Left-hand sidebar:
+
+List of sources (BBC, CNN, CNBC, etc.) with checkboxes or radio buttons to filter.
+
+A search box to filter articles by keyword.
+
+Optional filters:
+
+“Last 24 hours”
+
+“Last 7 days”
+
+“All”
+
+Main content area:
+
+A header: “LUM RSS Explorer – Global World News Feed”.
+
+A scrollable list or grid of article cards:
+
+Show:
+
+Source name (e.g. BBC, CNN, Reddit r/worldnews)
+
+Title (clickable, opens original article in a new tab)
+
+Short summary/snippet
+
+Published date/time
+
+Order by latest first.
+
+At the top, show simple stats:
+
+Total articles loaded
+
+Number of sources
+
+Last refresh time
+
+Top bar:
+
+App name on the left (“LUM RSS Explorer”).
+
+Simple refresh button which triggers a manual refresh endpoint on the backend (e.g. POST /api/refresh or GET /api/refresh).
+
+Use a clean, dark or dark-on-indigo theme and basic animations for hover states (CSS transitions are fine).
+
+Dev experience
+
+Use TypeScript types for the article and source objects.
+
+Structure code into modules:
+
+rssFeedsConfig.ts
+
+rssIngestor.ts
+
+articleStore.ts
+
+routes/api.ts
+
+frontend components / pages
+
+Include clear instructions in the README:
+
+npm install
+
+npm run dev
+
+Where to configure feed URLs.
