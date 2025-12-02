@@ -425,6 +425,51 @@ export class DatabaseStorage implements IStorage {
         set: { value: time, updatedAt: new Date() },
       });
   }
+
+  // ==================== ARTICLE NAVIGATION ====================
+  async getArticleNeighbors(articleId: string): Promise<{ prev: string | null; next: string | null }> {
+    const article = await this.getArticle(articleId);
+    if (!article) {
+      return { prev: null, next: null };
+    }
+
+    const articleDate = new Date(article.publishedAt);
+
+    const prevArticle = await db
+      .select({ id: articles.id })
+      .from(articles)
+      .where(
+        or(
+          sql`${articles.publishedAt} > ${articleDate}`,
+          and(
+            eq(articles.publishedAt, articleDate),
+            sql`${articles.id} < ${articleId}`
+          )
+        )
+      )
+      .orderBy(articles.publishedAt, desc(articles.id))
+      .limit(1);
+
+    const nextArticle = await db
+      .select({ id: articles.id })
+      .from(articles)
+      .where(
+        or(
+          sql`${articles.publishedAt} < ${articleDate}`,
+          and(
+            eq(articles.publishedAt, articleDate),
+            sql`${articles.id} > ${articleId}`
+          )
+        )
+      )
+      .orderBy(desc(articles.publishedAt), articles.id)
+      .limit(1);
+
+    const prevId = prevArticle.length > 0 ? prevArticle[0].id : null;
+    const nextId = nextArticle.length > 0 ? nextArticle[0].id : null;
+
+    return { prev: prevId, next: nextId };
+  }
 }
 
 export const storage = new DatabaseStorage();

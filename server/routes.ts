@@ -98,6 +98,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/articles/:id/neighbors", async (req, res) => {
+    try {
+      const neighbors = await storage.getArticleNeighbors(req.params.id);
+      res.json(neighbors);
+    } catch (error) {
+      console.error("Error fetching article neighbors:", error);
+      res.status(500).json({ error: "Failed to fetch article neighbors" });
+    }
+  });
+
   // ==================== SOURCES ====================
   app.get("/api/sources", async (req, res) => {
     try {

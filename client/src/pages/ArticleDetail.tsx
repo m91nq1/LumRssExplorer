@@ -14,12 +14,19 @@ import {
   ExternalLink,
   Clock,
   Share2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
 
 interface RelatedArticlesResponse {
   articles: ArticleWithStatus[];
+}
+
+interface ArticleNeighbors {
+  prev: string | null;
+  next: string | null;
 }
 
 export default function ArticleDetail() {
@@ -34,6 +41,11 @@ export default function ArticleDetail() {
 
   const { data: relatedData, isLoading: isLoadingRelated } = useQuery<RelatedArticlesResponse>({
     queryKey: [`/api/articles/${articleId}/related`],
+    enabled: !!articleId,
+  });
+
+  const { data: neighbors } = useQuery<ArticleNeighbors>({
+    queryKey: [`/api/articles/${articleId}/neighbors`],
     enabled: !!articleId,
   });
 
@@ -177,6 +189,30 @@ export default function ArticleDetail() {
           </div>
 
           <div className="flex items-center gap-2">
+            {neighbors?.prev && (
+              <Link href={`/article/${neighbors.prev}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Previous article (newer)"
+                  data-testid="button-prev-article"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
+            {neighbors?.next && (
+              <Link href={`/article/${neighbors.next}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Next article (older)"
+                  data-testid="button-next-article"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
             <Button
               variant="ghost"
               size="icon"
