@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { newsProviderService } from "./newsProviderService";
 
 // Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -37,6 +38,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   console.log("Initializing article store...");
   await articleStore.initialize();
   console.log("Article store initialized");
+
+  console.log("Initializing news providers...");
+  await newsProviderService.initialize();
+  console.log("News providers initialized");
 
   await setupAuth(app);
 
@@ -344,6 +349,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error saving preferences:", error);
       res.status(500).json({ error: "Failed to save preferences" });
+    }
+  });
+
+  // ==================== NEWS PROVIDERS ====================
+  const providerFeatureMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (!newsProviderService.isAvailable()) {
+      return res.status(503).json({ 
+        error: "External news providers feature is not available. Run 'npm run db:push' to enable it.",
+        hint: "The news_providers table needs to be created. Please run migrations."
+      });
+    }
+    next();
+  };
+
+  app.get("/api/providers", providerFeatureMiddleware, async (req, res) => {
+    try {
+      const providers = await newsProviderService.getAllProviders();
+      const providerStatuses = providers.map(p => ({
+        ...p,
+        hasApiKey: !!process.env[p.apiKeyEnvVar],
+      }));
+      res.json({ providers: providerStatuses });
+    } catch (error) {
+      console.error("Error fetching providers:", error);
+      res.status(500).json({ error: "Failed to fetch providers" });
+    }
+  });
+
+  app.patch("/api/providers/:id", providerFeatureMiddleware, async (req, res) => {
+    try {
+      const { isEnabled } = req.body;
+      
+      if (typeof isEnabled !== 'boolean') {
+        return res.status(400).json({ error: "isEnabled must be a boolean" });
+      }
+
+      const provider = await newsProviderService.updateProvider(req.params.id, { isEnabled });
+      
+      if (!provider) {
+        return res.status(404).json({ error: "Provider not found" });
+      }
+
+      res.json(provider);
+    } catch (error) {
+      console.error("Error updating provider:", error);
+      res.status(500).json({ error: "Failed to update provider" });
+    }
+  });
+
+  app.post("/api/providers/refresh", providerFeatureMiddleware, async (req, res) => {
+    try {
+      const results = await newsProviderService.refreshFromExternalProviders();
+      res.json({ success: true, results });
+    } catch (error) {
+      console.error("Error refreshing from providers:", error);
+      res.status(500).json({ error: "Failed to refresh from providers" });
+    }
+  });
+
+  app.post("/api/providers/:id/fetch", providerFeatureMiddleware, async (req, res) => {
+    try {
+      const provider = await newsProviderService.getProvider(req.params.id);
+      
+      if (!provider) {
+        return res.status(404).json({ error: "Provider not found" });
+      }
+      
+      if (!process.env[provider.apiKeyEnvVar]) {
+        return res.status(400).json({ 
+          error: `API key not configured. Please set the ${provider.apiKeyEnvVar} environment variable.`,
+          apiKeyEnvVar: provider.apiKeyEnvVar
+        });
+      }
+      
+      const { category } = req.body;
+      const articles = await newsProviderService.fetchFromProvider(req.params.id, category || 'general');
+      res.json({ articles, count: articles.length });
+    } catch (error) {
+      console.error("Error fetching from provider:", error);
+      res.status(500).json({ error: "Failed to fetch from provider" });
     }
   });
 

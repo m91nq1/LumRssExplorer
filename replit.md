@@ -1,8 +1,17 @@
-# LUM RSS Explorer
+# LUM News
 
 ## Overview
 
-LUM RSS Explorer is a full-stack TypeScript web application that aggregates and displays world news articles from multiple RSS feeds including BBC, CNN, CNBC, NDTV, NYT, Google News, Washington Post, Reddit, Times of India, and The Guardian. The application provides a modern, Material Design 3-inspired interface for browsing, filtering, and searching news articles in real-time.
+LUM News (formerly LUM RSS Explorer) is a full-stack TypeScript web application that aggregates and displays world news articles from multiple RSS feeds and external news APIs. The application provides a modern, Material Design 3-inspired interface for browsing, filtering, and searching news articles in real-time.
+
+## Setup
+
+For fresh environments, run database migrations first:
+```bash
+npm run db:push
+```
+
+This creates all required tables including articles, users, bookmarks, read_status, user_preferences, sessions, and news_providers.
 
 ## User Preferences
 
@@ -60,11 +69,13 @@ Preferred communication style: Simple, everyday language.
 
 **Tables**:
 - `articles`: id, sourceId, title, link, description, pubDate, author, imageUrl, categories, content
-- `feeds`: id, name, sourceId, url, enabled, lastFetched
-- `users`: id, username
+- `feed_sources`: id, name, url, sourceType, country, category, isEnabled
+- `users`: id, username, replitId, email, firstName, lastName, profileImageUrl
 - `bookmarks`: id, userId, articleId (unique constraint per user)
 - `read_status`: id, userId, articleId (unique constraint per user)
 - `user_preferences`: id, userId, favoriteSources, defaultSearchQuery, defaultTimeFilter
+- `sessions`: sid, sess, expire (Replit Auth session storage)
+- `news_providers`: id, name, baseUrl, apiKeyEnvVar, isEnabled, rateLimitPerDay, supportedCategories, supportedCountries
 
 ### Key Design Decisions
 

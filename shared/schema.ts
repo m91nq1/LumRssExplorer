@@ -194,6 +194,25 @@ export const systemSettings = pgTable("system_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// News Providers table (external API providers)
+export const newsProviders = pgTable("news_providers", {
+  id: varchar("id", { length: 50 }).primaryKey(),
+  name: text("name").notNull(),
+  baseUrl: text("base_url").notNull(),
+  apiKeyEnvVar: text("api_key_env_var").notNull(),
+  isEnabled: boolean("is_enabled").notNull().default(false),
+  rateLimitPerDay: integer("rate_limit_per_day"),
+  supportedCategories: text("supported_categories").array(),
+  supportedCountries: text("supported_countries").array(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertNewsProviderSchema = createInsertSchema(newsProviders).omit({
+  createdAt: true,
+});
+export type InsertNewsProvider = z.infer<typeof insertNewsProviderSchema>;
+export type NewsProvider = typeof newsProviders.$inferSelect;
+
 // ==================== ZOD SCHEMAS FOR API ====================
 
 // Source with Article Count (API response)
