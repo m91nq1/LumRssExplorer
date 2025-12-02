@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { ArticlesResponse, SourcesResponse } from "@shared/schema";
+import { ArticlesResponse, SourcesResponse, UserPreferences } from "@shared/schema";
 import { StatsHeader } from "@/components/StatsHeader";
 import { Sidebar } from "@/components/Sidebar";
 import { ArticleGrid } from "@/components/ArticleGrid";
@@ -11,12 +11,65 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
+interface PreferencesResponse {
+  preferences: UserPreferences | null;
+}
+
 export default function Home() {
   const { toast } = useToast();
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilterValue>("all");
   const [page, setPage] = useState(1);
+  const preferencesAppliedRef = useRef(false);
+
+  const { data: preferencesData } = useQuery<PreferencesResponse>({
+    queryKey: ["/api/preferences"],
+  });
+
+  useEffect(() => {
+    if (preferencesData?.preferences && !preferencesAppliedRef.current) {
+      const prefs = preferencesData.preferences;
+      if (prefs.favoriteSources && prefs.favoriteSources.length > 0) {
+        setSelectedSources(prefs.favoriteSources);
+      }
+      if (prefs.defaultSearchQuery) {
+        setSearchQuery(prefs.defaultSearchQuery);
+      }
+      if (prefs.defaultTimeFilter) {
+        setTimeFilter(prefs.defaultTimeFilter as TimeFilterValue);
+      }
+      preferencesAppliedRef.current = true;
+    }
+  }, [preferencesData]);
+
+  const savePreferencesMutation = useMutation({
+    mutationFn: (prefs: { favoriteSources?: string[]; defaultSearchQuery?: string; defaultTimeFilter?: string }) => {
+      return apiRequest("POST", "/api/preferences", prefs);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/preferences"] });
+      toast({
+        title: "Preferences saved",
+        description: "Your filter preferences have been saved.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save preferences.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSavePreferences = useCallback(() => {
+    savePreferencesMutation.mutate({
+      favoriteSources: selectedSources.length > 0 ? selectedSources : [],
+      defaultSearchQuery: searchQuery || undefined,
+      defaultTimeFilter: timeFilter,
+    });
+  }, [selectedSources, searchQuery, timeFilter, savePreferencesMutation]);
 
   const getSinceDate = (filter: TimeFilterValue): string | undefined => {
     if (filter === "all") return undefined;
@@ -182,8 +235,10 @@ export default function Home() {
         onSearchChange={handleSearchChange}
         onTimeFilterChange={handleTimeFilterChange}
         onClearFilters={handleClearFilters}
+        onSavePreferences={handleSavePreferences}
         isLoadingSources={isLoadingSources}
         hasActiveFilters={hasActiveFilters}
+        isSavingPreferences={savePreferencesMutation.isPending}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">

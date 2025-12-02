@@ -5,6 +5,7 @@ import { SourceFilter } from "./SourceFilter";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Save } from "lucide-react";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
@@ -17,8 +18,10 @@ interface SidebarProps {
   onSearchChange: (query: string) => void;
   onTimeFilterChange: (value: TimeFilterValue) => void;
   onClearFilters: () => void;
+  onSavePreferences?: () => void;
   isLoadingSources: boolean;
   hasActiveFilters: boolean;
+  isSavingPreferences?: boolean;
 }
 
 export function Sidebar({
@@ -30,8 +33,10 @@ export function Sidebar({
   onSearchChange,
   onTimeFilterChange,
   onClearFilters,
+  onSavePreferences,
   isLoadingSources,
   hasActiveFilters,
+  isSavingPreferences,
 }: SidebarProps) {
   return (
     <aside
@@ -77,6 +82,28 @@ export function Sidebar({
               isLoading={isLoadingSources}
             />
           </div>
+
+          {onSavePreferences && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onSavePreferences}
+                  disabled={isSavingPreferences}
+                  className="w-full"
+                  data-testid="button-save-preferences"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {isSavingPreferences ? "Saving..." : "Save as Default Filters"}
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Save your current source, search, and time settings as defaults.
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </ScrollArea>
     </aside>

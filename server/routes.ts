@@ -296,19 +296,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==================== USER PREFERENCES ====================
   app.get("/api/preferences", async (req, res) => {
     try {
-      const username = req.query.username as string;
+      const userId = (req as any).userId as number | undefined;
       
-      if (!username) {
-        return res.status(400).json({ error: "username is required" });
-      }
-
-      const user = await storage.getUserByUsername(username);
-      if (!user) {
+      if (!userId) {
         return res.json({ preferences: null });
       }
 
-      const preferences = await storage.getUserPreferences(user.id);
-      res.json({ preferences });
+      const preferences = await storage.getUserPreferences(userId);
+      res.json({ preferences: preferences || null });
     } catch (error) {
       console.error("Error fetching preferences:", error);
       res.status(500).json({ error: "Failed to fetch preferences" });
@@ -317,15 +312,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/preferences", async (req, res) => {
     try {
-      const { username, favoriteSources, defaultSearchQuery, defaultTimeFilter } = req.body;
+      const userId = (req as any).userId as number | undefined;
+      const { favoriteSources, defaultSearchQuery, defaultTimeFilter } = req.body;
       
-      if (!username) {
-        return res.status(400).json({ error: "username is required" });
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
       }
 
-      const user = await storage.getOrCreateUser(username);
       const preferences = await storage.upsertUserPreferences({
-        userId: user.id,
+        userId,
         favoriteSources,
         defaultSearchQuery,
         defaultTimeFilter,
