@@ -16,9 +16,9 @@ Preferred communication style: Simple, everyday language.
 
 **UI System**: The application uses shadcn/ui components built on Radix UI primitives with Tailwind CSS for styling. The design follows Material Design 3 principles with inspiration from Feedly and Inoreader, optimized for information-dense news aggregation.
 
-**State Management**: TanStack Query (React Query) manages server state, data fetching, and caching. Local UI state is managed with React hooks (useState, useEffect).
+**State Management**: TanStack Query (React Query) manages server state, data fetching, and caching. Local UI state is managed with React hooks (useState, useEffect, useRef).
 
-**Routing**: Wouter provides lightweight client-side routing.
+**Routing**: Wouter provides lightweight client-side routing with pages for Home (/), Article Detail (/article/:id), and Feed Management (/feeds).
 
 **Layout Pattern**: Fixed sidebar layout (280px) with a fluid main content area. The interface uses a responsive grid system that adapts from single-column on mobile to two-column on desktop.
 
@@ -32,7 +32,9 @@ Preferred communication style: Simple, everyday language.
 
 **Development vs Production**: Separate entry points (`index-dev.ts` uses Vite middleware for HMR, `index-prod.ts` serves pre-built static assets).
 
-**Data Storage**: In-memory storage using a Map-based ArticleStore class. The architecture is designed to be easily swappable with a database backend (Drizzle ORM configuration present for future PostgreSQL integration).
+**Data Storage**: PostgreSQL database using Drizzle ORM for type-safe queries. Neon serverless driver for connection pooling.
+
+**User Authentication**: Lightweight header-based user identification using X-Username header. LocalStorage on frontend stores username, middleware on backend retrieves or creates user records.
 
 **RSS Ingestion**: 
 - Custom RSS parser using the `rss-parser` library
@@ -41,29 +43,66 @@ Preferred communication style: Simple, everyday language.
 - Generates stable IDs using SHA-256 hashing of article links
 
 **API Design**:
-- RESTful endpoints at `/api/articles` and `/api/sources`
+- RESTful endpoints at `/api/articles`, `/api/sources`, `/api/feeds`, `/api/bookmarks`, `/api/read-status`, `/api/preferences`
 - Query parameters for filtering (sourceId, search, since, pagination)
 - Zod schema validation for all API inputs and outputs
 - Paginated responses (default 20 items per page)
 
 ### Data Flow
 
-1. **Initialization**: ArticleStore fetches all RSS feeds on startup and stores articles in memory
+1. **Initialization**: ArticleStore fetches all enabled RSS feeds on startup and stores articles in PostgreSQL
 2. **Scheduled Updates**: Cron job refreshes feeds every 10 minutes, merging new articles
 3. **Client Requests**: React components query the API with filters, receiving paginated results
 4. **Real-time Stats**: Header displays total article count, source count, and last refresh time
+5. **User Context**: X-Username header identifies user for bookmarks, read status, and preferences
+
+### Database Schema
+
+**Tables**:
+- `articles`: id, sourceId, title, link, description, pubDate, author, imageUrl, categories, content
+- `feeds`: id, name, sourceId, url, enabled, lastFetched
+- `users`: id, username
+- `bookmarks`: id, userId, articleId (unique constraint per user)
+- `read_status`: id, userId, articleId (unique constraint per user)
+- `user_preferences`: id, userId, favoriteSources, defaultSearchQuery, defaultTimeFilter
 
 ### Key Design Decisions
 
-**In-Memory Storage**: Chosen for simplicity and fast read performance. Articles are stored in a Map keyed by generated ID. Trade-off: data lost on restart, but acceptable for news aggregation where fresh data is preferred.
+**PostgreSQL Storage**: Full persistence for articles, user data, bookmarks, read tracking, and preferences. Data survives restarts.
+
+**Header-Based User Identification**: Simple username in localStorage sent via X-Username header. No password authentication for MVP - users are identified by username only.
 
 **Scheduled Refresh Pattern**: 10-minute intervals balance freshness with API politeness. Manual refresh available for immediate updates.
 
-**Client-Side Filtering**: Some filtering done client-side (particularly source selection), reducing API calls while maintaining responsive UI.
+**Server-Side Filtering**: Filtering done server-side with PostgreSQL queries for optimal performance.
 
-**Pagination**: Server-side pagination prevents overwhelming the client with thousands of articles, improving performance and UX.
+**Pagination**: Server-side pagination prevents overwhelming the client with thousands of articles.
 
 **Component Architecture**: Modular components (ArticleCard, ArticleGrid, Sidebar, etc.) promote reusability and maintainability.
+
+## Features
+
+### Core Features
+- **Article Aggregation**: Ingests articles from 10+ RSS sources
+- **Filtering**: Filter by source, time period, and search query
+- **Pagination**: Browse through articles with page navigation
+- **Responsive Design**: Works on desktop and mobile
+
+### User Features
+- **Bookmarking**: Save articles for later reading
+- **Read Tracking**: Mark articles as read, visual distinction for read vs unread
+- **User Preferences**: Save favorite sources, default search, and time filter as defaults
+- **Preference Restoration**: Saved preferences restored on page load
+
+### Admin Features
+- **Feed Management**: Add, edit, delete, enable/disable RSS feeds at /feeds
+- **Manual Refresh**: Trigger immediate feed refresh
+
+### Article Detail View
+- **Full Article View**: View complete article with metadata
+- **Related Articles**: See other articles from the same source
+- **Navigation**: Previous/next article navigation (chronological order)
+- **Bookmark/Read Integration**: Bookmark and mark read from detail view
 
 ## External Dependencies
 
@@ -74,7 +113,7 @@ Preferred communication style: Simple, everyday language.
 - **TypeScript**: Type safety across the stack
 
 ### UI Component Libraries
-- **Radix UI**: Unstyled, accessible component primitives (accordion, dialog, dropdown, radio-group, checkbox, etc.)
+- **Radix UI**: Unstyled, accessible component primitives
 - **shadcn/ui**: Pre-styled components built on Radix UI
 - **Tailwind CSS**: Utility-first CSS framework
 - **Lucide React**: Icon library
@@ -89,15 +128,18 @@ Preferred communication style: Simple, everyday language.
 - **rss-parser**: RSS/Atom feed parsing
 - **node-cron**: Scheduled task execution
 
-### Database (Configured, Not Yet Used)
+### Database
 - **Drizzle ORM**: Type-safe ORM for PostgreSQL
 - **@neondatabase/serverless**: Neon PostgreSQL serverless driver
 - **drizzle-zod**: Zod schema generation from Drizzle schemas
-
-The application is structured to migrate from in-memory storage to PostgreSQL by implementing the existing schema definitions in `shared/schema.ts` with Drizzle ORM.
 
 ### Development Tools
 - **Wouter**: Lightweight routing
 - **nanoid**: Unique ID generation
 - **clsx & class-variance-authority**: Conditional CSS class management
 - **@replit/vite-plugin-***: Replit-specific development tools
+
+## Known Issues
+
+- **Washington Post RSS**: Feed times out occasionally (gracefully handled)
+- **Toast Selectors**: Toast notifications match multiple DOM elements in tests (cosmetic issue)
