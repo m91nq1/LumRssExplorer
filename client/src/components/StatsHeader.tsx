@@ -1,7 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Settings, Search } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { RefreshCw, Settings, Search, LogOut, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 interface StatsHeaderProps {
   totalArticles: number;
@@ -18,15 +27,24 @@ export function StatsHeader({
   onRefresh,
   isRefreshing,
 }: StatsHeaderProps) {
+  const { user, isAuthenticated } = useAuth();
   const formattedRefreshTime = lastRefreshTime
     ? formatDistanceToNow(new Date(lastRefreshTime), { addSuffix: true })
     : "Never";
+
+  const userInitials = user?.firstName && user?.lastName
+    ? `${user.firstName[0]}${user.lastName[0]}`
+    : user?.email?.[0]?.toUpperCase() || "U";
+
+  const userName = user?.firstName && user?.lastName
+    ? `${user.firstName} ${user.lastName}`
+    : user?.email || "User";
 
   return (
     <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold" data-testid="text-app-title">
-          LUM RSS Explorer
+          LUM News
         </h1>
 
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -82,6 +100,45 @@ export function StatsHeader({
               />
               Refresh
             </Button>
+
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    data-testid="button-user-menu"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={user?.profileImageUrl || undefined}
+                        alt={userName}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-xs">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{userName}</p>
+                    {user?.email && (
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    )}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <a href="/api/logout" className="cursor-pointer" data-testid="button-logout">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>

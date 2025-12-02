@@ -8,6 +8,7 @@ import {
   systemSettings,
   type User,
   type InsertUser,
+  type UpsertUser,
   type Article,
   type InsertArticle,
   type FeedSource,
@@ -28,8 +29,10 @@ export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByReplitId(replitId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getOrCreateUser(username: string): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
 
   // Feed Sources
   getFeedSources(): Promise<FeedSource[]>;
@@ -98,6 +101,44 @@ export class DatabaseStorage implements IStorage {
       user = await this.createUser({ username });
     }
     return user;
+  }
+
+  async getUserByReplitId(replitId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.replitId, replitId));
+    return user || undefined;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existingUser = await this.getUserByReplitId(userData.replitId);
+    
+    if (existingUser) {
+      const [updated] = await db
+        .update(users)
+        .set({
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.replitId, userData.replitId))
+        .returning();
+      return updated;
+    } else {
+      const username = userData.email?.split("@")[0] || `user_${userData.replitId}`;
+      const [created] = await db
+        .insert(users)
+        .values({
+          username,
+          replitId: userData.replitId,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+        })
+        .returning();
+      return created;
+    }
   }
 
   // ==================== FEED SOURCES ====================

@@ -4,17 +4,30 @@ import { articleStore } from "./articleStore";
 import { storage } from "./storage";
 import { articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
 import { z } from "zod";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
-// Middleware to extract user ID from X-Username header
+// Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
-  const username = req.headers["x-username"] as string | undefined;
-  if (username) {
+  const sessionUser = req.user as any;
+  
+  if (sessionUser?.claims?.sub) {
     try {
-      // Auto-create user if they don't exist to ensure personalization works
-      const user = await storage.getOrCreateUser(username);
-      (req as any).userId = user.id;
+      const user = await storage.getUserByReplitId(sessionUser.claims.sub);
+      if (user) {
+        (req as any).userId = user.id;
+      }
     } catch (error) {
-      console.error("Error looking up user:", error);
+      console.error("Error looking up session user:", error);
+    }
+  } else {
+    const username = req.headers["x-username"] as string | undefined;
+    if (username) {
+      try {
+        const user = await storage.getOrCreateUser(username);
+        (req as any).userId = user.id;
+      } catch (error) {
+        console.error("Error looking up user:", error);
+      }
     }
   }
   next();
@@ -25,7 +38,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await articleStore.initialize();
   console.log("Article store initialized");
 
-  // Apply user middleware to all API routes
+  await setupAuth(app);
+
+  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUserByReplitId(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Apply user middleware to all other API routes
   app.use("/api", userMiddleware);
 
   // ==================== ARTICLES ====================
@@ -194,25 +220,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/bookmarks", async (req, res) => {
     try {
       const { articleId } = req.body;
-      const username = req.headers["x-username"] as string | undefined;
+      const userId = (req as any).userId as number | undefined;
       
       if (!articleId) {
         return res.status(400).json({ error: "articleId is required" });
       }
       
-      if (!username) {
-        return res.status(401).json({ error: "Username header is required" });
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
       }
 
-      const user = await storage.getOrCreateUser(username);
-      const existing = await storage.getBookmark(user.id, articleId);
+      const existing = await storage.getBookmark(userId, articleId);
       
       if (existing) {
         return res.status(409).json({ error: "Bookmark already exists" });
       }
 
       const bookmark = await storage.createBookmark({
-        userId: user.id,
+        userId,
         articleId,
       });
 
@@ -226,22 +251,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/bookmarks", async (req, res) => {
     try {
       const { articleId } = req.body;
-      const username = req.headers["x-username"] as string | undefined;
+      const userId = (req as any).userId as number | undefined;
       
       if (!articleId) {
         return res.status(400).json({ error: "articleId is required" });
       }
       
-      if (!username) {
-        return res.status(401).json({ error: "Username header is required" });
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
       }
 
-      const user = await storage.getUserByUsername(username);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      await storage.deleteBookmark(user.id, articleId);
+      await storage.deleteBookmark(userId, articleId);
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting bookmark:", error);
@@ -251,18 +271,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/bookmarks", async (req, res) => {
     try {
-      const username = req.query.username as string;
+      const userId = (req as any).userId as number | undefined;
       
-      if (!username) {
-        return res.status(400).json({ error: "username is required" });
-      }
-
-      const user = await storage.getUserByUsername(username);
-      if (!user) {
+      if (!userId) {
         return res.json({ bookmarks: [] });
       }
 
-      const bookmarks = await storage.getUserBookmarks(user.id);
+      const bookmarks = await storage.getUserBookmarks(userId);
       res.json({ bookmarks });
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
@@ -274,18 +289,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/read", async (req, res) => {
     try {
       const { articleId } = req.body;
-      const username = req.headers["x-username"] as string | undefined;
+      const userId = (req as any).userId as number | undefined;
       
       if (!articleId) {
         return res.status(400).json({ error: "articleId is required" });
       }
       
-      if (!username) {
-        return res.status(401).json({ error: "Username header is required" });
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
       }
 
-      const user = await storage.getOrCreateUser(username);
-      const readStatus = await storage.markAsRead(user.id, articleId);
+      const readStatus = await storage.markAsRead(userId, articleId);
       res.status(201).json(readStatus);
     } catch (error) {
       console.error("Error marking as read:", error);
