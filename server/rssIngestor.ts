@@ -48,6 +48,10 @@ export async function ingestFeed(feed: FeedSource): Promise<InsertArticle[]> {
         ? item.enclosure.url
         : undefined;
 
+      const content = item.content
+        ? item.content.replace(/<[^>]*>/g, "").trim().slice(0, 5000)
+        : null;
+
       articles.push({
         id,
         title: item.title.trim(),
@@ -56,6 +60,7 @@ export async function ingestFeed(feed: FeedSource): Promise<InsertArticle[]> {
         sourceId: feed.id,
         publishedAt,
         summary: cleanSummary || null,
+        content,
         imageUrl: imageUrl || null,
       });
     }

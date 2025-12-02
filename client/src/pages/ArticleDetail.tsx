@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ArticleWithStatus } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -7,6 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   ArrowLeft,
   Bookmark,
@@ -16,6 +23,11 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  ChevronDown,
+  Key,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
@@ -29,10 +41,24 @@ interface ArticleNeighbors {
   next: string | null;
 }
 
+const OPENROUTER_API_KEY_STORAGE = "lum_news_openrouter_api_key";
+
 export default function ArticleDetail() {
   const { toast } = useToast();
   const params = useParams<{ id: string }>();
   const articleId = params.id;
+
+  const [aiSummaryOpen, setAiSummaryOpen] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(OPENROUTER_API_KEY_STORAGE);
+    if (stored) {
+      setApiKey(stored);
+    }
+  }, []);
 
   const { data: article, isLoading: isLoadingArticle } = useQuery<ArticleWithStatus>({
     queryKey: [`/api/articles/${articleId}`],
@@ -91,6 +117,53 @@ export default function ArticleDetail() {
       });
     },
   });
+
+  const aiSummaryMutation = useMutation({
+    mutationFn: async () => {
+      if (!apiKey) {
+        throw new Error("Please enter your OpenRouter API key first");
+      }
+      localStorage.setItem(OPENROUTER_API_KEY_STORAGE, apiKey);
+      const response = await apiRequest("POST", `/api/articles/${articleId}/ai-summary`, { apiKey });
+      return response.json();
+    },
+    onSuccess: (data: { summary: string; cached: boolean }) => {
+      setGeneratedSummary(data.summary);
+      queryClient.invalidateQueries({
+        queryKey: [`/api/articles/${articleId}`],
+      });
+      toast({
+        title: data.cached ? "AI Summary Retrieved" : "AI Summary Generated",
+        description: data.cached 
+          ? "Loaded previously generated summary."
+          : "Summary generated using Grok AI.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "AI Summary Failed",
+        description: error.message || "Failed to generate AI summary.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveApiKey = () => {
+    if (apiKey.length >= 20 && apiKey.startsWith("sk-or-")) {
+      localStorage.setItem(OPENROUTER_API_KEY_STORAGE, apiKey);
+      setShowApiKeyInput(false);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenRouter API key has been saved locally.",
+      });
+    } else {
+      toast({
+        title: "Invalid API Key",
+        description: "OpenRouter API keys should start with 'sk-or-'. Please check your key.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleOpenArticle = () => {
     if (article) {
@@ -281,6 +354,153 @@ export default function ArticleDetail() {
               <p className="text-lg leading-relaxed">{article.summary}</p>
             </div>
           )}
+
+          <Collapsible
+            open={aiSummaryOpen}
+            onOpenChange={setAiSummaryOpen}
+            className="mb-8"
+          >
+            <Card className="border-primary/20">
+              <CollapsibleTrigger asChild>
+                <button
+                  className="w-full p-4 flex items-center justify-between hover-elevate rounded-xl"
+                  data-testid="button-ai-summary-toggle"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold">AI-Powered Summary</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Get an intelligent analysis using Grok AI
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
+                      aiSummaryOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="px-4 pb-4">
+                <Separator className="mb-4" />
+
+                {(article.aiSummary || generatedSummary) && (
+                  <div
+                    className="prose prose-sm dark:prose-invert max-w-none mb-4 p-4 bg-primary/5 rounded-lg border border-primary/10"
+                    data-testid="text-ai-summary"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-medium text-primary uppercase tracking-wider">
+                        Grok AI Summary
+                      </span>
+                    </div>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {generatedSummary || article.aiSummary}
+                    </p>
+                  </div>
+                )}
+
+                {!apiKey && !showApiKeyInput && (
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground text-center">
+                      To generate AI summaries, you need an OpenRouter API key.
+                    </p>
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowApiKeyInput(true)}
+                      data-testid="button-setup-api-key"
+                    >
+                      <Key className="w-4 h-4 mr-2" />
+                      Set Up API Key
+                    </Button>
+                  </div>
+                )}
+
+                {showApiKeyInput && (
+                  <div className="space-y-3 py-2">
+                    <p className="text-sm text-muted-foreground">
+                      Enter your{" "}
+                      <a
+                        href="https://openrouter.ai/keys"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        OpenRouter API key
+                      </a>
+                      . Your key is stored locally in your browser.
+                    </p>
+                    <div className="flex gap-2">
+                      <Input
+                        type="password"
+                        placeholder="sk-or-v1-..."
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        className="flex-1"
+                        data-testid="input-api-key"
+                      />
+                      <Button
+                        onClick={handleSaveApiKey}
+                        disabled={apiKey.length < 20}
+                        data-testid="button-save-api-key"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setShowApiKeyInput(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {apiKey && !showApiKeyInput && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                      onClick={() => aiSummaryMutation.mutate()}
+                      disabled={aiSummaryMutation.isPending}
+                      data-testid="button-generate-summary"
+                    >
+                      {aiSummaryMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Generating...
+                        </>
+                      ) : article.aiSummary || generatedSummary ? (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Regenerate Summary
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Generate Summary
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowApiKeyInput(true)}
+                      className="text-muted-foreground"
+                      data-testid="button-change-api-key"
+                    >
+                      <Key className="w-3 h-3 mr-1" />
+                      Change API Key
+                    </Button>
+                  </div>
+                )}
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           <div className="bg-muted/50 rounded-md p-6 mb-8">
             <p className="text-sm text-muted-foreground mb-4">

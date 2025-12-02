@@ -6,6 +6,7 @@ import { articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
+import { generateAISummary, validateApiKey } from "./summaryService";
 
 // Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -136,6 +137,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching article neighbors:", error);
       res.status(500).json({ error: "Failed to fetch article neighbors" });
+    }
+  });
+
+  // ==================== AI SUMMARY ====================
+  app.post("/api/articles/:id/ai-summary", async (req, res) => {
+    try {
+      const { apiKey } = req.body;
+      const articleId = req.params.id;
+
+      if (!apiKey) {
+        return res.status(400).json({ error: "OpenRouter API key is required" });
+      }
+
+      if (!validateApiKey(apiKey)) {
+        return res.status(400).json({ error: "Invalid API key format" });
+      }
+
+      const result = await generateAISummary(articleId, apiKey);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error generating AI summary:", error);
+      
+      if (error.message?.includes("Article not found")) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      
+      if (error.message?.includes("Invalid API key") || 
+          error.message?.includes("Insufficient credits") ||
+          error.message?.includes("Rate limit")) {
+        return res.status(400).json({ error: error.message });
+      }
+      
+      res.status(500).json({ error: error.message || "Failed to generate AI summary" });
     }
   });
 

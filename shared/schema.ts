@@ -48,7 +48,9 @@ export const articles = pgTable("articles", {
   sourceId: varchar("source_id", { length: 50 }).notNull().references(() => feedSources.id),
   publishedAt: timestamp("published_at").notNull(),
   summary: text("summary"),
+  content: text("content"),
   imageUrl: text("image_url"),
+  aiSummary: text("ai_summary"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("articles_source_id_idx").on(table.sourceId),
@@ -234,7 +236,9 @@ export const articleWithStatusSchema = z.object({
   sourceId: z.string(),
   publishedAt: z.string(),
   summary: z.string().optional().nullable(),
+  content: z.string().optional().nullable(),
   imageUrl: z.string().optional().nullable(),
+  aiSummary: z.string().optional().nullable(),
   isBookmarked: z.boolean().optional(),
   isRead: z.boolean().optional(),
 });

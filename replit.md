@@ -68,7 +68,7 @@ Preferred communication style: Simple, everyday language.
 ### Database Schema
 
 **Tables**:
-- `articles`: id, sourceId, title, link, description, pubDate, author, imageUrl, categories, content
+- `articles`: id, sourceId, title, link, summary, content, imageUrl, aiSummary, publishedAt, createdAt
 - `feed_sources`: id, name, url, sourceType, country, category, isEnabled
 - `users`: id, username, replitId, email, firstName, lastName, profileImageUrl
 - `bookmarks`: id, userId, articleId (unique constraint per user)
@@ -114,6 +114,14 @@ Preferred communication style: Simple, everyday language.
 - **Related Articles**: See other articles from the same source
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
+- **AI-Powered Summaries**: Generate intelligent article summaries using Grok AI via OpenRouter
+
+### AI Summary Feature
+- **OpenRouter Integration**: Uses OpenRouter API to access Grok 3.1 Mini model for generating summaries
+- **User-Provided API Keys**: Users provide their own OpenRouter API key (stored locally in browser)
+- **Caching**: Generated summaries are cached in the database to avoid redundant API calls
+- **Collapsible UI**: AI summary section is collapsible to save space when not in use
+- **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
 
 ## External Dependencies
 
