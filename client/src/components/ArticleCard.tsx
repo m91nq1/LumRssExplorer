@@ -1,16 +1,36 @@
-import { Article } from "@shared/schema";
+import { ArticleWithStatus } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Bookmark, BookmarkCheck, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useLocation } from "wouter";
 
 interface ArticleCardProps {
-  article: Article;
+  article: ArticleWithStatus;
+  onBookmark?: (articleId: string, isBookmarked: boolean) => void;
+  onRead?: (articleId: string) => void;
+  isBookmarking?: boolean;
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
-  const handleClick = () => {
-    window.open(article.link, "_blank", "noopener,noreferrer");
+export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: ArticleCardProps) {
+  const [, setLocation] = useLocation();
+
+  const handleClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      onRead?.(article.id);
+      window.open(article.link, "_blank", "noopener,noreferrer");
+    } else {
+      setLocation(`/article/${article.id}`);
+    }
+  };
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onBookmark?.(article.id, !!article.isBookmarked);
   };
 
   const formattedTime = formatDistanceToNow(new Date(article.publishedAt), {
@@ -19,7 +39,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Card
-      className="p-6 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 border-card-border"
+      className={`p-6 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 border-card-border ${article.isRead ? 'opacity-70' : ''}`}
       onClick={handleClick}
       data-testid={`card-article-${article.id}`}
     >
@@ -32,10 +52,27 @@ export function ArticleCard({ article }: ArticleCardProps) {
           >
             {article.sourceName}
           </Badge>
+          
+          {onBookmark && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={handleBookmarkClick}
+              disabled={isBookmarking}
+              data-testid={`button-bookmark-${article.id}`}
+            >
+              {article.isBookmarked ? (
+                <BookmarkCheck className="w-4 h-4 text-primary" />
+              ) : (
+                <Bookmark className="w-4 h-4" />
+              )}
+            </Button>
+          )}
         </div>
 
         <h3
-          className="text-lg font-medium leading-snug line-clamp-2"
+          className={`text-lg font-medium leading-snug line-clamp-2 ${article.isRead ? 'text-muted-foreground' : ''}`}
           data-testid={`text-title-${article.id}`}
         >
           {article.title}
@@ -50,11 +87,15 @@ export function ArticleCard({ article }: ArticleCardProps) {
           </p>
         )}
 
-        <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-          <Clock className="w-3.5 h-3.5" />
-          <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
-            {formattedTime}
-          </time>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <Clock className="w-3.5 h-3.5" />
+            <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
+              {formattedTime}
+            </time>
+          </div>
+          
+          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
         </div>
       </div>
     </Card>

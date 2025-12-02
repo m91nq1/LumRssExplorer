@@ -1,14 +1,17 @@
-import { Article } from "@shared/schema";
+import { ArticleWithStatus } from "@shared/schema";
 import { ArticleCard } from "./ArticleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText } from "lucide-react";
 
 interface ArticleGridProps {
-  articles: Article[];
+  articles: ArticleWithStatus[];
   isLoading: boolean;
+  onBookmark?: (articleId: string, isBookmarked: boolean) => void;
+  onRead?: (articleId: string) => void;
+  isBookmarking?: boolean;
 }
 
-export function ArticleGrid({ articles, isLoading }: ArticleGridProps) {
+export function ArticleGrid({ articles, isLoading, onBookmark, onRead, isBookmarking }: ArticleGridProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -42,7 +45,13 @@ export function ArticleGrid({ articles, isLoading }: ArticleGridProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-testid="article-grid">
       {articles.map((article) => (
-        <ArticleCard key={article.id} article={article} />
+        <ArticleCard 
+          key={article.id} 
+          article={article} 
+          onBookmark={onBookmark}
+          onRead={onRead}
+          isBookmarking={isBookmarking}
+        />
       ))}
     </div>
   );

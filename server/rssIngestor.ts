@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import { Article, FeedSource } from "@shared/schema";
+import { InsertArticle, FeedSource } from "@shared/schema";
 import crypto from "crypto";
 
 const parser = new Parser({
@@ -22,10 +22,10 @@ export interface RSSItem {
   };
 }
 
-export async function ingestFeed(feed: FeedSource): Promise<Article[]> {
+export async function ingestFeed(feed: FeedSource): Promise<InsertArticle[]> {
   try {
     const result = await parser.parseURL(feed.url);
-    const articles: Article[] = [];
+    const articles: InsertArticle[] = [];
 
     for (const item of result.items as RSSItem[]) {
       if (!item.title || !item.link) {
@@ -34,8 +34,8 @@ export async function ingestFeed(feed: FeedSource): Promise<Article[]> {
 
       const id = generateArticleId(item.link, item.guid);
       const publishedAt = item.pubDate
-        ? new Date(item.pubDate).toISOString()
-        : new Date().toISOString();
+        ? new Date(item.pubDate)
+        : new Date();
 
       const summary = item.contentSnippet || item.content || "";
       const cleanSummary = summary
@@ -55,8 +55,8 @@ export async function ingestFeed(feed: FeedSource): Promise<Article[]> {
         sourceName: feed.name,
         sourceId: feed.id,
         publishedAt,
-        summary: cleanSummary || undefined,
-        imageUrl,
+        summary: cleanSummary || null,
+        imageUrl: imageUrl || null,
       });
     }
 
@@ -65,33 +65,6 @@ export async function ingestFeed(feed: FeedSource): Promise<Article[]> {
     console.error(`Error ingesting feed ${feed.name}:`, error);
     return [];
   }
-}
-
-export async function ingestAllFeeds(feeds: FeedSource[]): Promise<Article[]> {
-  const results = await Promise.allSettled(
-    feeds.map((feed) => ingestFeed(feed))
-  );
-
-  const allArticles: Article[] = [];
-  const seenLinks = new Set<string>();
-
-  for (const result of results) {
-    if (result.status === "fulfilled") {
-      for (const article of result.value) {
-        if (!seenLinks.has(article.link)) {
-          seenLinks.add(article.link);
-          allArticles.push(article);
-        }
-      }
-    }
-  }
-
-  allArticles.sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
-
-  return allArticles;
 }
 
 function generateArticleId(link: string, guid?: string): string {

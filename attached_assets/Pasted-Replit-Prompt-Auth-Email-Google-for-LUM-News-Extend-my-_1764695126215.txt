@@ -1,0 +1,309 @@
+Replit Prompt – Auth (Email + Google) for LUM News
+
+Extend my existing LUM News project (React + TypeScript frontend, Node + TypeScript + Express backend) with authentication pages:
+
+Sign Up and Login pages, where users can authenticate with email + password and also have an option to “Continue with Google”.
+
+Use the same dark, indigo, white visual language and hover effects as the Search & Explore page.
+
+1. Frontend: pages & routes
+
+Create two main React components/pages:
+
+LoginPage
+
+SignupPage
+
+They should be full-screen views or centered panels that I can mount at routes like:
+
+/auth/login
+
+/auth/signup
+
+If I already have a router, register those routes; if not, set up minimal routing so I can navigate to them.
+
+Layout & style
+
+Background: near-black (#050816 / #020617) gradient or solid.
+
+Centered auth card:
+
+Rounded corners (~18px).
+
+Dark card background (#020617 / #0b1120).
+
+Soft shadow similar to the dashboard cards.
+
+Use indigo accents (#6366f1, lighter hover #818cf8) for buttons, focus outlines, and links.
+
+Text: white or very light grey for headings, muted grey for helper text.
+
+LoginPage UI
+
+Inside LoginPage, include:
+
+Heading: “Sign in to LUM News”
+
+Small subheading: “Access your saved stories, watchlists, and alerts.”
+
+Email/password form:
+
+Inputs for:
+
+Email
+
+Password
+
+Remember me checkbox (optional).
+
+“Forgot password?” text link (can be non-functional stub for now).
+
+Primary button:
+
+“Sign In”
+
+Divider row:
+
+Horizontal line or “or continue with”.
+
+Google button:
+
+“Continue with Google”
+
+With a simple Google “G” icon (SVG or placeholder).
+
+On click, call /api/auth/google in the backend (open a new window or redirect – you can stub this).
+
+Below:
+
+Text: “Don’t have an account? Sign up”
+
+The “Sign up” part navigates to /auth/signup.
+
+Interactions:
+
+Inputs should have:
+
+Indigo border on focus.
+
+Smooth transitions.
+
+Buttons:
+
+Slight scale + glow on hover.
+
+Disabled state when a request is in progress.
+
+SignupPage UI
+
+Inside SignupPage, include:
+
+Heading: “Create your LUM News account”
+
+Subheading: “Save stories, build watchlists, and personalise your lenses.”
+
+Fields:
+
+Name (optional but nice)
+
+Email
+
+Password
+
+Confirm password
+
+Primary button:
+
+“Create account”
+
+Divider and Google button:
+
+Same “Continue with Google” button as on Login.
+
+Below:
+
+Text: “Already have an account? Sign in”
+
+“Sign in” navigates to /auth/login.
+
+Show basic inline validation:
+
+If passwords don’t match, show a small error message under the field.
+
+If email is invalid format, show an error message.
+
+2. Frontend behaviour & state
+
+Use React hooks (useState, useEffect) to manage form state and loading states.
+
+On submit:
+
+For Login: send POST to /api/auth/login with { email, password }.
+
+For Signup: send POST to /api/auth/register with { name, email, password }.
+
+Show a small, subtle error toast or message if backend returns an error.
+
+Show a loading spinner/indicator on buttons while the request is in progress.
+
+Create a small authApi.ts helper module in the frontend, something like:
+
+export async function login(email: string, password: string) { ... }
+export async function signup(payload: { name?: string; email: string; password: string }) { ... }
+export async function getCurrentUser() { ... }
+
+
+Use fetch or axios consistently.
+
+3. Google sign-in (frontend wiring)
+
+For the Google button on both pages:
+
+Clicking “Continue with Google” should:
+
+Redirect the browser to /api/auth/google (for full OAuth redirect flow), or
+
+window.location.href = '/api/auth/google'.
+
+For now, handle it as a redirect to backend OAuth (you’ll wire the backend flow next). Add a small spinner state while redirect is happening.
+
+4. Backend: email/password + Google stubs
+
+In the Node + Express backend, add an auth router (if not already present) with:
+
+Endpoints
+
+POST /api/auth/register
+
+Validate email & password.
+
+Hash the password (use bcrypt or argon2).
+
+Create user in a simple in-memory store or existing DB (e.g. users table).
+
+Return a JWT or session cookie (choose one pattern and stick to it).
+
+POST /api/auth/login
+
+Validate credentials.
+
+If correct, return JWT or set session cookie.
+
+If wrong, return 401 with error message.
+
+GET /api/auth/me
+
+Check auth (JWT in header or session cookie).
+
+Return current user info (id, email, name, maybe plan).
+
+Google OAuth endpoints (basic skeleton):
+
+GET /api/auth/google
+
+Starts the Google OAuth flow (redirect to Google).
+
+GET /api/auth/google/callback
+
+Handles Google callback.
+
+Reads Google profile (email, name).
+
+Creates or finds a user in DB.
+
+Issues JWT / session cookie.
+
+Redirects back to the frontend (e.g. / or /dashboard).
+
+You can use a simple library like passport + passport-google-oauth20 OR hand-roll with the official Google OAuth client. For now, it’s okay to:
+
+Implement a partial Google flow (with TODOs), but:
+
+Set up the route structure and functions clearly so I can drop in real credentials later.
+
+Make sure Google client ID/secret are read from env vars:
+
+GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET
+
+GOOGLE_REDIRECT_URI
+
+Never hard-code them.
+
+5. Styling details (match LUM News look)
+
+Apply consistent styling to both Login and Signup pages:
+
+Use the same font as the rest of the app.
+
+Cards:
+
+Background: dark.
+
+Radius: ~18px.
+
+Padding: generous (24px–32px).
+
+Buttons:
+
+Primary (indigo) button:
+
+Background: indigo.
+
+Text: white.
+
+Hover: lighter indigo, slight scale up (1.02), extra shadow.
+
+Google button:
+
+Light/dark mixed:
+
+Either a white or dark background with slight border.
+
+On hover: highlight border with indigo.
+
+Place the Google icon to the left of the text.
+
+Form fields:
+
+Rounded inputs with dark backgrounds and light text.
+
+Indigo border on focus, with smooth transition.
+
+6. Redirect logic after auth
+
+After successful login:
+
+Redirect to a configurable route like / or /dashboard (just pick / for now).
+
+After successful signup:
+
+Either log the user in immediately and redirect, or send them to Login with a “Account created, please sign in” message. Prefer auto-login for better UX.
+
+Implement this in the frontend using navigation (React Router or whatever you’re already using).
+
+End result:
+I should have:
+
+A polished Login and Signup page with:
+
+Email/password forms.
+
+“Continue with Google” buttons.
+
+Dark/indigo/white theme with clean hover/focus behaviour.
+
+A backend auth router with:
+
+/api/auth/register
+
+/api/auth/login
+
+/api/auth/me
+
+/api/auth/google and /api/auth/google/callback stubbed for real Google OAuth.
+
+Working email/password login + signup end-to-end.
+
+Google auth wired as front-end redirect to backend, ready to be fully implemented with real credentials later.

@@ -87,6 +87,55 @@ export default function Home() {
     },
   });
 
+  const bookmarkMutation = useMutation({
+    mutationFn: ({ articleId, isBookmarked }: { articleId: string; isBookmarked: boolean }) => {
+      if (isBookmarked) {
+        return apiRequest("DELETE", "/api/bookmarks", { articleId });
+      } else {
+        return apiRequest("POST", "/api/bookmarks", { articleId });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return typeof key === "string" && key.startsWith("/api/articles");
+        },
+        refetchType: "active",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update bookmark.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const readMutation = useMutation({
+    mutationFn: (articleId: string) => {
+      return apiRequest("POST", "/api/read", { articleId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return typeof key === "string" && key.startsWith("/api/articles");
+        },
+        refetchType: "active",
+      });
+    },
+  });
+
+  const handleBookmark = useCallback((articleId: string, isBookmarked: boolean) => {
+    bookmarkMutation.mutate({ articleId, isBookmarked });
+  }, [bookmarkMutation]);
+
+  const handleRead = useCallback((articleId: string) => {
+    readMutation.mutate(articleId);
+  }, [readMutation]);
+
   const handleSourceToggle = useCallback((sourceId: string) => {
     setSelectedSources((prev) =>
       prev.includes(sourceId)
@@ -148,7 +197,13 @@ export default function Home() {
 
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-6 py-8">
-            <ArticleGrid articles={articles} isLoading={isLoadingArticles} />
+            <ArticleGrid 
+              articles={articles} 
+              isLoading={isLoadingArticles}
+              onBookmark={handleBookmark}
+              onRead={handleRead}
+              isBookmarking={bookmarkMutation.isPending}
+            />
 
             {!isLoadingArticles && articles.length > 0 && totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center gap-2" data-testid="pagination">

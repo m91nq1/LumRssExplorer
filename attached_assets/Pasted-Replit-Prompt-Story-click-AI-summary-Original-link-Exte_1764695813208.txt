@@ -1,0 +1,253 @@
+Replit Prompt – Story click → AI summary + “Original” link
+
+Extend my existing LUM News project (Node.js + TypeScript + Express backend, React + TypeScript frontend) with the following feature:
+
+When a user clicks on a story card, open a Story Detail view that:
+
+Calls an API endpoint that uses my OpenAI / ChatGPT API key (from an environment variable)
+
+Summarizes the story/article content with the OpenAI Chat Completions API
+
+Shows the summary in the UI
+
+Provides a top-right “Original” button that opens the original article URL in a new tab.
+
+Do not hard-code the API key. Read it from process.env.OPENAI_API_KEY in the backend. I will set this in Replit’s Secrets.
+
+1. Data model assumption
+
+Assume I already have a Story or Article shape like:
+
+interface Article {
+  id: string;
+  title: string;
+  description?: string;
+  url: string;
+  sourceName: string;
+  region: string;
+  content?: string; // optional full body if we have it
+}
+
+interface Story {
+  id: string;
+  title: string;
+  summary?: string;
+  articleIds: string[];
+}
+
+
+You can adapt as needed, but the key is:
+
+Each story has one or more articles with URLs.
+
+The backend can fetch or has stored enough text (title + description + maybe content) to summarize.
+
+2. Backend: OpenAI client + summary endpoint
+
+Add a small OpenAI client helper, e.g. src/services/openaiService.ts:
+
+Use the official openai npm package or standard HTTPS fetch.
+
+Read process.env.OPENAI_API_KEY (assume I will set it in Replit Secrets).
+
+Export a function like:
+
+export async function summarizeArticleOrStory(input: {
+  title: string;
+  text: string;
+  sourceName: string;
+}): Promise<string> { ... }
+
+
+Prompt requirements:
+
+The model should:
+
+Create a clear, neutral summary (5–8 sentences).
+
+Include the core facts and global context.
+
+Avoid hallucinating or inventing details.
+
+Use a model like "gpt-4.1-mini" or similar.
+
+Add a new Express route, e.g. src/routes/storySummary.ts:
+
+GET /api/stories/:id/summary
+
+Look up the story by id.
+
+Fetch its main article (first article or the one with most content).
+
+Build a text input from:
+
+Title
+
+Description
+
+Content (if stored)
+
+Call summarizeArticleOrStory.
+
+Return JSON:
+
+{
+  "storyId": "...",
+  "articleId": "...",
+  "summary": "...",
+  "originalUrl": "https://original-article-url"
+}
+
+
+Handle errors:
+
+If the story or article is not found → 404.
+
+If OpenAI call fails → 500 with { error: "Unable to summarize story right now." }.
+
+Make sure CORS / auth middleware allows the frontend to call this endpoint for logged-in users.
+
+3. Frontend: Story Detail view + summary
+
+On the frontend (React + TypeScript):
+
+Create a StoryDetail component, e.g. StoryDetail.tsx:
+
+Props:
+
+storyId: string
+
+onClose: () => void
+
+Internal state:
+
+loading: boolean
+
+error: string | null
+
+summary: string | null
+
+originalUrl: string | null
+
+On mount (useEffect):
+
+Call GET /api/stories/:id/summary.
+
+While loading, show a spinner or skeleton.
+
+On success, display the summary and store the originalUrl.
+
+On error, show an error message.
+
+UI layout:
+
+The StoryDetail should be displayed either as:
+
+A centered modal overlay, OR
+
+A right-hand side drawer.
+
+Style:
+
+Background: dark (#020617 / #050816).
+
+Card/panel with rounded corners (18px).
+
+Text: white / light grey.
+
+Borders / accents: indigo (#6366f1).
+
+Smooth transition: all 0.2s ease-out.
+
+Top bar of StoryDetail:
+
+Left:
+
+Story title.
+
+Right:
+
+A button labelled “Original”:
+
+If originalUrl exists, clicking it should window.open(originalUrl, "_blank").
+
+Styles:
+
+Outline button, indigo border, white text.
+
+On hover: indigo background, slight scale up.
+
+A subtle close icon (X) that calls onClose.
+
+Main content area:
+
+Section heading: “AI Summary”
+
+Summary text in paragraphs.
+
+If loading:
+
+Show skeleton placeholders (e.g. grey blocks).
+
+If error:
+
+Show: “Couldn’t load summary. Please try again.”
+
+4. Hook story cards to StoryDetail
+
+On your stories list (e.g. in Search & Explore or Top Stories view):
+
+For each StoryCard, add an onClick handler:
+
+When clicked, set a state in the parent component:
+
+const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
+
+
+onClick={() => setActiveStoryId(story.id)}.
+
+Conditionally render StoryDetail:
+
+{activeStoryId && (
+  <StoryDetail
+    storyId={activeStoryId}
+    onClose={() => setActiveStoryId(null)}
+  />
+)}
+
+
+In the StoryCard UI:
+
+Highlight on hover (scale up slightly, stronger shadow).
+
+Cursor: pointer.
+
+5. Security & key handling
+
+Do NOT hard-code the OpenAI key in any file.
+
+In Replit:
+
+Set OPENAI_API_KEY in the Secrets panel.
+
+Backend must read it from process.env.OPENAI_API_KEY.
+
+If the key is missing, the summary route should:
+
+Log a warning on the server.
+
+Return a 500 with a clear JSON error.
+
+End result:
+
+When I click a story card in LUM News:
+
+A Story Detail panel opens.
+
+The frontend calls /api/stories/:id/summary.
+
+The backend uses my OpenAI key (from env) to summarize the main article.
+
+The summary is shown in the panel, and
+
+A top-right “Original” button opens the source article URL in a new tab.

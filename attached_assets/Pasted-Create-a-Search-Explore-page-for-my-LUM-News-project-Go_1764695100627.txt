@@ -1,0 +1,306 @@
+Create a Search & Explore page for my LUM News project.
+
+Goal
+
+Build a React + TypeScript page/component called SearchExplorePage that implements this feature:
+
+Search & Explore
+
+Search bar with suggestions for topics, entities, and sources.
+
+Results displayed as stories and/or articles, with filters on the left or top.
+
+Ability to switch between story-centric and article-centric views.
+
+Make it highly interactive, using a black / dark background, indigo accents, and white text, with smooth hover and focus effects everywhere.
+
+You can assume this will be integrated into an existing LUM News dashboard, but for now you can mock the data in the frontend or call a fake /api/search endpoint.
+
+Tech & structure
+
+Use React + TypeScript.
+
+Use CSS modules or a single SearchExplore.css file for styling (no Tailwind unless it already exists in the project).
+
+The main component should be SearchExplorePage, which I can import and render inside a router or layout later.
+
+Use functional components and hooks (useState, useEffect).
+
+Create small, reusable components:
+
+SearchBar
+
+SearchSuggestions
+
+FiltersPanel
+
+ViewToggle
+
+StoryCard
+
+ArticleCard
+
+ResultsGrid
+
+EmptyState
+
+LoadingState (skeletons)
+
+If needed, create a simple mock API module that returns fake stories and articles so I can see everything working.
+
+Layout & UX
+
+The page should look like a professional news-intel search UI:
+
+Overall layout
+
+Full height layout (min-height: 100vh) on a very dark background (near-black).
+
+Main layout:
+
+Left side: Filters panel (narrow column).
+
+Right side: Main content area with:
+
+Top: search bar + view toggle.
+
+Below: results grid/list.
+
+Search bar
+
+A large search bar at the top of the main content area.
+
+Include:
+
+A search icon on the left.
+
+Placeholder text like:
+Search topics, entities, or sources…
+
+A small “search mode hint” line below or inside (e.g. “Try: ‘AI regulation in China’ or ‘Russia coverage of elections’”).
+
+As the user types, show a suggestions dropdown underneath:
+
+Suggestions grouped by type:
+
+Topics (e.g., “AI Regulation”, “Elections”)
+
+Entities (e.g., “NATO”, “Eskom”)
+
+Sources (e.g., “BBC World”, “Xinhua”)
+
+Each suggestion row shows:
+
+Type badge on the left (“Topic”, “Entity”, “Source”).
+
+Suggestion text.
+
+Keyboard support:
+
+Up/Down arrows to move through suggestions.
+
+Enter to accept a suggestion.
+
+Clicking a suggestion triggers a search and fills the search input.
+
+Filters panel (left side)
+
+Vertical side panel on the left.
+
+Section headings with subtle underlines or separators:
+
+Region filters:
+
+Chips/buttons for “All”, “World”, “US”, “UK”, “China”, “Russia”.
+
+Source filters:
+
+Scrollable list of checkbox rows (source name + region tag).
+
+Time filters:
+
+Radio buttons or pills: “Last 24h”, “Last 7 days”, “Last 30 days”.
+
+Indicate active filters visually (indigo pill style).
+
+Hover behaviour:
+
+On hover, slightly brighten backgrounds and show a faint indigo outline.
+
+Allow collapsing/expanding the filters panel on small widths (but focus on desktop first).
+
+View toggle (stories vs articles)
+
+At the top right of the main content area, next to or under the search bar, add a segmented control:
+
+Options: Stories | Articles
+
+When Stories is active:
+
+Show story-centric cards (clusters of multiple articles).
+
+When Articles is active:
+
+Show individual article cards.
+
+Use indigo to highlight the active option; the inactive one should be subtle but clickable.
+
+Animate the toggle bar (small sliding pill) when switching.
+
+Results display
+
+Results area below the search bar and toggle.
+
+Use a responsive grid for cards on desktop:
+
+For stories: 2–3 cards per row depending on width.
+
+For articles: more compact grid, 3–4 per row if space allows.
+
+Add pagination or “Load more” at the bottom (simple client-side pagination is fine).
+
+Cards & interactions
+
+StoryCard
+
+Content:
+
+Story title.
+
+1–2 line summary.
+
+Meta row:
+
+Number of articles in the story.
+
+Number of sources.
+
+Regions involved (chips like “US”, “UK”, “China”, “Russia”).
+
+“First seen Xh ago” text.
+
+Layout:
+
+Slightly elevated card on dark background with indigo accent line or border.
+
+Interactions:
+
+On hover:
+
+Slight scale up (e.g. 1.02).
+
+Shadow increases.
+
+Border or top bar glows indigo.
+
+On click:
+
+For now, just log to console or open a mock detail modal; leave hooks for later integration.
+
+ArticleCard
+
+Content:
+
+Source name pill (small indigo outline).
+
+Region badge.
+
+Headline.
+
+1–2 line snippet.
+
+Published time.
+
+“Open source” link or icon.
+
+Layout:
+
+Compact cards, but still well-spaced.
+
+Interactions:
+
+On hover:
+
+Slight scale up.
+
+Background brightens a bit.
+
+“Open source” link becomes more visible (e.g. indigo underline).
+
+On click:
+
+Open article link in a new tab.
+
+Loading state
+
+Show skeleton loaders instead of blank space:
+
+Rectangular grey blocks where cards will appear.
+
+A few pulsing placeholders for title, snippet, and meta lines.
+
+Empty state
+
+If no results:
+
+Show centered message:
+
+Title: “No results found”
+
+Body: “Try adjusting filters, choosing a different region, or simplifying your search.”
+
+Include a button: “Reset filters”.
+
+Styling & colours
+
+Use a dark, indigo, and white palette:
+
+Background:
+
+Main background: near-black (e.g. #050816 or similar).
+
+Card background: dark slate (e.g. #020617 or #0b1120).
+
+Text:
+
+Main text: white or very light grey.
+
+Secondary text: muted grey.
+
+Accents:
+
+Primary accent: indigo (#6366f1 or similar).
+
+Soft accent: a lighter indigo for hover (#818cf8).
+
+Cards:
+
+Rounded corners (~16–18px).
+
+Soft shadows (e.g. 0 18px 45px rgba(15,23,42,0.7)).
+
+Hover/focus:
+
+Smooth transition: all 0.2s ease-out; on cards, buttons, chips.
+
+Focus outlines in indigo for accessibility.
+
+Create a dedicated CSS file (e.g. SearchExplore.css) and give elements semantic class names like .search-explore, .filters-panel, .results-grid, .story-card, .article-card, etc.
+
+Behaviour & mock data
+
+Implement a simple mock “search” flow for now:
+
+On typing in the search bar and pressing Enter or selecting a suggestion:
+
+Simulate an async call (setTimeout) and then set mock stories/articles in state.
+
+Filters (regions, sources, time):
+
+Update local state and filter the mock results accordingly.
+
+View toggle:
+
+Switch between showing story cards and article cards using the same result set mapped differently.
+
+Keep the code clean and typed, so I can later replace the mock data/fetch with a real /api/search endpoint.

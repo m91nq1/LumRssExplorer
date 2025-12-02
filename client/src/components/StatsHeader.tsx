@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Settings } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "wouter";
 
 interface StatsHeaderProps {
   totalArticles: number;
@@ -47,19 +48,31 @@ export function StatsHeader({
             </span>
           </div>
 
-          <Button
-            onClick={onRefresh}
-            disabled={isRefreshing}
-            variant="outline"
-            size="sm"
-            data-testid="button-refresh"
-            className="gap-2"
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/feeds">
+              <Button
+                variant="ghost"
+                size="icon"
+                data-testid="button-feed-settings"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            </Link>
+
+            <Button
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              variant="outline"
+              size="sm"
+              data-testid="button-refresh"
+              className="gap-2"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
         </div>
       </div>
     </header>
