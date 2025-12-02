@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Settings } from "lucide-react";
+import { RefreshCw, Settings, Search } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 
@@ -49,6 +49,16 @@ export function StatsHeader({
           </div>
 
           <div className="flex items-center gap-2">
+            <Link href="/search">
+              <Button
+                variant="ghost"
+                size="icon"
+                data-testid="button-search-explore"
+              >
+                <Search className="w-4 h-4" />
+              </Button>
+            </Link>
+
             <Link href="/feeds">
               <Button
                 variant="ghost"
