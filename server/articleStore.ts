@@ -5,6 +5,7 @@ import cron from "node-cron";
 
 // Default RSS feeds to seed on first run
 const DEFAULT_FEEDS: InsertFeedSource[] = [
+  // World News
   {
     id: "bbc-world",
     name: "BBC News",
@@ -22,57 +23,11 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     category: "world",
   },
   {
-    id: "cnbc-international",
-    name: "CNBC",
-    url: "https://www.cnbc.com/id/100727362/device/rss/rss.html",
-    sourceType: "rss",
-    country: "US",
-    category: "world",
-  },
-  {
-    id: "ndtv-world",
-    name: "NDTV",
-    url: "http://feeds.feedburner.com/ndtvnews-world-news",
-    sourceType: "rss",
-    country: "India",
-    category: "world",
-  },
-  {
     id: "nyt-world",
     name: "NYT",
     url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
     sourceType: "rss",
     country: "US",
-    category: "world",
-  },
-  {
-    id: "google-news",
-    name: "Google News",
-    url: "https://news.google.com/rss",
-    sourceType: "rss",
-    category: "world",
-  },
-  {
-    id: "washpost-world",
-    name: "Washington Post",
-    url: "http://feeds.washingtonpost.com/rss/world",
-    sourceType: "rss",
-    country: "US",
-    category: "world",
-  },
-  {
-    id: "reddit-worldnews",
-    name: "Reddit r/worldnews",
-    url: "https://www.reddit.com/r/worldnews/.rss",
-    sourceType: "rss",
-    category: "world",
-  },
-  {
-    id: "toi-world",
-    name: "Times of India",
-    url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms",
-    sourceType: "rss",
-    country: "India",
     category: "world",
   },
   {
@@ -82,6 +37,179 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     sourceType: "rss",
     country: "UK",
     category: "world",
+  },
+  {
+    id: "google-news",
+    name: "Google News",
+    url: "https://news.google.com/rss",
+    sourceType: "rss",
+    category: "world",
+  },
+  // Technology
+  {
+    id: "techcrunch",
+    name: "TechCrunch",
+    url: "https://techcrunch.com/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "technology",
+  },
+  {
+    id: "the-verge",
+    name: "The Verge",
+    url: "https://www.theverge.com/rss/index.xml",
+    sourceType: "rss",
+    country: "US",
+    category: "technology",
+  },
+  {
+    id: "wired",
+    name: "Wired",
+    url: "https://www.wired.com/feed/rss",
+    sourceType: "rss",
+    country: "US",
+    category: "technology",
+  },
+  {
+    id: "ars-technica",
+    name: "Ars Technica",
+    url: "https://feeds.feedburner.com/arstechnica/index",
+    sourceType: "rss",
+    country: "US",
+    category: "technology",
+  },
+  // Startups & VC
+  {
+    id: "hacker-news",
+    name: "Hacker News",
+    url: "https://news.ycombinator.com/rss",
+    sourceType: "rss",
+    country: "US",
+    category: "startups",
+  },
+  {
+    id: "venturebeat",
+    name: "VentureBeat",
+    url: "https://venturebeat.com/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "startups",
+  },
+  // AI & Machine Learning
+  {
+    id: "openai-blog",
+    name: "OpenAI Blog",
+    url: "https://openai.com/blog/rss/",
+    sourceType: "rss",
+    country: "US",
+    category: "ai",
+  },
+  {
+    id: "mit-tech-ai",
+    name: "MIT Technology Review AI",
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "ai",
+  },
+  // Programming & Development
+  {
+    id: "dev-to",
+    name: "DEV Community",
+    url: "https://dev.to/feed",
+    sourceType: "rss",
+    country: "US",
+    category: "programming",
+  },
+  {
+    id: "github-blog",
+    name: "GitHub Blog",
+    url: "https://github.blog/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "programming",
+  },
+  {
+    id: "freecodecamp",
+    name: "freeCodeCamp",
+    url: "https://www.freecodecamp.org/news/rss/",
+    sourceType: "rss",
+    country: "US",
+    category: "programming",
+  },
+  // Cybersecurity
+  {
+    id: "krebs-security",
+    name: "Krebs on Security",
+    url: "https://krebsonsecurity.com/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "cybersecurity",
+  },
+  {
+    id: "hacker-news-security",
+    name: "The Hacker News",
+    url: "https://feeds.feedburner.com/TheHackersNews",
+    sourceType: "rss",
+    category: "cybersecurity",
+  },
+  // Business & Finance
+  {
+    id: "cnbc-business",
+    name: "CNBC",
+    url: "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+    sourceType: "rss",
+    country: "US",
+    category: "business",
+  },
+  {
+    id: "marketwatch",
+    name: "MarketWatch",
+    url: "https://www.marketwatch.com/rss/topstories",
+    sourceType: "rss",
+    country: "US",
+    category: "finance",
+  },
+  // Cryptocurrency
+  {
+    id: "coindesk",
+    name: "CoinDesk",
+    url: "https://www.coindesk.com/feed/",
+    sourceType: "rss",
+    country: "US",
+    category: "crypto",
+  },
+  {
+    id: "cointelegraph",
+    name: "CoinTelegraph",
+    url: "https://cointelegraph.com/rss",
+    sourceType: "rss",
+    category: "crypto",
+  },
+  // Science
+  {
+    id: "science-daily",
+    name: "Science Daily",
+    url: "https://www.sciencedaily.com/rss/all.xml",
+    sourceType: "rss",
+    country: "US",
+    category: "science",
+  },
+  {
+    id: "nasa",
+    name: "NASA",
+    url: "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+    sourceType: "rss",
+    country: "US",
+    category: "science",
+  },
+  {
+    id: "space-com",
+    name: "Space.com",
+    url: "https://www.space.com/feeds/all",
+    sourceType: "rss",
+    country: "US",
+    category: "science",
   },
 ];
 
@@ -96,17 +224,24 @@ export class ArticleStore {
   async initialize() {
     if (this.initialized) return;
     
-    // Seed default feeds if none exist
+    // Upsert default feeds (add new ones, preserve existing settings)
     const existingSources = await storage.getFeedSources();
-    if (existingSources.length === 0) {
-      console.log("Seeding default RSS feeds...");
-      for (const feed of DEFAULT_FEEDS) {
+    const existingIds = new Set(existingSources.map(s => s.id));
+    
+    let newFeedsAdded = 0;
+    for (const feed of DEFAULT_FEEDS) {
+      if (!existingIds.has(feed.id)) {
         try {
           await storage.createFeedSource(feed);
+          newFeedsAdded++;
         } catch (error) {
           console.error(`Error seeding feed ${feed.name}:`, error);
         }
       }
+    }
+    
+    if (newFeedsAdded > 0) {
+      console.log(`Added ${newFeedsAdded} new RSS feeds`);
     }
 
     this.initialized = true;

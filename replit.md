@@ -93,8 +93,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Features
 
+### Landing Page (/)
+- **Futuristic Hero Design**: Dark theme with purple/indigo glow effects and glassmorphism
+- **3D Interactive Globe**: Three.js-powered Earth with neon holographic shader, OrbitControls for interaction
+- **Tagline**: "The world's narratives in your hands"
+- **Feature Cards**: Top Stories, Lenses, Alerts & Digests preview cards
+- **CSS Animations**: Fade-in effects on load, hover-elevate interactions
+
 ### Core Features
-- **Article Aggregation**: Ingests articles from 10+ RSS sources
+- **Article Aggregation**: Ingests articles from 23+ RSS sources across 9 categories
+- **Categories**: World News, Technology, Startups, AI, Programming, Cybersecurity, Business, Crypto, Science
 - **Filtering**: Filter by source, time period, and search query
 - **Pagination**: Browse through articles with page navigation
 - **Responsive Design**: Works on desktop and mobile
@@ -152,6 +160,10 @@ Preferred communication style: Simple, everyday language.
 - **@neondatabase/serverless**: Neon PostgreSQL serverless driver
 - **drizzle-zod**: Zod schema generation from Drizzle schemas
 
+### 3D Visualization
+- **Three.js**: WebGL-based 3D rendering for interactive globe
+- **Custom Shaders**: Holographic effect with grid pattern and atmospheric glow
+
 ### Development Tools
 - **Wouter**: Lightweight routing
 - **nanoid**: Unique ID generation
@@ -161,4 +173,6 @@ Preferred communication style: Simple, everyday language.
 ## Known Issues
 
 - **Washington Post RSS**: Feed times out occasionally (gracefully handled)
+- **OpenAI Blog RSS**: Returns 403 (blocked by Cloudflare, gracefully handled)
+- **CoinDesk RSS**: Feed format not recognized (gracefully handled)
 - **Toast Selectors**: Toast notifications match multiple DOM elements in tests (cosmetic issue)

@@ -24,14 +24,13 @@ function Router() {
 
   return (
     <Switch>
-      {!isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
+      <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/home" component={Home} />
+      <Route path="/article/:id" component={ArticleDetail} />
+      {isAuthenticated && (
         <>
-          <Route path="/" component={Home} />
           <Route path="/search" component={SearchExplore} />
           <Route path="/feeds" component={FeedManagement} />
-          <Route path="/article/:id" component={ArticleDetail} />
         </>
       )}
       <Route component={NotFound} />
