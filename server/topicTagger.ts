@@ -1,0 +1,236 @@
+import { Topic, TOPICS } from "@shared/schema";
+
+interface TopicKeywords {
+  topic: Topic;
+  keywords: string[];
+}
+
+const TOPIC_KEYWORDS: TopicKeywords[] = [
+  {
+    topic: "War / Conflict",
+    keywords: [
+      "war", "conflict", "military", "troops", "invasion", "missile", "bomb",
+      "attack", "combat", "soldiers", "army", "navy", "airstrike", "drone strike",
+      "cease-fire", "ceasefire", "peace talks", "offensive", "defensive", "battle",
+      "frontline", "casualties", "weapons", "ammunition", "nato", "defense",
+      "ukraine", "russia", "gaza", "israel", "hamas", "hezbollah", "iran",
+      "syrian", "afghanistan", "iraq", "terrorist", "terrorism", "militia"
+    ],
+  },
+  {
+    topic: "US Politics",
+    keywords: [
+      "trump", "biden", "white house", "congress", "senate", "republican",
+      "democrat", "gop", "election", "vote", "ballot", "campaign", "primary",
+      "presidential", "impeachment", "capitol", "washington dc", "supreme court",
+      "scotus", "governor", "mayor", "legislation", "bill passed", "veto",
+      "executive order", "fbi", "cia", "doj", "attorney general", "cabinet",
+      "secretary of state", "pentagon", "state department", "us politics",
+      "american politics", "midterm", "swing state", "electoral"
+    ],
+  },
+  {
+    topic: "Europe Politics",
+    keywords: [
+      "eu", "european union", "brussels", "parliament", "macron", "france",
+      "germany", "merkel", "scholz", "brexit", "uk politics", "starmer",
+      "labour", "tories", "conservative party", "liberal democrat",
+      "italy", "spain", "poland", "hungary", "nordic", "scandinavia",
+      "european commission", "nato europe", "eurozone", "euro currency",
+      "migration europe", "refugees europe"
+    ],
+  },
+  {
+    topic: "AI & Technology",
+    keywords: [
+      "artificial intelligence", "ai", "machine learning", "deep learning",
+      "neural network", "chatgpt", "openai", "google ai", "microsoft ai",
+      "anthropic", "llm", "large language model", "generative ai", "gpt",
+      "robot", "automation", "algorithm", "tech company", "silicon valley",
+      "startup", "innovation", "software", "hardware", "processor", "chip",
+      "semiconductor", "quantum", "cloud computing", "data center",
+      "cybersecurity", "hacking", "privacy", "encryption", "blockchain",
+      "smartphone", "app", "platform", "social media", "meta", "twitter",
+      "x corp", "tiktok", "apple", "google", "microsoft", "amazon tech",
+      "tesla", "ev", "electric vehicle", "autonomous", "self-driving"
+    ],
+  },
+  {
+    topic: "Finance & Markets",
+    keywords: [
+      "stock", "market", "wall street", "nasdaq", "dow jones", "s&p 500",
+      "investor", "investment", "trading", "shares", "equity", "bonds",
+      "treasury", "federal reserve", "interest rate", "inflation", "recession",
+      "gdp", "economy", "economic", "bank", "banking", "finance", "financial",
+      "cryptocurrency", "bitcoin", "ethereum", "crypto", "blockchain",
+      "ipo", "merger", "acquisition", "earnings", "profit", "revenue",
+      "quarter results", "fiscal", "budget", "debt", "loan", "mortgage",
+      "real estate market", "housing market", "commodities", "oil price",
+      "gold price", "forex", "currency"
+    ],
+  },
+  {
+    topic: "Crime & Justice",
+    keywords: [
+      "crime", "criminal", "murder", "homicide", "shooting", "stabbing",
+      "robbery", "theft", "burglary", "assault", "arrest", "police",
+      "investigation", "detective", "suspect", "victim", "prison", "jail",
+      "sentence", "convicted", "trial", "court", "judge", "jury", "verdict",
+      "lawsuit", "legal", "attorney", "lawyer", "prosecutor", "defense",
+      "fraud", "scam", "corruption", "bribery", "drug trafficking",
+      "cartel", "gang", "organized crime", "justice", "parole", "probation"
+    ],
+  },
+  {
+    topic: "Science & Health",
+    keywords: [
+      "science", "scientific", "research", "study", "discovery", "experiment",
+      "laboratory", "scientist", "physics", "chemistry", "biology", "genetics",
+      "dna", "gene", "evolution", "species", "fossil", "dinosaur", "space",
+      "nasa", "astronomy", "planet", "star", "galaxy", "universe", "rocket",
+      "satellite", "mars", "moon", "asteroid", "health", "medical", "medicine",
+      "doctor", "hospital", "patient", "disease", "illness", "treatment",
+      "vaccine", "vaccination", "covid", "pandemic", "virus", "bacteria",
+      "cancer", "heart disease", "mental health", "depression", "anxiety",
+      "therapy", "surgery", "clinical trial", "fda", "drug approval", "pharma"
+    ],
+  },
+  {
+    topic: "Celebrity & Entertainment",
+    keywords: [
+      "celebrity", "famous", "star", "hollywood", "actor", "actress",
+      "singer", "musician", "band", "concert", "tour", "album", "song",
+      "movie", "film", "director", "oscar", "grammy", "emmy", "award",
+      "red carpet", "premiere", "box office", "streaming", "netflix",
+      "disney", "hbo", "tv show", "series", "reality tv", "influencer",
+      "social media star", "youtube", "tiktok star", "fashion", "model",
+      "sports star", "athlete", "football", "basketball", "soccer",
+      "tennis", "golf", "olympics", "world cup", "championship",
+      "royalty", "prince", "princess", "queen", "king", "wedding",
+      "divorce", "scandal", "gossip"
+    ],
+  },
+  {
+    topic: "Environment / Climate",
+    keywords: [
+      "climate", "climate change", "global warming", "carbon", "emissions",
+      "greenhouse", "co2", "renewable", "solar", "wind energy", "clean energy",
+      "fossil fuel", "oil", "coal", "natural gas", "pollution", "air quality",
+      "water quality", "deforestation", "forest", "amazon", "wildlife",
+      "endangered", "species", "conservation", "biodiversity", "ecosystem",
+      "ocean", "marine", "coral reef", "plastic", "recycling", "waste",
+      "sustainability", "sustainable", "green", "eco-friendly", "esg",
+      "weather", "storm", "hurricane", "tornado", "flood", "drought",
+      "wildfire", "earthquake", "volcano", "disaster", "emergency"
+    ],
+  },
+  {
+    topic: "Other / Offbeat",
+    keywords: [
+      "weird", "strange", "unusual", "bizarre", "quirky", "fun", "viral",
+      "trending", "meme", "internet culture", "lifestyle", "travel",
+      "food", "recipe", "restaurant", "dining", "culture", "art",
+      "museum", "exhibition", "book", "novel", "author", "literature",
+      "history", "historical", "archaeology", "ancient", "hobby",
+      "gaming", "video game", "esports", "puzzle", "mystery"
+    ],
+  },
+];
+
+export function tagArticleTopics(title: string, summary?: string | null): string[] {
+  const text = `${title} ${summary || ""}`.toLowerCase();
+  const matchedTopics: Set<string> = new Set();
+
+  for (const { topic, keywords } of TOPIC_KEYWORDS) {
+    for (const keyword of keywords) {
+      if (text.includes(keyword.toLowerCase())) {
+        matchedTopics.add(topic);
+        break;
+      }
+    }
+  }
+
+  if (matchedTopics.size === 0) {
+    matchedTopics.add("Other / Offbeat");
+  }
+
+  return Array.from(matchedTopics);
+}
+
+export function generatePolarisationScore(): number {
+  return Math.floor(Math.random() * 100);
+}
+
+export function mapCountryToRegion(country?: string | null): string {
+  if (!country) return "Global";
+  
+  const countryLower = country.toLowerCase();
+  
+  const regionMap: Record<string, string> = {
+    "us": "US",
+    "usa": "US",
+    "united states": "US",
+    "america": "US",
+    "uk": "UK",
+    "united kingdom": "UK",
+    "britain": "UK",
+    "england": "UK",
+    "france": "Europe",
+    "germany": "Europe",
+    "italy": "Europe",
+    "spain": "Europe",
+    "netherlands": "Europe",
+    "belgium": "Europe",
+    "poland": "Europe",
+    "sweden": "Europe",
+    "norway": "Europe",
+    "denmark": "Europe",
+    "finland": "Europe",
+    "austria": "Europe",
+    "switzerland": "Europe",
+    "portugal": "Europe",
+    "greece": "Europe",
+    "ireland": "Europe",
+    "russia": "Russia",
+    "china": "China",
+    "japan": "Asia-Pacific",
+    "south korea": "Asia-Pacific",
+    "korea": "Asia-Pacific",
+    "india": "Asia-Pacific",
+    "australia": "Asia-Pacific",
+    "new zealand": "Asia-Pacific",
+    "singapore": "Asia-Pacific",
+    "indonesia": "Asia-Pacific",
+    "thailand": "Asia-Pacific",
+    "vietnam": "Asia-Pacific",
+    "philippines": "Asia-Pacific",
+    "malaysia": "Asia-Pacific",
+    "taiwan": "Asia-Pacific",
+    "israel": "Middle East",
+    "saudi arabia": "Middle East",
+    "uae": "Middle East",
+    "qatar": "Middle East",
+    "iran": "Middle East",
+    "iraq": "Middle East",
+    "syria": "Middle East",
+    "turkey": "Middle East",
+    "egypt": "Middle East",
+    "lebanon": "Middle East",
+    "jordan": "Middle East",
+    "south africa": "Africa",
+    "nigeria": "Africa",
+    "kenya": "Africa",
+    "ethiopia": "Africa",
+    "morocco": "Africa",
+    "algeria": "Africa",
+    "ghana": "Africa",
+  };
+
+  for (const [key, region] of Object.entries(regionMap)) {
+    if (countryLower.includes(key)) {
+      return region;
+    }
+  }
+
+  return "Global";
+}

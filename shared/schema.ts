@@ -17,6 +17,37 @@ export const sessions = pgTable(
 
 // ==================== DATABASE TABLES ====================
 
+// Topic definitions for article classification
+export const TOPICS = [
+  "War / Conflict",
+  "US Politics",
+  "Europe Politics",
+  "AI & Technology",
+  "Finance & Markets",
+  "Crime & Justice",
+  "Science & Health",
+  "Celebrity & Entertainment",
+  "Environment / Climate",
+  "Other / Offbeat",
+] as const;
+
+export type Topic = typeof TOPICS[number];
+
+// Region definitions for source classification
+export const REGIONS = [
+  "Global",
+  "US",
+  "Europe",
+  "UK",
+  "Russia",
+  "China",
+  "Africa",
+  "Middle East",
+  "Asia-Pacific",
+] as const;
+
+export type Region = typeof REGIONS[number];
+
 // RSS Feed Sources (configurable via UI)
 export const feedSources = pgTable("feed_sources", {
   id: varchar("id", { length: 50 }).primaryKey(),
@@ -24,6 +55,7 @@ export const feedSources = pgTable("feed_sources", {
   url: text("url").notNull(),
   sourceType: text("source_type").notNull().default("rss"),
   country: text("country"),
+  region: text("region").default("Global"),
   category: text("category").notNull().default("world"),
   isEnabled: boolean("is_enabled").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -51,6 +83,8 @@ export const articles = pgTable("articles", {
   content: text("content"),
   imageUrl: text("image_url"),
   aiSummary: text("ai_summary"),
+  topics: text("topics").array(),
+  polarisationScore: integer("polarisation_score").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("articles_source_id_idx").on(table.sourceId),
@@ -234,11 +268,14 @@ export const articleWithStatusSchema = z.object({
   link: z.string(),
   sourceName: z.string(),
   sourceId: z.string(),
+  sourceRegion: z.string().optional(),
   publishedAt: z.string(),
   summary: z.string().optional().nullable(),
   content: z.string().optional().nullable(),
   imageUrl: z.string().optional().nullable(),
   aiSummary: z.string().optional().nullable(),
+  topics: z.array(z.string()).optional().nullable(),
+  polarisationScore: z.number().optional().nullable(),
   isBookmarked: z.boolean().optional(),
   isRead: z.boolean().optional(),
 });
@@ -266,12 +303,15 @@ export type SourcesResponse = z.infer<typeof sourcesResponseSchema>;
 // Query Parameters
 export const articleQuerySchema = z.object({
   sourceId: z.string().optional(),
+  topics: z.string().optional(),
+  regions: z.string().optional(),
   search: z.string().optional(),
   since: z.string().optional(),
   page: z.number().default(1),
   pageSize: z.number().default(20),
   bookmarkedOnly: z.boolean().optional(),
   unreadOnly: z.boolean().optional(),
+  mostPolarised: z.boolean().optional(),
 });
 
 export type ArticleQuery = z.infer<typeof articleQuerySchema>;

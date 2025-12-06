@@ -1,6 +1,7 @@
 import { InsertArticle, InsertFeedSource, FeedSource, SourceWithCount, ArticleWithStatus } from "@shared/schema";
 import { storage } from "./storage";
 import { ingestFeed } from "./rssIngestor";
+import { tagArticleTopics, generatePolarisationScore, mapCountryToRegion } from "./topicTagger";
 import cron from "node-cron";
 
 // Default RSS feeds to seed on first run
@@ -12,6 +13,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "http://feeds.bbci.co.uk/news/world/rss.xml",
     sourceType: "rss",
     country: "UK",
+    region: "UK",
     category: "world",
   },
   {
@@ -20,6 +22,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "http://rss.cnn.com/rss/edition_world.rss",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "world",
   },
   {
@@ -28,6 +31,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "world",
   },
   {
@@ -36,6 +40,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.theguardian.com/world/rss",
     sourceType: "rss",
     country: "UK",
+    region: "UK",
     category: "world",
   },
   {
@@ -43,6 +48,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     name: "Google News",
     url: "https://news.google.com/rss",
     sourceType: "rss",
+    region: "Global",
     category: "world",
   },
   // Technology
@@ -52,6 +58,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://techcrunch.com/feed/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "technology",
   },
   {
@@ -60,6 +67,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.theverge.com/rss/index.xml",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "technology",
   },
   {
@@ -68,6 +76,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.wired.com/feed/rss",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "technology",
   },
   {
@@ -76,6 +85,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://feeds.feedburner.com/arstechnica/index",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "technology",
   },
   // Startups & VC
@@ -85,6 +95,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://news.ycombinator.com/rss",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "startups",
   },
   {
@@ -93,6 +104,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://venturebeat.com/feed/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "startups",
   },
   // AI & Machine Learning
@@ -102,6 +114,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://openai.com/blog/rss/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "ai",
   },
   {
@@ -110,6 +123,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.technologyreview.com/topic/artificial-intelligence/feed/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "ai",
   },
   // Programming & Development
@@ -119,6 +133,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://dev.to/feed",
     sourceType: "rss",
     country: "US",
+    region: "Global",
     category: "programming",
   },
   {
@@ -127,6 +142,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://github.blog/feed/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "programming",
   },
   {
@@ -135,6 +151,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.freecodecamp.org/news/rss/",
     sourceType: "rss",
     country: "US",
+    region: "Global",
     category: "programming",
   },
   // Cybersecurity
@@ -144,6 +161,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://krebsonsecurity.com/feed/",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "cybersecurity",
   },
   {
@@ -151,6 +169,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     name: "The Hacker News",
     url: "https://feeds.feedburner.com/TheHackersNews",
     sourceType: "rss",
+    region: "Global",
     category: "cybersecurity",
   },
   // Business & Finance
@@ -160,6 +179,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.cnbc.com/id/10001147/device/rss/rss.html",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "business",
   },
   {
@@ -168,6 +188,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.marketwatch.com/rss/topstories",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "finance",
   },
   // Cryptocurrency
@@ -177,6 +198,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.coindesk.com/feed/",
     sourceType: "rss",
     country: "US",
+    region: "Global",
     category: "crypto",
   },
   {
@@ -184,6 +206,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     name: "CoinTelegraph",
     url: "https://cointelegraph.com/rss",
     sourceType: "rss",
+    region: "Global",
     category: "crypto",
   },
   // Science
@@ -193,6 +216,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.sciencedaily.com/rss/all.xml",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "science",
   },
   {
@@ -201,6 +225,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.nasa.gov/rss/dyn/breaking_news.rss",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "science",
   },
   {
@@ -209,6 +234,7 @@ const DEFAULT_FEEDS: InsertFeedSource[] = [
     url: "https://www.space.com/feeds/all",
     sourceType: "rss",
     country: "US",
+    region: "US",
     category: "science",
   },
 ];
@@ -274,8 +300,15 @@ export class ArticleStore {
         }
       }
 
+      // Tag articles with topics and polarisation scores
+      const taggedArticles = allArticles.map(article => ({
+        ...article,
+        topics: article.topics || tagArticleTopics(article.title, article.summary),
+        polarisationScore: article.polarisationScore ?? generatePolarisationScore(),
+      }));
+
       // Upsert all articles to database
-      const inserted = await storage.upsertArticles(allArticles);
+      const inserted = await storage.upsertArticles(taggedArticles);
       
       // Update last refresh time
       await storage.setLastRefreshTime(new Date().toISOString());
@@ -295,20 +328,41 @@ export class ArticleStore {
     });
   }
 
-  async getFilteredArticles(
-    sourceId?: string,
-    search?: string,
-    since?: string,
-    page: number = 1,
-    pageSize: number = 20,
-    userId?: number,
-    bookmarkedOnly?: boolean,
-    unreadOnly?: boolean
-  ) {
+  async getFilteredArticles(params: {
+    sourceId?: string;
+    topics?: string;
+    regions?: string;
+    search?: string;
+    since?: string;
+    page?: number;
+    pageSize?: number;
+    userId?: number;
+    bookmarkedOnly?: boolean;
+    unreadOnly?: boolean;
+    mostPolarised?: boolean;
+  }) {
+    const {
+      sourceId,
+      topics,
+      regions,
+      search,
+      since,
+      page = 1,
+      pageSize = 20,
+      userId,
+      bookmarkedOnly,
+      unreadOnly,
+      mostPolarised,
+    } = params;
+
     const sinceDate = since ? new Date(since) : undefined;
+    const topicsArray = topics ? topics.split(",").map(t => t.trim()) : undefined;
+    const regionsArray = regions ? regions.split(",").map(r => r.trim()) : undefined;
     
     const result = await storage.getArticles({
       sourceId,
+      topics: topicsArray,
+      regions: regionsArray,
       search,
       since: sinceDate,
       page,
@@ -316,6 +370,7 @@ export class ArticleStore {
       userId,
       bookmarkedOnly,
       unreadOnly,
+      mostPolarised,
     });
 
     return {

@@ -65,12 +65,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validationResult = articleQuerySchema.safeParse({
         sourceId: req.query.sourceId,
+        topics: req.query.topics,
+        regions: req.query.regions,
         search: req.query.search,
         since: req.query.since,
         page: req.query.page ? parseInt(req.query.page as string, 10) : 1,
         pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string, 10) : 20,
         bookmarkedOnly: req.query.bookmarkedOnly === "true",
         unreadOnly: req.query.unreadOnly === "true",
+        mostPolarised: req.query.mostPolarised === "true",
       });
 
       if (!validationResult.success) {
@@ -80,21 +83,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { sourceId, search, since, page, pageSize, bookmarkedOnly, unreadOnly } = validationResult.data;
+      const { sourceId, topics, regions, search, since, page, pageSize, bookmarkedOnly, unreadOnly, mostPolarised } = validationResult.data;
       
       // Get userId from session if available
       const userId = (req as any).userId || undefined;
 
-      const result = await articleStore.getFilteredArticles(
+      const result = await articleStore.getFilteredArticles({
         sourceId,
+        topics,
+        regions,
         search,
         since,
         page,
         pageSize,
         userId,
         bookmarkedOnly,
-        unreadOnly
-      );
+        unreadOnly,
+        mostPolarised,
+      });
 
       res.json(result);
     } catch (error) {

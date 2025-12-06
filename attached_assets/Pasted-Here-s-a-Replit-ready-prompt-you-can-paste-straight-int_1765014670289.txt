@@ -1,0 +1,163 @@
+Here’s a Replit-ready prompt you can paste straight into the AI:
+
+---
+
+**Replit Prompt – LUM News topic/region filters + violet theme**
+
+I already have a LUM News project (like the screenshot) where the left sidebar filters by RSS sources and the main grid shows article cards.
+
+I want you to **refactor the UI and filtering logic** so that it behaves more like Ground News, but with my own style.
+
+### 1. Replace “RSS feed” filters with **topic-based filters**
+
+Left sidebar:
+
+* Keep the search box at the top (search articles by title/snippet).
+* Below that, instead of listing individual RSS feeds as the primary filter, add a **“Topics”** section with multi-select checkboxes or pill buttons for things like:
+
+  * War / Conflict
+  * US Politics
+  * Europe Politics
+  * AI & Technology
+  * Finance & Markets
+  * Crime & Justice
+  * Science & Health
+  * Celebrity & Entertainment
+  * Environment / Climate
+  * Other / Offbeat
+
+Implementation details:
+
+* Each article already has source + metadata; assume I can tag each article with one or more topics (you can create a simple topic-tagging function based on keywords in the title/description for now).
+* When a topic is selected, the article grid should filter to **only** stories whose topic list includes at least one selected topic.
+* Support multiple topics being active at once.
+* Add a “Clear topics” button/link underneath the topic list.
+
+### 2. Add **Region, Source, and “Most Polarised”** filters
+
+Still in the left sidebar, add additional sections:
+
+1. **Time Period** (keep as-is: Last 24 hours, Last 7 days, All).
+2. **Region**
+
+   * Multi-select list or pill buttons for regions like:
+
+     * Global / All
+     * US
+     * Europe
+     * UK
+     * Russia
+     * China
+     * Africa
+     * Middle East
+     * Asia-Pacific
+
+   * Assume each source has a “region” property; filter articles based on their source’s region.
+3. **Sources**
+
+   * Keep a scrollable list of individual sources (BBC, CNN, NYT, etc.).
+   * Allow multi-select, just like now, but this is secondary to topics/regions.
+4. **Most Polarised toggle**
+
+   * Add a toggle or button labeled **“Most polarised stories”** at the top of the sidebar or grid.
+   * When enabled:
+
+     * Sort stories by a simple “polarisation score” (for now, you can simulate this by adding a numeric field or using random/demo values).
+     * Only show the top N most polarised stories.
+   * When disabled:
+
+     * Use the normal “Most recent” / default ordering.
+
+The key is that users can now filter by:
+
+* **Topics** (primary)
+* **Region**
+* **Sources**
+* **Time period**
+* **Most polarised** mode (sorting/filtering toggle)
+
+### 3. New visual theme – violet + earth background
+
+Change the overall theme from white/light to a **dark violet** theme:
+
+* Set the main background colour to **`#1E174B`**.
+* Use lighter violet/purple/indigo accents for buttons and active filters (e.g. `#6366F1` / `#7C3AED`).
+* Text:
+
+  * Headings: white or near-white.
+  * Body text: light grey for readability.
+
+Add a subtle **earth/space background**:
+
+* Behind the main content (not behind each card), add:
+
+  * Either a **radial gradient** that suggests a glowing Earth at the bottom,
+  * Or a subtle background image with a faint Earth/space motif overlaid with a dark gradient so the text remains readable.
+* Make sure the background is **fixed** or subtle enough not to distract from the cards.
+
+Update:
+
+* Sidebar: darker violet variant with slightly lighter cards/chips for filters.
+* Cards: dark panels with soft shadows and slight border-radius to “float” above the background.
+
+### 4. Article cards – keep layout but match new theme
+
+* Use the same basic grid layout as now (3–4 cards per row on desktop).
+
+* Update card styles:
+
+  * Background: dark (`rgba(15, 23, 42, 0.95)` or similar).
+  * Border-radius: 12–16px.
+  * Shadow: soft, violet-tinted.
+  * On hover: slight scale and brighter border or glow.
+
+* Each card should show:
+
+  * Source name (as a small pill).
+  * Topic tags (if room).
+  * Title.
+  * Short snippet.
+  * Time ago.
+  * Small external-link icon to open the full story.
+
+### 5. Story Detail view – match the violet/earth theme
+
+I already have (or want) a **Story Detail** view when a card is clicked. Update it to:
+
+* Use the same dark violet background and earth/space vibe.
+
+* Layout:
+
+  * Top area: story title, source, time, topic tags.
+  * Main section: article content/summary (or AI summary if present).
+  * Right side or top-right:
+
+    * “Open Original” button (opens the real article in a new tab).
+    * Bookmark/save icon.
+    * Optional “Share” icon.
+
+* Style:
+
+  * Panel/card with rounded corners and soft glow (similar to the cards but larger).
+  * Use accent colour for buttons and important elements.
+  * Ensure typography is readable on the dark background.
+
+### 6. Implementation details
+
+* Keep the current data-fetching logic from RSS/APIs the same.
+
+* Add a **topic-tagging helper** that:
+
+  * Takes the article title + description,
+  * Returns an array of topic strings (from the list above),
+  * Store these on the article object in memory so filtering is straightforward.
+
+* Update the filtering logic so the sidebar filters combine like this:
+
+  * Topic filter (OR across selected topics).
+  * AND Region filter.
+  * AND Sources filter.
+  * AND Time period filter.
+  * Then apply “Most polarised” sorting if the toggle is on.
+
+Make sure everything is wired up and works in the current Replit project structure, and that the UI matches the description: dark violet `#1E174B` theme, earth/space background, topic/region/source filters, and a most-polarised toggle, with the same look carried into the Story Detail view.

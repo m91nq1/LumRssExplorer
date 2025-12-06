@@ -45,6 +45,8 @@ export interface IStorage {
   // Articles
   getArticles(options: {
     sourceId?: string;
+    topics?: string[];
+    regions?: string[];
     search?: string;
     since?: Date;
     page: number;
@@ -52,6 +54,7 @@ export interface IStorage {
     userId?: number;
     bookmarkedOnly?: boolean;
     unreadOnly?: boolean;
+    mostPolarised?: boolean;
   }): Promise<{ articles: ArticleWithStatus[]; total: number }>;
   getArticle(id: string, userId?: number): Promise<ArticleWithStatus | undefined>;
   upsertArticle(article: InsertArticle): Promise<Article>;
@@ -173,6 +176,8 @@ export class DatabaseStorage implements IStorage {
   // ==================== ARTICLES ====================
   async getArticles(options: {
     sourceId?: string;
+    topics?: string[];
+    regions?: string[];
     search?: string;
     since?: Date;
     page: number;
@@ -180,8 +185,9 @@ export class DatabaseStorage implements IStorage {
     userId?: number;
     bookmarkedOnly?: boolean;
     unreadOnly?: boolean;
+    mostPolarised?: boolean;
   }): Promise<{ articles: ArticleWithStatus[]; total: number }> {
-    const { sourceId, search, since, page, pageSize, userId, bookmarkedOnly, unreadOnly } = options;
+    const { sourceId, topics, regions, search, since, page, pageSize, userId, bookmarkedOnly, unreadOnly, mostPolarised } = options;
     const offset = (page - 1) * pageSize;
 
     const conditions: any[] = [];
@@ -189,6 +195,14 @@ export class DatabaseStorage implements IStorage {
     if (sourceId) {
       const sourceIds = sourceId.split(",").map((id) => id.trim());
       conditions.push(inArray(articles.sourceId, sourceIds));
+    }
+
+    if (topics && topics.length > 0) {
+      conditions.push(sql`${articles.topics} && ARRAY[${sql.join(topics.map(t => sql`${t}`), sql`, `)}]::text[]`);
+    }
+
+    if (regions && regions.length > 0) {
+      conditions.push(inArray(feedSources.region, regions));
     }
 
     if (search) {
@@ -205,32 +219,82 @@ export class DatabaseStorage implements IStorage {
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+    const needsJoin = regions && regions.length > 0;
 
-    // Get total count
-    const [{ count: totalCount }] = await db
-      .select({ count: count() })
-      .from(articles)
-      .where(whereClause);
+    // Get total count (with join if needed for region filter)
+    let totalCount: number;
+    if (needsJoin) {
+      const [result] = await db
+        .select({ count: count() })
+        .from(articles)
+        .innerJoin(feedSources, eq(feedSources.id, articles.sourceId))
+        .where(whereClause);
+      totalCount = Number(result.count);
+    } else {
+      const [result] = await db
+        .select({ count: count() })
+        .from(articles)
+        .where(whereClause);
+      totalCount = Number(result.count);
+    }
 
-    // Get articles with bookmark and read status if userId provided
-    let articlesQuery = db
-      .select({
-        id: articles.id,
-        title: articles.title,
-        link: articles.link,
-        sourceName: articles.sourceName,
-        sourceId: articles.sourceId,
-        publishedAt: articles.publishedAt,
-        summary: articles.summary,
-        imageUrl: articles.imageUrl,
-      })
-      .from(articles)
-      .where(whereClause)
-      .orderBy(desc(articles.publishedAt))
-      .limit(pageSize)
-      .offset(offset);
+    // Build articles query with optional join and polarisation sorting
+    const selectFields = {
+      id: articles.id,
+      title: articles.title,
+      link: articles.link,
+      sourceName: articles.sourceName,
+      sourceId: articles.sourceId,
+      sourceRegion: feedSources.region,
+      publishedAt: articles.publishedAt,
+      summary: articles.summary,
+      imageUrl: articles.imageUrl,
+      topics: articles.topics,
+      polarisationScore: articles.polarisationScore,
+    };
 
-    const articleRows = await articlesQuery;
+    let articleRows;
+    if (mostPolarised) {
+      if (needsJoin) {
+        articleRows = await db
+          .select(selectFields)
+          .from(articles)
+          .innerJoin(feedSources, eq(feedSources.id, articles.sourceId))
+          .where(whereClause)
+          .orderBy(desc(articles.polarisationScore), desc(articles.publishedAt))
+          .limit(pageSize)
+          .offset(offset);
+      } else {
+        articleRows = await db
+          .select(selectFields)
+          .from(articles)
+          .leftJoin(feedSources, eq(feedSources.id, articles.sourceId))
+          .where(whereClause)
+          .orderBy(desc(articles.polarisationScore), desc(articles.publishedAt))
+          .limit(pageSize)
+          .offset(offset);
+      }
+    } else {
+      if (needsJoin) {
+        articleRows = await db
+          .select(selectFields)
+          .from(articles)
+          .innerJoin(feedSources, eq(feedSources.id, articles.sourceId))
+          .where(whereClause)
+          .orderBy(desc(articles.publishedAt))
+          .limit(pageSize)
+          .offset(offset);
+      } else {
+        articleRows = await db
+          .select(selectFields)
+          .from(articles)
+          .leftJoin(feedSources, eq(feedSources.id, articles.sourceId))
+          .where(whereClause)
+          .orderBy(desc(articles.publishedAt))
+          .limit(pageSize)
+          .offset(offset);
+      }
+    }
 
     // If userId provided, get bookmark and read status
     let articlesWithStatus: ArticleWithStatus[];
@@ -252,6 +316,7 @@ export class DatabaseStorage implements IStorage {
 
       articlesWithStatus = articleRows.map((article) => ({
         ...article,
+        sourceRegion: article.sourceRegion || "Global",
         publishedAt: article.publishedAt.toISOString(),
         isBookmarked: bookmarkedIds.has(article.id),
         isRead: readIds.has(article.id),
@@ -267,6 +332,7 @@ export class DatabaseStorage implements IStorage {
     } else {
       articlesWithStatus = articleRows.map((article) => ({
         ...article,
+        sourceRegion: article.sourceRegion || "Global",
         publishedAt: article.publishedAt.toISOString(),
         isBookmarked: false,
         isRead: false,
@@ -275,7 +341,7 @@ export class DatabaseStorage implements IStorage {
 
     return {
       articles: articlesWithStatus,
-      total: Number(totalCount),
+      total: totalCount,
     };
   }
 
