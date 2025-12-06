@@ -51,6 +51,14 @@ Preferred communication style: Simple, everyday language.
 - Normalizes articles from different feed formats into a unified schema
 - Generates stable IDs using SHA-256 hashing of article links
 
+**External News API Integration**:
+- Three API providers: Mediastack, NewsAPI.org, Newsdata.io
+- Providers fetch articles into main feed alongside RSS sources
+- External providers use sourceType='api' and source IDs like 'external-{providerId}'
+- Articles from APIs get topic tagging and polarization scoring
+- News provider service initializes BEFORE article store (critical for scheduled refresh)
+- Environment secrets: MEDIASTACK_KEY, NEWSAPI_ORG_KEY, NEWSDATA_IO_KEY
+
 **API Design**:
 - RESTful endpoints at `/api/articles`, `/api/sources`, `/api/feeds`, `/api/bookmarks`, `/api/read-status`, `/api/preferences`
 - Query parameters for filtering (sourceId, search, since, pagination)
