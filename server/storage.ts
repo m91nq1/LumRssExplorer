@@ -75,6 +75,7 @@ export interface IStorage {
   // User Preferences
   getUserPreferences(userId: number): Promise<UserPreferences | undefined>;
   upsertUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences>;
+  getUsersWithDigestPreferences(): Promise<Array<{ user: User; preferences: UserPreferences }>>;
 
   // System Settings
   getLastRefreshTime(): Promise<string | null>;
@@ -505,13 +506,33 @@ export class DatabaseStorage implements IStorage {
         target: userPreferences.userId,
         set: {
           favoriteSources: prefs.favoriteSources,
+          favouriteTopics: prefs.favouriteTopics,
+          preferredRegions: prefs.preferredRegions,
           defaultSearchQuery: prefs.defaultSearchQuery,
           defaultTimeFilter: prefs.defaultTimeFilter,
+          emailDigestEnabled: prefs.emailDigestEnabled,
           updatedAt: new Date(),
         },
       })
       .returning();
     return result;
+  }
+
+  async getUsersWithDigestPreferences(): Promise<Array<{ user: User; preferences: UserPreferences }>> {
+    const results = await db
+      .select({
+        user: users,
+        preferences: userPreferences,
+      })
+      .from(users)
+      .innerJoin(userPreferences, eq(users.id, userPreferences.userId))
+      .where(
+        and(
+          sql`array_length(${userPreferences.favouriteTopics}, 1) > 0`,
+          eq(userPreferences.emailDigestEnabled, true)
+        )
+      );
+    return results;
   }
 
   // ==================== SYSTEM SETTINGS ====================

@@ -7,6 +7,8 @@ import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
+import { runDigestsForAllUsers } from "./services/digestService";
+import { sendWelcomeEmail } from "./services/emailService";
 
 // Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -372,7 +374,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/preferences", async (req, res) => {
     try {
       const userId = (req as any).userId as number | undefined;
-      const { favoriteSources, defaultSearchQuery, defaultTimeFilter } = req.body;
+      const { 
+        favoriteSources, 
+        favouriteTopics, 
+        preferredRegions, 
+        defaultSearchQuery, 
+        defaultTimeFilter,
+        emailDigestEnabled 
+      } = req.body;
       
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
@@ -381,14 +390,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const preferences = await storage.upsertUserPreferences({
         userId,
         favoriteSources,
+        favouriteTopics,
+        preferredRegions,
         defaultSearchQuery,
         defaultTimeFilter,
+        emailDigestEnabled,
       });
 
       res.json({ preferences });
     } catch (error) {
       console.error("Error saving preferences:", error);
       res.status(500).json({ error: "Failed to save preferences" });
+    }
+  });
+
+  app.put("/api/users/me/preferences", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      const { favouriteTopics, preferredRegions, emailDigestEnabled } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const existingPrefs = await storage.getUserPreferences(userId);
+      
+      const preferences = await storage.upsertUserPreferences({
+        userId,
+        favoriteSources: existingPrefs?.favoriteSources,
+        favouriteTopics: favouriteTopics || existingPrefs?.favouriteTopics,
+        preferredRegions: preferredRegions || existingPrefs?.preferredRegions,
+        defaultSearchQuery: existingPrefs?.defaultSearchQuery,
+        defaultTimeFilter: existingPrefs?.defaultTimeFilter,
+        emailDigestEnabled: emailDigestEnabled ?? existingPrefs?.emailDigestEnabled ?? false,
+      });
+
+      res.json({ preferences });
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      res.status(500).json({ error: "Failed to update preferences" });
     }
   });
 
@@ -469,6 +509,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching from provider:", error);
       res.status(500).json({ error: "Failed to fetch from provider" });
+    }
+  });
+
+  // ==================== ADMIN: DIGEST EMAILS ====================
+  app.post("/api/admin/run-digests", async (req, res) => {
+    try {
+      console.log("[Admin] Running digest emails for all users...");
+      const stats = await runDigestsForAllUsers();
+      res.json({ 
+        success: true, 
+        message: `Processed ${stats.usersProcessed} users, sent ${stats.emailsSent} emails`,
+        stats 
+      });
+    } catch (error) {
+      console.error("Error running digests:", error);
+      res.status(500).json({ error: "Failed to run digests" });
+    }
+  });
+
+  // ==================== WELCOME EMAIL (for testing) ====================
+  app.post("/api/admin/send-welcome", async (req, res) => {
+    try {
+      const { email, name } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "email is required" });
+      }
+
+      await sendWelcomeEmail(email, name);
+      res.json({ success: true, message: `Welcome email sent to ${email}` });
+    } catch (error) {
+      console.error("Error sending welcome email:", error);
+      res.status(500).json({ error: "Failed to send welcome email" });
     }
   });
 

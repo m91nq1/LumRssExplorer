@@ -204,8 +204,11 @@ export const userPreferences = pgTable("user_preferences", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id).unique(),
   favoriteSources: text("favorite_sources").array(),
+  favouriteTopics: text("favourite_topics").array(),
+  preferredRegions: text("preferred_regions").array(),
   defaultSearchQuery: text("default_search_query"),
   defaultTimeFilter: text("default_time_filter").default("all"),
+  emailDigestEnabled: boolean("email_digest_enabled").default(false),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
