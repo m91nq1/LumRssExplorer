@@ -30,10 +30,10 @@ function Router() {
       <Route path="/home" component={Home} />
       <Route path="/article/:id" component={ArticleDetail} />
       <Route path="/settings" component={Settings} />
+      <Route path="/feeds" component={FeedManagement} />
       {isAuthenticated && (
         <>
           <Route path="/search" component={SearchExplore} />
-          <Route path="/feeds" component={FeedManagement} />
         </>
       )}
       <Route component={NotFound} />
