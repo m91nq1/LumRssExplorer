@@ -250,24 +250,36 @@ export class ArticleStore {
   async initialize() {
     if (this.initialized) return;
     
-    // Upsert default feeds (add new ones, preserve existing settings)
+    // Upsert default feeds (add new ones, update existing ones with region metadata)
     const existingSources = await storage.getFeedSources();
-    const existingIds = new Set(existingSources.map(s => s.id));
+    const existingSourcesMap = new Map(existingSources.map(s => [s.id, s]));
     
     let newFeedsAdded = 0;
+    let feedsUpdated = 0;
     for (const feed of DEFAULT_FEEDS) {
-      if (!existingIds.has(feed.id)) {
+      const existing = existingSourcesMap.get(feed.id);
+      if (!existing) {
         try {
           await storage.createFeedSource(feed);
           newFeedsAdded++;
         } catch (error) {
           console.error(`Error seeding feed ${feed.name}:`, error);
         }
+      } else if (existing.region !== feed.region) {
+        try {
+          await storage.updateFeedSource(feed.id, { region: feed.region });
+          feedsUpdated++;
+        } catch (error) {
+          console.error(`Error updating feed region ${feed.name}:`, error);
+        }
       }
     }
     
     if (newFeedsAdded > 0) {
       console.log(`Added ${newFeedsAdded} new RSS feeds`);
+    }
+    if (feedsUpdated > 0) {
+      console.log(`Updated ${feedsUpdated} feed sources with region metadata`);
     }
 
     this.initialized = true;
