@@ -10,6 +10,7 @@ import Landing from "@/pages/Landing";
 import FeedManagement from "@/pages/FeedManagement";
 import ArticleDetail from "@/pages/ArticleDetail";
 import SearchExplore from "@/pages/SearchExplore";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
         <>
           <Route path="/search" component={SearchExplore} />
           <Route path="/feeds" component={FeedManagement} />
+          <Route path="/settings" component={Settings} />
         </>
       )}
       <Route component={NotFound} />

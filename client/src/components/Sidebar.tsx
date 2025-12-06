@@ -8,8 +8,9 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Save, ChevronDown, Zap, Globe, Tag, Newspaper } from "lucide-react";
+import { Save, ChevronDown, Zap, Globe, Tag, Newspaper, Settings } from "lucide-react";
 import { useState } from "react";
+import { Link } from "wouter";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
@@ -238,6 +239,20 @@ export function Sidebar({
               </div>
             </>
           )}
+
+          <Separator />
+
+          <Link href="/settings">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+              data-testid="link-settings"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings & Digests
+            </Button>
+          </Link>
         </div>
       </ScrollArea>
     </aside>
