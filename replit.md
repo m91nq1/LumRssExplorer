@@ -73,7 +73,7 @@ Preferred communication style: Simple, everyday language.
 - `users`: id, username, replitId, email, firstName, lastName, profileImageUrl
 - `bookmarks`: id, userId, articleId (unique constraint per user)
 - `read_status`: id, userId, articleId (unique constraint per user)
-- `user_preferences`: id, userId, favoriteSources, defaultSearchQuery, defaultTimeFilter
+- `user_preferences`: id, userId, favoriteSources, favouriteTopics, preferredRegions, defaultSearchQuery, defaultTimeFilter, emailDigestEnabled
 - `sessions`: sid, sess, expire (Replit Auth session storage)
 - `news_providers`: id, name, baseUrl, apiKeyEnvVar, isEnabled, rateLimitPerDay, supportedCategories, supportedCountries
 
@@ -102,20 +102,27 @@ Preferred communication style: Simple, everyday language.
 
 ### Core Features
 - **Article Aggregation**: Ingests articles from 23+ RSS sources across 9 categories
-- **Categories**: World News, Technology, Startups, AI, Programming, Cybersecurity, Business, Crypto, Science
-- **Filtering**: Filter by source, time period, and search query
+- **Topic-Based Filtering**: 10 topic categories (War/Conflict, US Politics, Europe Politics, AI & Technology, Finance & Markets, Crime & Justice, Science & Health, Celebrity & Entertainment, Environment/Climate, Other/Offbeat)
+- **Region Filtering**: Filter by region (Global, US, Europe, UK, Russia, China, Africa, Middle East, Asia-Pacific)
+- **Most Polarised Toggle**: Sort articles by polarisation/controversy score
+- **Source Filtering**: Filter by source, time period, and search query
 - **Pagination**: Browse through articles with page navigation
-- **Responsive Design**: Works on desktop and mobile
+- **Dark Violet Theme**: Dark mode with violet (#1E174B) accent colors
 
 ### User Features
 - **Bookmarking**: Save articles for later reading
 - **Read Tracking**: Mark articles as read, visual distinction for read vs unread
 - **User Preferences**: Save favorite sources, default search, and time filter as defaults
 - **Preference Restoration**: Saved preferences restored on page load
+- **Topic Preferences**: Select favorite topics for personalized digests at /settings
+- **Region Preferences**: Select preferred regions for filtering digests
+- **Email Digests**: Opt-in to receive personalized news digests via email
 
 ### Admin Features
 - **Feed Management**: Add, edit, delete, enable/disable RSS feeds at /feeds
 - **Manual Refresh**: Trigger immediate feed refresh
+- **Run Digests**: POST /api/admin/run-digests triggers personalized email digests for all users with topic preferences
+- **Send Welcome Email**: POST /api/admin/send-welcome sends test welcome email
 
 ### Article Detail View
 - **Full Article View**: View complete article with metadata
@@ -130,6 +137,13 @@ Preferred communication style: Simple, everyday language.
 - **Caching**: Generated summaries are cached in the database to avoid redundant API calls
 - **Collapsible UI**: AI summary section is collapsible to save space when not in use
 - **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
+
+### Email Digest Feature
+- **Resend Integration**: Sends welcome and digest emails via Resend API (RESEND_API_KEY)
+- **Welcome Emails**: Automatic welcome email after user registration
+- **Personalized Digests**: Email digests based on user's favorite topics and preferred regions
+- **Multiple News Sources**: Aggregates stories from NewsAPI.org, Newsdata.io, and Mediastack APIs
+- **Admin Trigger**: POST /api/admin/run-digests runs digests for all opted-in users
 
 ## External Dependencies
 
@@ -154,6 +168,12 @@ Preferred communication style: Simple, everyday language.
 ### RSS & Scheduling
 - **rss-parser**: RSS/Atom feed parsing
 - **node-cron**: Scheduled task execution
+
+### Email & External News APIs
+- **Resend**: Email delivery service for welcome and digest emails
+- **NewsAPI.org**: External news API for digest stories
+- **Newsdata.io**: External news API for digest stories
+- **Mediastack**: External news API for digest stories
 
 ### Database
 - **Drizzle ORM**: Type-safe ORM for PostgreSQL

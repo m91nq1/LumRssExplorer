@@ -29,11 +29,11 @@ function Router() {
       <Route path="/" component={isAuthenticated ? Home : Landing} />
       <Route path="/home" component={Home} />
       <Route path="/article/:id" component={ArticleDetail} />
+      <Route path="/settings" component={Settings} />
       {isAuthenticated && (
         <>
           <Route path="/search" component={SearchExplore} />
           <Route path="/feeds" component={FeedManagement} />
-          <Route path="/settings" component={Settings} />
         </>
       )}
       <Route component={NotFound} />
