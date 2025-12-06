@@ -18,8 +18,11 @@ interface PreferencesResponse {
 export default function Home() {
   const { toast } = useToast();
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilterValue>("all");
+  const [mostPolarised, setMostPolarised] = useState(false);
   const [page, setPage] = useState(1);
   const preferencesAppliedRef = useRef(false);
 
@@ -90,12 +93,21 @@ export default function Home() {
   if (selectedSources.length > 0) {
     queryParams.set("sourceId", selectedSources.join(","));
   }
+  if (selectedTopics.length > 0) {
+    queryParams.set("topics", selectedTopics.join(","));
+  }
+  if (selectedRegions.length > 0) {
+    queryParams.set("regions", selectedRegions.join(","));
+  }
   if (searchQuery) {
     queryParams.set("search", searchQuery);
   }
   const sinceDate = getSinceDate(timeFilter);
   if (sinceDate) {
     queryParams.set("since", sinceDate);
+  }
+  if (mostPolarised) {
+    queryParams.set("mostPolarised", "true");
   }
   queryParams.set("page", page.toString());
   queryParams.set("pageSize", "20");
@@ -198,6 +210,24 @@ export default function Home() {
     setPage(1);
   }, []);
 
+  const handleTopicToggle = useCallback((topic: string) => {
+    setSelectedTopics((prev) =>
+      prev.includes(topic)
+        ? prev.filter((t) => t !== topic)
+        : [...prev, topic]
+    );
+    setPage(1);
+  }, []);
+
+  const handleRegionToggle = useCallback((region: string) => {
+    setSelectedRegions((prev) =>
+      prev.includes(region)
+        ? prev.filter((r) => r !== region)
+        : [...prev, region]
+    );
+    setPage(1);
+  }, []);
+
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
     setPage(1);
@@ -208,15 +238,28 @@ export default function Home() {
     setPage(1);
   }, []);
 
+  const handleMostPolarisedChange = useCallback((value: boolean) => {
+    setMostPolarised(value);
+    setPage(1);
+  }, []);
+
   const handleClearFilters = useCallback(() => {
     setSelectedSources([]);
+    setSelectedTopics([]);
+    setSelectedRegions([]);
     setSearchQuery("");
     setTimeFilter("all");
+    setMostPolarised(false);
     setPage(1);
   }, []);
 
   const hasActiveFilters =
-    selectedSources.length > 0 || searchQuery !== "" || timeFilter !== "all";
+    selectedSources.length > 0 ||
+    selectedTopics.length > 0 ||
+    selectedRegions.length > 0 ||
+    searchQuery !== "" ||
+    timeFilter !== "all" ||
+    mostPolarised;
 
   const articles = articlesData?.articles || [];
   const totalArticles = articlesData?.total || 0;
@@ -229,11 +272,17 @@ export default function Home() {
       <Sidebar
         sources={sources}
         selectedSources={selectedSources}
+        selectedTopics={selectedTopics}
+        selectedRegions={selectedRegions}
         searchQuery={searchQuery}
         timeFilter={timeFilter}
+        mostPolarised={mostPolarised}
         onSourceToggle={handleSourceToggle}
+        onTopicToggle={handleTopicToggle}
+        onRegionToggle={handleRegionToggle}
         onSearchChange={handleSearchChange}
         onTimeFilterChange={handleTimeFilterChange}
+        onMostPolarisedChange={handleMostPolarisedChange}
         onClearFilters={handleClearFilters}
         onSavePreferences={handleSavePreferences}
         isLoadingSources={isLoadingSources}
