@@ -2,6 +2,7 @@ import { InsertArticle, InsertFeedSource, FeedSource, SourceWithCount, ArticleWi
 import { storage } from "./storage";
 import { ingestFeed } from "./rssIngestor";
 import { tagArticleTopics, generatePolarisationScore, mapCountryToRegion } from "./topicTagger";
+import { newsProviderService } from "./newsProviderService";
 import cron from "node-cron";
 
 // Default RSS feeds to seed on first run
@@ -322,10 +323,25 @@ export class ArticleStore {
       // Upsert all articles to database
       const inserted = await storage.upsertArticles(taggedArticles);
       
+      console.log(`RSS refresh complete. Processed ${allArticles.length} articles.`);
+
+      // Fetch from external news API providers (if any are enabled)
+      if (newsProviderService.isAvailable()) {
+        try {
+          console.log("Starting external news API providers refresh...");
+          const providerResults = await newsProviderService.refreshFromExternalProviders();
+          const totalExternal = providerResults.reduce((sum, r) => sum + r.articlesIngested, 0);
+          if (providerResults.length > 0) {
+            console.log(`External providers refresh complete. Ingested ${totalExternal} articles from ${providerResults.length} provider(s).`);
+          }
+        } catch (error) {
+          console.error("Error refreshing from external providers:", error);
+        }
+      }
+
       // Update last refresh time
       await storage.setLastRefreshTime(new Date().toISOString());
       
-      console.log(`Refresh complete. Processed ${allArticles.length} articles.`);
     } catch (error) {
       console.error("Error during refresh:", error);
     } finally {

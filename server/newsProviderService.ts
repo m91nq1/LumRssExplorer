@@ -2,6 +2,7 @@ import { db } from "./db";
 import { newsProviders, articles, feedSources } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
+import { tagArticleTopics, generatePolarisationScore } from "./topicTagger";
 
 export interface ExternalArticle {
   title: string;
@@ -82,7 +83,7 @@ class NewsProviderService {
         id: 'newsapi',
         name: 'NewsAPI.org',
         baseUrl: 'https://newsapi.org/v2',
-        apiKeyEnvVar: 'NEWSAPI_KEY',
+        apiKeyEnvVar: 'NEWSAPI_ORG_KEY',
         isEnabled: false,
         rateLimitPerDay: 100,
         supportedCategories: ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
@@ -92,7 +93,7 @@ class NewsProviderService {
         id: 'newsdata',
         name: 'Newsdata.io',
         baseUrl: 'https://newsdata.io/api/1',
-        apiKeyEnvVar: 'NEWSDATA_KEY',
+        apiKeyEnvVar: 'NEWSDATA_IO_KEY',
         isEnabled: false,
         rateLimitPerDay: 200,
         supportedCategories: ['business', 'entertainment', 'environment', 'food', 'health', 'politics', 'science', 'sports', 'technology', 'top', 'world'],
@@ -308,6 +309,9 @@ class NewsProviderService {
         const existing = await db.select().from(articles).where(eq(articles.id, articleId));
         
         if (existing.length === 0) {
+          const topics = tagArticleTopics(article.title, article.description);
+          const polarisationScore = generatePolarisationScore();
+          
           await db.insert(articles).values({
             id: articleId,
             title: article.title,
@@ -317,6 +321,8 @@ class NewsProviderService {
             publishedAt: this.parsePublishDate(article.publishedAt),
             summary: article.description || null,
             imageUrl: article.imageUrl || null,
+            topics: topics,
+            polarisationScore: polarisationScore,
           });
           ingestedCount++;
         }
@@ -368,8 +374,8 @@ class NewsProviderService {
 
   getProviderStatus(): { providerId: string; name: string; hasApiKey: boolean; isEnabled: boolean }[] {
     const providers = [
-      { id: 'newsapi', name: 'NewsAPI.org', envVar: 'NEWSAPI_KEY' },
-      { id: 'newsdata', name: 'Newsdata.io', envVar: 'NEWSDATA_KEY' },
+      { id: 'newsapi', name: 'NewsAPI.org', envVar: 'NEWSAPI_ORG_KEY' },
+      { id: 'newsdata', name: 'Newsdata.io', envVar: 'NEWSDATA_IO_KEY' },
       { id: 'mediastack', name: 'Mediastack', envVar: 'MEDIASTACK_KEY' },
     ];
 

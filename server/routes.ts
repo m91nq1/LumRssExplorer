@@ -38,13 +38,14 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  console.log("Initializing article store...");
-  await articleStore.initialize();
-  console.log("Article store initialized");
-
+  // Initialize news providers first so they're available during article store refresh
   console.log("Initializing news providers...");
   await newsProviderService.initialize();
   console.log("News providers initialized");
+
+  console.log("Initializing article store...");
+  await articleStore.initialize();
+  console.log("Article store initialized");
 
   await setupAuth(app);
 
