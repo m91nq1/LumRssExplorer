@@ -6,8 +6,8 @@ const HorizonGlobe = lazy(() => import("@/components/HorizonGlobe"));
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#020617] text-white overflow-hidden">
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#020617]/80 backdrop-blur-sm">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
@@ -18,7 +18,7 @@ export default function Landing() {
           <a href="/api/login">
             <Button 
               variant="outline" 
-              className="border-white/10 bg-white/5 hover:bg-white/10 text-white"
+              className="border-white/20 bg-white/5 hover:bg-white/10 text-white"
               data-testid="button-login"
             >
               Sign In
@@ -28,83 +28,81 @@ export default function Landing() {
       </header>
 
       <main className="relative">
-        <section className="hero relative h-[75vh] min-h-[600px] overflow-hidden">
+        <section className="hero relative h-screen min-h-[700px] overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-black"
+            style={{
+              background: `
+                radial-gradient(ellipse 150% 50% at 50% 100%, rgba(30, 80, 150, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 100% 30% at 50% 105%, rgba(60, 130, 200, 0.1) 0%, transparent 50%),
+                linear-gradient(to bottom, #000000 0%, #020408 40%, #000000 100%)
+              `,
+            }}
+          />
+
           <div 
             className="absolute inset-0"
             style={{
-              background: `
-                radial-gradient(ellipse 120% 60% at 50% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse 100% 40% at 50% 110%, rgba(99, 102, 241, 0.2) 0%, transparent 40%),
-                linear-gradient(to bottom, #020617 0%, #0a0a1a 50%, #020617 100%)
-              `,
-            }}
-          />
-
-          <div 
-            className="absolute inset-0 opacity-60"
-            style={{
               backgroundImage: `
-                radial-gradient(1px 1px at 20px 30px, white, transparent),
-                radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 90px 40px, white, transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(2px 2px at 200px 50px, white, transparent),
-                radial-gradient(1px 1px at 240px 90px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 280px 140px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 320px 30px, white, transparent),
-                radial-gradient(1px 1px at 360px 70px, rgba(255,255,255,0.7), transparent),
-                radial-gradient(2px 2px at 400px 100px, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 440px 50px, white, transparent),
-                radial-gradient(1px 1px at 480px 110px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 520px 80px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 560px 130px, white, transparent),
-                radial-gradient(2px 2px at 600px 40px, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 640px 90px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 680px 60px, white, transparent),
-                radial-gradient(1px 1px at 720px 120px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 760px 45px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(2px 2px at 800px 75px, white, transparent),
-                radial-gradient(1px 1px at 840px 105px, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 880px 35px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 920px 95px, white, transparent),
-                radial-gradient(1px 1px at 960px 55px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(2px 2px at 1000px 85px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 1040px 115px, white, transparent),
-                radial-gradient(1px 1px at 1080px 25px, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 1120px 65px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 1160px 135px, white, transparent)
+                radial-gradient(1px 1px at 10% 10%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 20% 5%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1.5px 1.5px at 5% 25%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 30% 15%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 40% 8%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 50% 20%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 60% 12%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 70% 18%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 80% 6%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 90% 22%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 15% 30%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 25% 35%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 35% 28%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 45% 32%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 55% 38%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 65% 26%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 75% 40%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 85% 34%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 95% 28%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 8% 45%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 18% 50%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 28% 42%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 38% 55%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 48% 48%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 58% 52%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.5px 1.5px at 68% 46%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 78% 58%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1px 1px at 88% 44%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 3% 62%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 12% 68%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1.5px 1.5px at 22% 65%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1px 1px at 32% 72%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 42% 60%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 52% 75%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1.5px 1.5px at 62% 68%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 72% 78%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1px 1px at 82% 64%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 92% 70%, rgba(255,255,255,0.6), transparent)
               `,
-              backgroundSize: '1200px 150px',
-              backgroundRepeat: 'repeat',
+              opacity: 0.7,
             }}
           />
 
-          <div className="hero-overlay absolute inset-0 z-10 flex flex-col items-center justify-start pt-32 px-6 pointer-events-none">
-            <div className="hero-heading text-center max-w-3xl animate-fadeIn pointer-events-auto">
-              <div className="mb-6">
-                <span className="inline-flex items-center gap-2 text-indigo-400 text-sm font-medium tracking-widest uppercase">
-                  LUM News
-                </span>
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6">
-                The world's narratives{" "}
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 bg-clip-text text-transparent font-normal">
-                  in your hands
-                </span>
+          <div className="hero-overlay absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: '25vh' }}>
+            <div className="hero-heading text-center max-w-4xl px-6 pointer-events-auto animate-fadeIn">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4">
+                <span className="text-white">LUM</span>
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent font-normal"> News</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed mb-8">
-                Discover real-time stories and perspectives from every corner of the globe in one powerful dashboard.
+              <p className="text-lg md:text-xl text-gray-400 tracking-widest uppercase mb-8">
+                The world's narratives in your hands
               </p>
 
               <div className="flex flex-wrap gap-4 justify-center">
                 <a href="/api/login">
                   <Button 
                     size="lg"
-                    className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white border-0 shadow-lg shadow-indigo-500/25 px-8"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-8"
                     data-testid="button-launch-dashboard"
                   >
                     <Zap className="w-4 h-4 mr-2" />
@@ -115,7 +113,7 @@ export default function Landing() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="border-white/10 bg-white/5 hover:bg-white/10 text-white px-8 backdrop-blur-sm"
+                    className="border-white/20 bg-black/30 hover:bg-white/10 text-white px-8 backdrop-blur-sm"
                     data-testid="button-explore-stories"
                   >
                     Explore Stories
@@ -127,36 +125,29 @@ export default function Landing() {
 
           <div 
             id="hero-globe-container" 
-            className="absolute bottom-0 left-0 right-0 h-[60%] pointer-events-auto"
+            className="absolute bottom-0 left-0 right-0 h-[70%] pointer-events-auto"
           >
             <Suspense fallback={
               <div className="w-full h-full flex items-end justify-center">
-                <div className="w-32 h-32 mb-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+                <div className="w-32 h-32 mb-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
               </div>
             }>
               <HorizonGlobe className="w-full h-full" />
             </Suspense>
           </div>
-
-          <div 
-            className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.8) 50%, transparent 100%)',
-            }}
-          />
         </section>
 
-        <section className="py-20 px-6 md:px-12 lg:px-16 relative z-10">
+        <section className="py-20 px-6 md:px-12 lg:px-16 relative z-10 bg-black">
           <div className="container mx-auto">
             <div className="grid md:grid-cols-3 gap-6">
               <div 
-                className="group relative bg-[#050816]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-indigo-500/30 hover-elevate animate-fadeIn animation-delay-500"
+                className="group relative bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-blue-500/30 hover-elevate animate-fadeIn animation-delay-500"
                 data-testid="card-top-stories"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-4 border border-indigo-500/20">
-                    <TrendingUp className="w-6 h-6 text-indigo-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center mb-4 border border-blue-500/20">
+                    <TrendingUp className="w-6 h-6 text-blue-400" />
                   </div>
                   <h3 className="text-lg font-medium mb-2">Top Stories</h3>
                   <p className="text-sm text-gray-400 mb-4">
@@ -171,34 +162,34 @@ export default function Landing() {
               </div>
 
               <div 
-                className="group relative bg-[#050816]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-purple-500/30 hover-elevate animate-fadeIn animation-delay-600"
+                className="group relative bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-cyan-500/30 hover-elevate animate-fadeIn animation-delay-600"
                 data-testid="card-lenses"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl flex items-center justify-center mb-4 border border-purple-500/20">
-                    <Layers className="w-6 h-6 text-purple-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-500/20 to-teal-500/20 rounded-xl flex items-center justify-center mb-4 border border-cyan-500/20">
+                    <Layers className="w-6 h-6 text-cyan-400" />
                   </div>
                   <h3 className="text-lg font-medium mb-2">Lenses</h3>
                   <p className="text-sm text-gray-400 mb-4">
                     Filter news by topic, region, or sentiment with customizable views.
                   </p>
                   <div className="flex gap-2 flex-wrap">
-                    <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-full text-xs text-purple-300">Tech</span>
+                    <span className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-xs text-cyan-300">Tech</span>
                     <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-xs text-blue-300">Finance</span>
-                    <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full text-xs text-green-300">Science</span>
+                    <span className="px-3 py-1 bg-teal-500/10 border border-teal-500/20 rounded-full text-xs text-teal-300">Science</span>
                   </div>
                 </div>
               </div>
 
               <div 
-                className="group relative bg-[#050816]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-blue-500/30 hover-elevate animate-fadeIn animation-delay-700"
+                className="group relative bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-white/5 p-6 transition-colors duration-300 hover:border-indigo-500/30 hover-elevate animate-fadeIn animation-delay-700"
                 data-testid="card-alerts"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center mb-4 border border-blue-500/20">
-                    <Bell className="w-6 h-6 text-blue-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-4 border border-indigo-500/20">
+                    <Bell className="w-6 h-6 text-indigo-400" />
                   </div>
                   <h3 className="text-lg font-medium mb-2">Alerts & Digests</h3>
                   <p className="text-sm text-gray-400 mb-4">
@@ -214,7 +205,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="py-16 px-6 md:px-12 lg:px-16 text-center relative z-10">
+        <section className="py-16 px-6 md:px-12 lg:px-16 text-center relative z-10 bg-black">
           <div className="container mx-auto max-w-2xl">
             <h2 className="text-2xl md:text-3xl font-light mb-4">
               Ready to explore the world's stories?
@@ -225,7 +216,7 @@ export default function Landing() {
             <a href="/api/login">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white border-0 shadow-lg shadow-indigo-500/25 px-10"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-10"
                 data-testid="button-cta-login"
               >
                 Get Started Free
@@ -235,7 +226,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/5 py-8 px-6 text-center z-10">
+      <footer className="relative border-t border-white/5 py-8 px-6 text-center z-10 bg-black">
         <p className="text-sm text-gray-500">
           LUM News — The world's narratives in your hands
         </p>
@@ -254,7 +245,7 @@ export default function Landing() {
         }
         
         .animate-fadeIn {
-          animation: fadeIn 0.8s ease-out forwards;
+          animation: fadeIn 1s ease-out forwards;
         }
         
         .animation-delay-300 {
