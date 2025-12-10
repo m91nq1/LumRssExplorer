@@ -1,8 +1,6 @@
-import { Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { Newspaper, Layers, Bell, TrendingUp, Zap } from "lucide-react";
-
-const HorizonGlobe = lazy(() => import("@/components/HorizonGlobe"));
+import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
 
 export default function Landing() {
   return (
@@ -30,71 +28,24 @@ export default function Landing() {
       <main className="relative">
         <section className="hero relative h-screen min-h-[700px] overflow-hidden">
           <div 
-            className="absolute inset-0 bg-black"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              background: `
-                radial-gradient(ellipse 150% 50% at 50% 100%, rgba(30, 80, 150, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse 100% 30% at 50% 105%, rgba(60, 130, 200, 0.1) 0%, transparent 50%),
-                linear-gradient(to bottom, #000000 0%, #020408 40%, #000000 100%)
-              `,
+              backgroundImage: `url(${cosmicLibraryBg})`,
             }}
           />
-
+          
           <div 
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                radial-gradient(1px 1px at 10% 10%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 20% 5%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1.5px 1.5px at 5% 25%, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 30% 15%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 40% 8%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 50% 20%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1.5px 1.5px at 60% 12%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 70% 18%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 80% 6%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 90% 22%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 15% 30%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1.5px 1.5px at 25% 35%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 35% 28%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 45% 32%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 55% 38%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 65% 26%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1.5px 1.5px at 75% 40%, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 85% 34%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 95% 28%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 8% 45%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 18% 50%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1.5px 1.5px at 28% 42%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 38% 55%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 48% 48%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 58% 52%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1.5px 1.5px at 68% 46%, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 78% 58%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 88% 44%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 3% 62%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 12% 68%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1.5px 1.5px at 22% 65%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 32% 72%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 42% 60%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(1px 1px at 52% 75%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1.5px 1.5px at 62% 68%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 72% 78%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 82% 64%, rgba(255,255,255,0.7), transparent),
-                radial-gradient(1px 1px at 92% 70%, rgba(255,255,255,0.6), transparent)
-              `,
-              opacity: 0.7,
-            }}
+            className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"
           />
 
-          <div className="hero-overlay absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: '25vh' }}>
-            <div className="hero-heading text-center max-w-4xl px-6 pointer-events-auto animate-fadeIn">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
+            <div className="text-center max-w-4xl px-6 animate-fadeIn">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4">
                 <span className="text-white">LUM</span>
                 <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent font-normal"> News</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-gray-400 tracking-widest uppercase mb-8">
+              <p className="text-lg md:text-xl text-gray-300 tracking-widest uppercase mb-8">
                 The world's narratives in your hands
               </p>
 
@@ -113,7 +64,7 @@ export default function Landing() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="border-white/20 bg-black/30 hover:bg-white/10 text-white px-8 backdrop-blur-sm"
+                    className="border-white/30 bg-black/40 hover:bg-white/10 text-white px-8 backdrop-blur-sm"
                     data-testid="button-explore-stories"
                   >
                     Explore Stories
@@ -121,19 +72,6 @@ export default function Landing() {
                 </a>
               </div>
             </div>
-          </div>
-
-          <div 
-            id="hero-globe-container" 
-            className="absolute bottom-0 left-0 right-0 h-[70%] pointer-events-auto"
-          >
-            <Suspense fallback={
-              <div className="w-full h-full flex items-end justify-center">
-                <div className="w-32 h-32 mb-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-              </div>
-            }>
-              <HorizonGlobe className="w-full h-full" />
-            </Suspense>
           </div>
         </section>
 
