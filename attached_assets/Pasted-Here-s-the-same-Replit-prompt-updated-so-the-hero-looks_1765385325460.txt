@@ -1,0 +1,260 @@
+Here’s the same Replit prompt, updated so the hero looks **like that WebGL Earth banner** – big horizon globe at the bottom, starfield above, centered branding – but still using **Three.js + anime.js**.
+
+---
+
+### Replit Prompt – Big Horizon Three.js Earth Hero (LUM News)
+
+In this existing **LUM News** project, update **only the hero section** of the homepage. Do **not** rebuild the whole app or add backend logic.
+
+---
+
+### Goal
+
+Make the hero look similar to the attached **WebGL Earth** banner:
+
+* A **huge 3D Earth** rising from the bottom of the screen, showing just the **top half of the globe** with a bright atmospheric glow along the horizon.
+* A deep **space / starfield sky** above the Earth.
+* Centered branding/text above the globe (instead of “WebGL Earth”, it’s **LUM News** + slogan).
+* The 3D Earth is interactive (rotate/zoom) and animated smoothly with **anime.js**.
+
+---
+
+### 1. Use Three.js in the existing project
+
+* Install/import **Three.js** if it isn’t already.
+
+* In the hero section of the homepage, create a container:
+
+  ```html
+  <section class="hero">
+    <div class="hero-overlay">
+      <div class="hero-heading">
+        <div class="hero-logo">LUM News</div>
+        <h1>The world’s narratives in your hands</h1>
+        <p>Discover real-time stories and perspectives from every corner of the globe in one powerful dashboard.</p>
+      </div>
+    </div>
+    <div id="hero-globe-container">
+      <canvas id="hero-globe-canvas"></canvas>
+    </div>
+  </section>
+  ```
+
+* The `<section class="hero">` should be full width, roughly **banner-like** (e.g. 60–80vh tall).
+
+---
+
+### 2. Hero layout / look (match the image)
+
+Visually match the WebGL Earth banner as closely as practical:
+
+* **Background & space:**
+
+  * Hero background: deep indigo / black (`#020617` – `#1E174B` range).
+  * Add a **starfield** using CSS (small white dots / background image) in the top 2/3 of the hero.
+* **Globe position:**
+
+  * The Three.js globe should sit **bottom-center** of the hero.
+  * Only the **upper half** of the sphere should be visible, like a planet rising from the bottom.
+  * Add a strong, soft **blue glow along the horizon** (e.g. atmosphere mesh or post-processing glow).
+* **Text placement:**
+
+  * Center all text horizontally, above the globe, similar to the “WebGL Earth for your website” text:
+
+    * Small logo/label: `LUM News` at the very top.
+    * Large hero title: **“The world’s narratives in your hands”**.
+    * Optional subtitle line below.
+  * Text should be white or very light for strong contrast.
+* **Responsive:**
+
+  * On smaller screens, keep the same structure:
+
+    * Text centered at the top.
+    * Globe still bottom-center, filling most of the width.
+
+The hero should feel like **a full-width space banner with LUM News text floating above a glowing Earth horizon.**
+
+---
+
+### 3. Three.js globe behaviour (horizon-style camera)
+
+* Create a standard Three.js **scene, camera, and WebGLRenderer** attached to `#hero-globe-canvas`.
+* Position the camera so:
+
+  * You see the **top half** of the globe.
+  * The camera looks slightly down at the Earth, similar to a satellite view.
+* Add:
+
+  * Sphere geometry for Earth.
+  * Textured or coloured material with blues/whites to resemble Earth.
+  * A slightly larger, transparent sphere or halo around it for the **atmospheric glow** on the rim.
+* Lights:
+
+  * One main directional light (simulating the sun) coming from above/side.
+  * Soft ambient light.
+* Use **OrbitControls**:
+
+  * Rotation via drag.
+  * Zoom via scroll.
+  * Limit the controls so the user doesn’t spin the camera underneath the planet (keep it planet-like, not weird angles).
+* Idle rotation:
+
+  * When user isn’t interacting, the globe slowly rotates around its Y axis.
+
+Make sure the renderer resizes properly with the hero container (responsive canvas).
+
+---
+
+### 4. Add anime.js for smooth motion
+
+Use **anime.js** to give the hero globe polished motion, without changing the rest of the page.
+
+#### a) Setup
+
+* Install:
+
+  ```bash
+  npm install animejs
+  ```
+
+* Import in your hero script:
+
+  ```js
+  import anime from "animejs/lib/anime.es.js";
+  ```
+
+* Use a state object the renderer reads every frame:
+
+  ```js
+  const globeState = {
+    rotationY: 0,
+    rotationX: 0,
+    zoom: defaultCameraZ,
+    scale: 1
+  };
+  ```
+
+  In your render loop:
+
+  ```js
+  globe.rotation.y = globeState.rotationY;
+  globe.rotation.x = globeState.rotationX;
+  globe.scale.set(globeState.scale, globeState.scale, globeState.scale);
+  camera.position.z = globeState.zoom;
+  ```
+
+#### b) Intro “rise from space” animation
+
+When the page loads, animate the globe so it feels like it’s **rising into view and settling**, like in the WebGL Earth banner:
+
+* Start with:
+
+  * Slightly smaller scale.
+  * Camera a bit further away.
+* Animate to:
+
+  * Final `zoom` (closer).
+  * `scale: 1`.
+  * Slight adjustment of `rotationY`.
+
+Example:
+
+```js
+anime({
+  targets: globeState,
+  zoom: [defaultCameraZ + 4, defaultCameraZ],
+  scale: [0.8, 1],
+  duration: 1600,
+  easing: "easeOutExpo"
+});
+```
+
+#### c) Hover glow / tilt
+
+On hover over `#hero-globe-container`:
+
+* Slightly increase `scale`.
+* Add a tiny `rotationX` tilt (toward the viewer).
+* Optionally intensify a uniform controlling atmosphere brightness if you expose it.
+
+```js
+const globeContainer = document.getElementById("hero-globe-container");
+
+globeContainer.addEventListener("mouseenter", () => {
+  anime({
+    targets: globeState,
+    scale: 1.05,
+    rotationX: globeState.rotationX + 0.08,
+    duration: 400,
+    easing: "easeOutQuad"
+  });
+});
+
+globeContainer.addEventListener("mouseleave", () => {
+  anime({
+    targets: globeState,
+    scale: 1,
+    rotationX: 0,
+    duration: 400,
+    easing: "easeOutQuad"
+  });
+});
+```
+
+#### d) Click-to-focus zoom
+
+On click of the globe area, toggle between default zoom and slightly closer:
+
+```js
+let focused = false;
+
+globeContainer.addEventListener("click", () => {
+  focused = !focused;
+  anime({
+    targets: globeState,
+    zoom: focused ? defaultCameraZ - 3 : defaultCameraZ,
+    duration: 600,
+    easing: "easeInOutQuad"
+  });
+});
+```
+
+Idle rotation can still run each frame; anime.js just smoothly modifies the state.
+
+---
+
+### 5. Styling
+
+* Hero background: deep indigo / almost black with:
+
+  * Starfield in top 2/3 (background image or repeated small dots).
+  * Strong soft blue/white glow at the bottom where Earth meets the horizon (CSS gradient behind the canvas helps enhance the Three.js glow).
+* Center all hero text like in the WebGL Earth banner.
+* Keep the rest of the page unchanged (filters, cards, footer, etc.).
+
+---
+
+### Don’ts
+
+* Don’t touch other sections or logic.
+* Don’t add filters or region clicks at this stage – focus purely on:
+
+  * **Big horizon-style 3D Earth** (like the image),
+  * Interactive rotation/zoom via OrbitControls,
+  * Smooth anime.js intro/hover/click animations.
+
+---
+
+### Result I expect
+
+* When I load the app, the hero area looks like the WebGL Earth banner but branded for LUM News:
+
+  * Deep space background with stars.
+  * A huge glowing Earth horizon rising from the bottom.
+  * “LUM News” + **“The world’s narratives in your hands”** centered above.
+* The Earth:
+
+  * Slowly spins by default.
+  * Can be rotated and zoomed.
+  * Animates smoothly on load, hover, and click via anime.js.
+* Everything below the hero remains exactly as it was before.
