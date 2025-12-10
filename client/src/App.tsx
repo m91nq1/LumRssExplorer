@@ -28,6 +28,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/landing" component={Landing} />
       <Route path="/about" component={About} />
       <Route path="/home" component={Home} />
       <Route path="/article/:id" component={ArticleDetail} />
