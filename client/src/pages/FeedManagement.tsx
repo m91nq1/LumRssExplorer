@@ -19,7 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag } from "lucide-react";
 import { Link } from "wouter";
 
 interface FeedsResponse {
@@ -34,10 +39,56 @@ interface ProvidersResponse {
   providers: ProviderWithStatus[];
 }
 
+interface SourceWithCount {
+  id: string;
+  name: string;
+  articleCount: number;
+  isEnabled: boolean;
+}
+
+interface SourcesResponse {
+  sources: SourceWithCount[];
+  lastRefreshTime: string | null;
+}
+
+const providerDescriptions: Record<string, string> = {
+  newsapi: "Premium news API with access to 80,000+ sources worldwide. Great for breaking news and top headlines.",
+  newsdata: "Real-time news data from 70+ countries with sentiment analysis and AI categorization.",
+  mediastack: "Scalable REST API delivering worldwide news data from 7,500+ sources in 50 languages.",
+};
+
+const providerLogos: Record<string, string> = {
+  newsapi: "N",
+  newsdata: "ND",
+  mediastack: "M",
+};
+
+const providerColors: Record<string, { bg: string; text: string; border: string; glow: string }> = {
+  newsapi: { 
+    bg: "from-blue-500/20 to-blue-600/10", 
+    text: "text-blue-400", 
+    border: "border-blue-500/30",
+    glow: "shadow-blue-500/20"
+  },
+  newsdata: { 
+    bg: "from-emerald-500/20 to-emerald-600/10", 
+    text: "text-emerald-400", 
+    border: "border-emerald-500/30",
+    glow: "shadow-emerald-500/20"
+  },
+  mediastack: { 
+    bg: "from-purple-500/20 to-purple-600/10", 
+    text: "text-purple-400", 
+    border: "border-purple-500/30",
+    glow: "shadow-purple-500/20"
+  },
+};
+
 export default function FeedManagement() {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<FeedSource | null>(null);
+  const [expandedProviders, setExpandedProviders] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -52,6 +103,10 @@ export default function FeedManagement() {
 
   const { data: providersData, isLoading: providersLoading } = useQuery<ProvidersResponse>({
     queryKey: ["/api/providers"],
+  });
+
+  const { data: sourcesData } = useQuery<SourcesResponse>({
+    queryKey: ["/api/sources"],
   });
 
   const toggleProviderMutation = useMutation({
@@ -192,13 +247,38 @@ export default function FeedManagement() {
     });
   };
 
+  const getProviderArticleCount = (providerId: string) => {
+    if (!sourcesData?.sources) return 0;
+    const sourceId = `external-${providerId}`;
+    const source = sourcesData.sources.find(s => s.id === sourceId);
+    return source?.articleCount || 0;
+  };
+
+  const formatLastRefresh = (time: string | null) => {
+    if (!time) return "Never";
+    const date = new Date(time);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return date.toLocaleDateString();
+  };
+
+  const toggleProviderExpanded = (id: string) => {
+    setExpandedProviders(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const feeds = data?.feeds || [];
   const providers = providersData?.providers || [];
 
   return (
     <div className="min-h-screen bg-background">
       <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
-        <div className="h-full max-w-4xl mx-auto px-6 flex items-center justify-between gap-4">
+        <div className="h-full max-w-5xl mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon" data-testid="button-back">
@@ -320,113 +400,219 @@ export default function FeedManagement() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
         {/* News API Providers Section */}
         <section>
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold" data-testid="text-providers-heading">
-              News API Providers
-            </h2>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center border border-primary/20">
+              <Zap className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold" data-testid="text-providers-heading">
+                External News APIs
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Connect to premium news sources for comprehensive coverage
+              </p>
+            </div>
           </div>
 
           {providersLoading ? (
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="p-4">
-                  <div className="space-y-3">
-                    <Skeleton className="h-5 w-24" />
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-12" />
+                <Card key={i} className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-14 w-14 rounded-xl" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-32" />
+                        <Skeleton className="h-4 w-64" />
+                      </div>
+                      <Skeleton className="h-6 w-12" />
+                    </div>
                   </div>
                 </Card>
               ))}
             </div>
           ) : providers.length === 0 ? (
-            <Card className="p-6 text-center">
-              <Key className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground">
-                No external news providers configured.
+            <Card className="p-8 text-center">
+              <Key className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="font-medium mb-2">No providers configured</h3>
+              <p className="text-sm text-muted-foreground">
+                External news providers will appear here once configured.
               </p>
             </Card>
           ) : (
-            <div className="grid gap-4 md:grid-cols-3" data-testid="providers-grid">
-              {providers.map((provider) => (
-                <Card
-                  key={provider.id}
-                  className="p-4"
-                  data-testid={`provider-card-${provider.id}`}
-                >
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-medium" data-testid={`provider-name-${provider.id}`}>
-                        {provider.name}
-                      </h3>
-                      <Switch
-                        checked={provider.isEnabled}
-                        onCheckedChange={(checked) =>
-                          toggleProviderMutation.mutate({
-                            id: provider.id,
-                            isEnabled: checked,
-                          })
-                        }
-                        disabled={!provider.hasApiKey}
-                        data-testid={`switch-provider-${provider.id}`}
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {provider.hasApiKey ? (
-                        <Badge variant="secondary" className="text-xs">
-                          <CheckCircle className="w-3 h-3 mr-1 text-green-500" />
-                          API Key Set
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs text-muted-foreground">
-                          <XCircle className="w-3 h-3 mr-1 text-red-500" />
-                          No API Key
-                        </Badge>
-                      )}
-                    </div>
-
-                    <p className="text-xs text-muted-foreground">
-                      {provider.apiKeyEnvVar}
-                    </p>
-
-                    {provider.rateLimitPerDay && (
-                      <p className="text-xs text-muted-foreground">
-                        Rate limit: {provider.rateLimitPerDay.toLocaleString()}/day
-                      </p>
-                    )}
-
-                    {provider.supportedCategories && provider.supportedCategories.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {provider.supportedCategories.slice(0, 3).map((cat) => (
-                          <Badge key={cat} variant="outline" className="text-xs">
-                            {cat}
-                          </Badge>
-                        ))}
-                        {provider.supportedCategories.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{provider.supportedCategories.length - 3}
-                          </Badge>
-                        )}
+            <div className="space-y-4" data-testid="providers-grid">
+              {providers.map((provider) => {
+                const colors = providerColors[provider.id] || providerColors.newsapi;
+                const articleCount = getProviderArticleCount(provider.id);
+                const isExpanded = expandedProviders[provider.id];
+                
+                return (
+                  <Collapsible key={provider.id} open={isExpanded} onOpenChange={() => toggleProviderExpanded(provider.id)}>
+                    <Card
+                      className={`overflow-hidden transition-all duration-300 ${
+                        provider.isEnabled && provider.hasApiKey 
+                          ? `border-2 ${colors.border} shadow-lg ${colors.glow}` 
+                          : 'border-border'
+                      }`}
+                      data-testid={`provider-card-${provider.id}`}
+                    >
+                      <div className={`p-6 bg-gradient-to-r ${colors.bg}`}>
+                        <div className="flex items-start gap-4">
+                          {/* Provider Logo */}
+                          <div className={`w-14 h-14 rounded-xl bg-background/80 backdrop-blur flex items-center justify-center border ${colors.border}`}>
+                            <span className={`text-xl font-bold ${colors.text}`}>
+                              {providerLogos[provider.id] || provider.name[0]}
+                            </span>
+                          </div>
+                          
+                          {/* Provider Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-1">
+                              <h3 className="font-semibold text-lg" data-testid={`provider-name-${provider.id}`}>
+                                {provider.name}
+                              </h3>
+                              {provider.isEnabled && provider.hasApiKey && (
+                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5 animate-pulse" />
+                                  Active
+                                </Badge>
+                              )}
+                              {!provider.hasApiKey && (
+                                <Badge variant="outline" className="text-amber-400 border-amber-500/30">
+                                  <Key className="w-3 h-3 mr-1" />
+                                  API Key Required
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {providerDescriptions[provider.id] || `News from ${provider.name}`}
+                            </p>
+                            
+                            {/* Stats Row */}
+                            <div className="flex items-center gap-4 mt-3 text-sm">
+                              <div className="flex items-center gap-1.5 text-muted-foreground">
+                                <Newspaper className="w-4 h-4" />
+                                <span className="font-medium">{articleCount.toLocaleString()}</span>
+                                <span>articles</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-muted-foreground" title="Last system refresh">
+                                <Clock className="w-4 h-4" />
+                                <span>Synced {formatLastRefresh(sourcesData?.lastRefreshTime || null)}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-muted-foreground">
+                                <Database className="w-4 h-4" />
+                                <span>{provider.rateLimitPerDay?.toLocaleString()}/day</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Toggle Switch */}
+                          <div className="flex flex-col items-end gap-2">
+                            <Switch
+                              checked={provider.isEnabled}
+                              onCheckedChange={(checked) =>
+                                toggleProviderMutation.mutate({
+                                  id: provider.id,
+                                  isEnabled: checked,
+                                })
+                              }
+                              disabled={!provider.hasApiKey}
+                              data-testid={`switch-provider-${provider.id}`}
+                            />
+                            <CollapsibleTrigger asChild>
+                              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
+                                <ChevronDown className={`w-4 h-4 mr-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                Details
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </Card>
-              ))}
+                      
+                      {/* Expanded Details */}
+                      <CollapsibleContent>
+                        <div className="px-6 pb-6 pt-4 border-t border-border/50 bg-muted/30">
+                          <div className="grid md:grid-cols-2 gap-6">
+                            {/* Categories */}
+                            <div>
+                              <div className="flex items-center gap-2 mb-3 text-sm font-medium text-muted-foreground">
+                                <Tag className="w-4 h-4" />
+                                Supported Categories
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {provider.supportedCategories?.map((cat) => (
+                                  <Badge key={cat} variant="secondary" className="text-xs capitalize">
+                                    {cat}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            {/* Countries */}
+                            <div>
+                              <div className="flex items-center gap-2 mb-3 text-sm font-medium text-muted-foreground">
+                                <MapPin className="w-4 h-4" />
+                                Supported Countries
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {provider.supportedCountries?.map((country) => (
+                                  <Badge key={country} variant="outline" className="text-xs uppercase">
+                                    {country}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* API Key Info */}
+                          <div className="mt-4 pt-4 border-t border-border/50">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-muted-foreground">Environment Variable:</span>
+                                <code className="px-2 py-0.5 bg-muted rounded text-xs font-mono">
+                                  {provider.apiKeyEnvVar}
+                                </code>
+                              </div>
+                              {provider.hasApiKey ? (
+                                <div className="flex items-center gap-1.5 text-sm text-green-400">
+                                  <CheckCircle className="w-4 h-4" />
+                                  Configured
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1.5 text-sm text-amber-400">
+                                  <XCircle className="w-4 h-4" />
+                                  Not configured
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
+                );
+              })}
             </div>
           )}
         </section>
 
         {/* RSS Feeds Section */}
         <section>
-          <div className="flex items-center gap-2 mb-4">
-            <Rss className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold" data-testid="text-feeds-heading">
-              RSS Feeds
-            </h2>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500/20 to-orange-500/5 rounded-xl flex items-center justify-center border border-orange-500/20">
+              <Rss className="w-5 h-5 text-orange-400" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold" data-testid="text-feeds-heading">
+                RSS Feeds
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {feeds.length} feed{feeds.length !== 1 ? 's' : ''} configured
+              </p>
+            </div>
           </div>
 
         {isLoading ? (
@@ -452,16 +638,16 @@ export default function FeedManagement() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4" data-testid="feeds-list">
+          <div className="space-y-3" data-testid="feeds-list">
             {feeds.map((feed) => (
               <Card
                 key={feed.id}
-                className="p-6"
+                className="p-5"
                 data-testid={`feed-card-${feed.id}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-1.5">
                       <h3 className="font-medium truncate">{feed.name}</h3>
                       <Badge variant="secondary" className="text-xs">
                         {feed.category}
@@ -608,7 +794,7 @@ export default function FeedManagement() {
                       disabled={deleteMutation.isPending}
                       data-testid={`button-delete-${feed.id}`}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
