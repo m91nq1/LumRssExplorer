@@ -1,0 +1,193 @@
+Here’s a ready-to-paste **Replit prompt** for your **About** page:
+
+---
+
+### Replit Prompt – Build an “About LUM News” Page with Icons
+
+In this existing **LUM News** project, create a dedicated **About** page/route (or section) that explains:
+
+* What LUM News does
+* Why someone should use it
+* Who it’s for
+
+Use the same visual language as the rest of the app (deep indigo / space theme).
+
+---
+
+### Requirements
+
+1. **Page layout & theme**
+
+* Create an `About` page (e.g. `/about` route or `about.html`), linked from the main nav “About”.
+* Use the existing **deep indigo / space** background (`#1E174B` or similar), with subtle gradients/stars.
+* Keep the layout responsive for desktop, tablet, and mobile.
+* Max-width centered content (e.g. 960–1200px) with good spacing and readable line length.
+
+---
+
+### 2. Hero section (“About LUM News”)
+
+Top of the page:
+
+* Title: **“About LUM News”**
+* Short subtitle:
+
+  > “An AI-powered global news lens that helps you see how the world is telling the same story.”
+* Optional small tag above title: “News Intelligence · Multi-Region · AI-Summarised”.
+* Place a subtle icon or illustration next to the title (e.g. a globe, radar, or eye icon).
+
+---
+
+### 3. Section: What LUM News does
+
+Create a **two-column** section:
+
+* Left: Text content.
+* Right: Simple illustration or icon stack.
+
+Text should explain in **plain language**:
+
+* LUM News **aggregates news** from many sources and regions.
+* It **clusters related articles into “stories”** so you see the event, not just random headlines.
+* It uses **AI to summarise and compare coverage**, helping you understand sentiment and bias.
+* You can **filter by topics and regions** (war, AI, Europe politics, etc.) and save stories you care about.
+
+Use a small **icon grid** or bullets with icons (SVG or emoji placeholders), for example:
+
+* 🛰️ **Global perspective** – See stories from US, Europe, China, Russia and more in one place.
+* 🧠 **AI summaries** – Get fast, neutral summaries of complex stories.
+* 📊 **Coverage & sentiment** – Understand who is covering what, and how they frame it.
+* ⭐ **Saved stories** – Bookmark the narratives you want to follow.
+
+---
+
+### 4. Section: Why you should use it (benefits)
+
+Add a section titled **“Why use LUM News?”** with **3–4 interactive cards**, each with an icon:
+
+Each card should have:
+
+* An icon at the top (use simple vector/emoji placeholders: 🔍, 🌍, ⚖️, ⏱️ etc.).
+* A short heading.
+* 2–3 sentence description.
+
+Example cards:
+
+1. **See every side of the story** (icon: 🌍)
+
+   * Explain how different outlets/regions cover the same event differently.
+
+2. **Cut through information overload** (icon: 🔍)
+
+   * Explain how clustering + AI summaries save time.
+
+3. **Track topics that matter to you** (icon: ⭐)
+
+   * Explain topics/regions/alerts.
+
+4. **Turn news into intelligence** (icon: 📊)
+
+   * Explain that it’s built for people who need to understand patterns, not just read headlines.
+
+Add hover effects on cards (slight lift/scale, glow border) to make them feel interactive.
+
+---
+
+### 5. Section: Who this is for
+
+Add a section titled **“Who is LUM News for?”** with three columns/cards, each with an icon + persona:
+
+1. **Analysts & Researchers** (icon: 📈)
+
+   * Short blurb: geopolitical analysts, risk teams, policy researchers who need multi-source views.
+
+2. **Journalists & Editors** (icon: 📰)
+
+   * Short blurb: reporters who want to see emerging and under-reported stories across regions.
+
+3. **Curious Power News Readers** (icon: 🧭)
+
+   * Short blurb: informed individuals who want more than a single feed or echo chamber.
+
+Each card should include:
+
+* Icon
+* Persona title
+* 2–3 lines of description
+
+---
+
+### 6. Section: How it works (brief flow with icons)
+
+Add a horizontal **3-step timeline** or vertical list titled **“How LUM News works”**:
+
+Steps with icons:
+
+1. **Collect** (icon: 🌐)
+
+   * “We aggregate stories from multiple global sources and regions.”
+
+2. **Cluster & Analyse** (icon: 🧠)
+
+   * “AI groups related articles into stories, extracting entities, sentiment, and coverage patterns.”
+
+3. **Present & Personalise** (icon: 🎯)
+
+   * “You explore via topics, regions, and lenses, and save the narratives that matter to you.”
+
+Use connecting lines/arrows or subtle animations on hover to make the timeline engaging.
+
+---
+
+### 7. Section: Trust & Transparency (optional but recommended)
+
+Add a small section on **trust**:
+
+* Heading: **“Built for clarity, not clickbait”**.
+* Short paragraphs explaining:
+
+  * You show multiple sources side-by-side.
+  * AI summaries aim to be neutral and transparent.
+  * Users can always click through to the **original articles**.
+
+Use a shield/check icon (🛡️ or ✔️) for visual emphasis.
+
+---
+
+### 8. Call to action at the bottom
+
+Finish with a centered CTA section:
+
+* Heading: **“Ready to see the world’s narratives differently?”**
+* Subtext: 1 sentence.
+* Button: **“Explore LUM News”** – link back to the main landing/dashboard page.
+* Secondary link: “Learn more about the product” if you have a Features page.
+
+---
+
+### Visual & interaction details
+
+* Reuse your **indigo space palette** (hero blue, accent purple) and typography from the homepage.
+* Icons can be:
+
+  * Inline SVGs,
+  * A simple icon font,
+  * Or emoji placeholders styled nicely.
+* On hover, cards and icon blocks should:
+
+  * Slightly scale up,
+  * Increase shadow/glow,
+  * Have smooth transitions (`transition: all 0.2s–0.3s ease-out`).
+
+---
+
+**End result I expect:**
+
+When I navigate to the **About** page in this LUM News project, I see:
+
+* A clean, visually consistent page that:
+
+  * Explains **what LUM News does**,
+  * Shows **why it’s useful**,
+  * Clarifies **who it’s for**,
+* With several **icon-based sections** and hover effects that make the page feel interactive and modern.

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/Home";
 import Landing from "@/pages/Landing";
+import About from "@/pages/About";
 import FeedManagement from "@/pages/FeedManagement";
 import ArticleDetail from "@/pages/ArticleDetail";
 import SearchExplore from "@/pages/SearchExplore";
@@ -27,6 +28,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/about" component={About} />
       <Route path="/home" component={Home} />
       <Route path="/article/:id" component={ArticleDetail} />
       <Route path="/settings" component={Settings} />

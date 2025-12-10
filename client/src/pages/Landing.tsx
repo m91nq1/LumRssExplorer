@@ -22,15 +22,26 @@ export default function Landing() {
             </div>
             <span className="font-semibold text-xl tracking-tight">LUM News</span>
           </div>
-          <a href="/api/login">
-            <Button 
-              variant="outline" 
-              className="border-white/20 bg-white/5 hover:bg-white/10 text-white"
-              data-testid="button-login"
-            >
-              Sign In
-            </Button>
-          </a>
+          <nav className="flex items-center gap-4">
+            <a href="/about">
+              <Button 
+                variant="ghost" 
+                className="text-white/80 hover:text-white hover:bg-white/10"
+                data-testid="nav-about"
+              >
+                About
+              </Button>
+            </a>
+            <a href="/api/login">
+              <Button 
+                variant="outline" 
+                className="border-white/20 bg-white/5 hover:bg-white/10 text-white"
+                data-testid="button-login"
+              >
+                Sign In
+              </Button>
+            </a>
+          </nav>
         </div>
       </header>
 
