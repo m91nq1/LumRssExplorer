@@ -4,8 +4,17 @@ import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm">
+    <div 
+      className="min-h-screen text-white overflow-hidden"
+      style={{
+        backgroundImage: `url(${cosmicLibraryBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
@@ -27,16 +36,6 @@ export default function Landing() {
 
       <main className="relative">
         <section className="hero relative h-screen min-h-[700px] overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `url(${cosmicLibraryBg})`,
-            }}
-          />
-          
-          <div 
-            className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"
-          />
 
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
             <div className="text-center max-w-4xl px-6 animate-fadeIn">
@@ -75,7 +74,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="py-20 px-6 md:px-12 lg:px-16 relative z-10 bg-black">
+        <section className="py-20 px-6 md:px-12 lg:px-16 relative z-10">
           <div className="container mx-auto">
             <div className="grid md:grid-cols-3 gap-6">
               <div 
@@ -143,7 +142,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="py-16 px-6 md:px-12 lg:px-16 text-center relative z-10 bg-black">
+        <section className="py-16 px-6 md:px-12 lg:px-16 text-center relative z-10">
           <div className="container mx-auto max-w-2xl">
             <h2 className="text-2xl md:text-3xl font-light mb-4">
               Ready to explore the world's stories?
@@ -164,7 +163,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/5 py-8 px-6 text-center z-10 bg-black">
+      <footer className="relative border-t border-white/10 py-8 px-6 text-center z-10">
         <p className="text-sm text-gray-500">
           LUM News — The world's narratives in your hands
         </p>
