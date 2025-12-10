@@ -105,18 +105,19 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
         const globeMaterial = new THREE.ShaderMaterial({
           uniforms: {
             time: { value: 0 },
+            sunDirection: { value: new THREE.Vector3(0.6, 0.3, 0.8).normalize() },
           },
           vertexShader: `
             varying vec3 vNormal;
             varying vec3 vPosition;
             varying vec2 vUv;
-            varying vec3 vWorldPosition;
+            varying vec3 vWorldNormal;
             
             void main() {
               vNormal = normalize(normalMatrix * normal);
               vPosition = position;
               vUv = uv;
-              vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
+              vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
           `,
@@ -124,116 +125,183 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
             varying vec3 vNormal;
             varying vec3 vPosition;
             varying vec2 vUv;
-            varying vec3 vWorldPosition;
+            varying vec3 vWorldNormal;
             uniform float time;
+            uniform vec3 sunDirection;
             
-            // Simplex noise for clouds
-            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-            vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-            vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-            vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+            // Hash functions for noise
+            float hash(vec2 p) {
+              return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            }
             
-            float snoise(vec3 v) {
-              const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-              const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-              vec3 i = floor(v + dot(v, C.yyy));
-              vec3 x0 = v - i + dot(i, C.xxx);
-              vec3 g = step(x0.yzx, x0.xyz);
-              vec3 l = 1.0 - g;
-              vec3 i1 = min(g.xyz, l.zxy);
-              vec3 i2 = max(g.xyz, l.zxy);
-              vec3 x1 = x0 - i1 + C.xxx;
-              vec3 x2 = x0 - i2 + C.yyy;
-              vec3 x3 = x0 - D.yyy;
-              i = mod289(i);
-              vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-              float n_ = 0.142857142857;
-              vec3 ns = n_ * D.wyz - D.xzx;
-              vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-              vec4 x_ = floor(j * ns.z);
-              vec4 y_ = floor(j - 7.0 * x_);
-              vec4 x = x_ *ns.x + ns.yyyy;
-              vec4 y = y_ *ns.x + ns.yyyy;
-              vec4 h = 1.0 - abs(x) - abs(y);
-              vec4 b0 = vec4(x.xy, y.xy);
-              vec4 b1 = vec4(x.zw, y.zw);
-              vec4 s0 = floor(b0)*2.0 + 1.0;
-              vec4 s1 = floor(b1)*2.0 + 1.0;
-              vec4 sh = -step(h, vec4(0.0));
-              vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-              vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-              vec3 p0 = vec3(a0.xy, h.x);
-              vec3 p1 = vec3(a0.zw, h.y);
-              vec3 p2 = vec3(a1.xy, h.z);
-              vec3 p3 = vec3(a1.zw, h.w);
-              vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-              p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-              vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-              m = m * m;
-              return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+            float hash3(vec3 p) {
+              return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+            }
+            
+            // Smooth noise
+            float noise(vec2 p) {
+              vec2 i = floor(p);
+              vec2 f = fract(p);
+              f = f * f * (3.0 - 2.0 * f);
+              
+              float a = hash(i);
+              float b = hash(i + vec2(1.0, 0.0));
+              float c = hash(i + vec2(0.0, 1.0));
+              float d = hash(i + vec2(1.0, 1.0));
+              
+              return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+            }
+            
+            // 3D noise for clouds
+            float noise3D(vec3 p) {
+              vec3 i = floor(p);
+              vec3 f = fract(p);
+              f = f * f * (3.0 - 2.0 * f);
+              
+              float n = mix(
+                mix(mix(hash3(i), hash3(i + vec3(1,0,0)), f.x),
+                    mix(hash3(i + vec3(0,1,0)), hash3(i + vec3(1,1,0)), f.x), f.y),
+                mix(mix(hash3(i + vec3(0,0,1)), hash3(i + vec3(1,0,1)), f.x),
+                    mix(hash3(i + vec3(0,1,1)), hash3(i + vec3(1,1,1)), f.x), f.y),
+                f.z
+              );
+              return n;
+            }
+            
+            // FBM for terrain
+            float fbm(vec2 p) {
+              float value = 0.0;
+              float amplitude = 0.5;
+              for(int i = 0; i < 5; i++) {
+                value += amplitude * noise(p);
+                p *= 2.0;
+                amplitude *= 0.5;
+              }
+              return value;
+            }
+            
+            // City lights pattern
+            float cityLights(vec3 pos, float landMask) {
+              if(landMask < 0.3) return 0.0;
+              
+              // Multiple scales for city distribution
+              float cities = 0.0;
+              
+              // Large cities (fewer, brighter)
+              float largeCity = noise(pos.xz * 15.0) * noise(pos.xy * 12.0);
+              largeCity = pow(max(largeCity - 0.4, 0.0) * 2.5, 2.0);
+              cities += largeCity * 1.5;
+              
+              // Medium cities
+              float medCity = noise(pos.xz * 30.0) * noise(pos.zy * 25.0);
+              medCity = pow(max(medCity - 0.45, 0.0) * 3.0, 2.0);
+              cities += medCity * 0.8;
+              
+              // Small towns and roads
+              float smallTown = noise(pos.xz * 60.0) * noise(pos.xy * 50.0);
+              smallTown = pow(max(smallTown - 0.5, 0.0) * 4.0, 2.0);
+              cities += smallTown * 0.4;
+              
+              // Coastal concentration
+              float coastalBonus = smoothstep(0.3, 0.5, landMask) * (1.0 - smoothstep(0.5, 0.8, landMask));
+              cities *= 1.0 + coastalBonus * 0.5;
+              
+              return cities * landMask;
             }
             
             void main() {
-              float rimIntensity = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.5);
+              // Fresnel for rim lighting
+              float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
               
-              // Ocean colors - deep blue
-              vec3 deepOcean = vec3(0.01, 0.04, 0.12);
-              vec3 shallowOcean = vec3(0.02, 0.08, 0.2);
-              
-              // Land colors
-              vec3 landGreen = vec3(0.08, 0.18, 0.08);
-              vec3 landBrown = vec3(0.12, 0.1, 0.06);
-              vec3 snow = vec3(0.85, 0.88, 0.9);
-              
+              // Spherical coordinates
               float lat = asin(vPosition.y / 3.0);
               float lon = atan(vPosition.z, vPosition.x);
+              vec2 sphereCoord = vec2(lon / 3.14159 * 0.5 + 0.5, lat / 3.14159 + 0.5);
               
-              // Continent shapes using noise
-              float continentNoise = snoise(vPosition * 0.8) * 0.5 + 0.5;
-              float detailNoise = snoise(vPosition * 2.0) * 0.3;
-              float landMask = smoothstep(0.45, 0.55, continentNoise + detailNoise);
+              // Generate terrain
+              float terrain = fbm(sphereCoord * 8.0 + vec2(1.5, 0.8));
+              float detail = fbm(sphereCoord * 20.0);
+              float landMask = smoothstep(0.35, 0.5, terrain + detail * 0.2);
               
               // Ice caps
-              float iceCap = smoothstep(0.7, 0.85, abs(lat / 1.57));
+              float iceCap = smoothstep(0.75, 0.9, abs(lat / 1.57));
               
-              // Cloud layer
-              float cloudNoise = snoise(vPosition * 1.5 + time * 0.02) * 0.5 + 0.5;
-              float clouds = smoothstep(0.4, 0.6, cloudNoise) * 0.6;
+              // Ocean colors - deep realistic blue
+              vec3 deepOcean = vec3(0.01, 0.03, 0.08);
+              vec3 shallowOcean = vec3(0.02, 0.08, 0.18);
+              vec3 oceanColor = mix(deepOcean, shallowOcean, fresnel * 0.3);
               
-              // Base ocean color with depth variation
-              vec3 oceanColor = mix(deepOcean, shallowOcean, rimIntensity * 0.5);
+              // Add ocean specular
+              float oceanSpec = pow(max(dot(reflect(-sunDirection, vWorldNormal), vec3(0,0,1)), 0.0), 20.0);
+              oceanColor += vec3(0.1, 0.15, 0.2) * oceanSpec * (1.0 - landMask);
               
-              // Land with vegetation gradient
-              vec3 landColor = mix(landGreen, landBrown, abs(lat) * 0.8);
+              // Land colors
+              vec3 forest = vec3(0.02, 0.08, 0.02);
+              vec3 grassland = vec3(0.06, 0.12, 0.04);
+              vec3 desert = vec3(0.15, 0.12, 0.08);
+              vec3 mountain = vec3(0.08, 0.07, 0.06);
+              vec3 snow = vec3(0.9, 0.92, 0.95);
+              
+              // Biome selection based on latitude and noise
+              float biomeNoise = noise(sphereCoord * 15.0);
+              float latFactor = abs(lat);
+              vec3 landColor = mix(forest, grassland, biomeNoise);
+              landColor = mix(landColor, desert, smoothstep(0.2, 0.5, latFactor) * (1.0 - biomeNoise));
+              landColor = mix(landColor, mountain, smoothstep(0.6, 0.8, terrain));
               landColor = mix(landColor, snow, iceCap);
               
               // Combine ocean and land
               vec3 surfaceColor = mix(oceanColor, landColor, landMask);
               
-              // Add clouds
-              surfaceColor = mix(surfaceColor, vec3(0.9, 0.92, 0.95), clouds);
+              // Cloud layer - wispy and realistic
+              float cloudNoise1 = noise3D(vPosition * 2.0 + vec3(time * 0.01, 0, 0));
+              float cloudNoise2 = noise3D(vPosition * 4.0 + vec3(0, time * 0.015, 0));
+              float clouds = cloudNoise1 * cloudNoise2;
+              clouds = smoothstep(0.2, 0.5, clouds);
+              vec3 cloudColor = vec3(0.95, 0.97, 1.0);
               
-              // Lighting - simulate sun from upper right
-              vec3 lightDir = normalize(vec3(0.5, 0.3, 1.0));
-              float diffuse = max(dot(vNormal, lightDir), 0.0);
-              float ambient = 0.15;
+              // Day/night calculation
+              float daylight = dot(vWorldNormal, sunDirection);
+              float dayMask = smoothstep(-0.1, 0.2, daylight);
               
-              // Terminator (day/night boundary)
-              float dayNight = smoothstep(-0.1, 0.3, dot(vNormal, lightDir));
+              // Lighting
+              float ambient = 0.08;
+              float diffuse = max(daylight, 0.0);
               
-              // Night side glow (city lights effect)
-              vec3 nightColor = vec3(0.01, 0.02, 0.04);
-              float cityLights = snoise(vPosition * 4.0) * 0.5 + 0.5;
-              cityLights = pow(cityLights, 3.0) * 0.15 * landMask;
-              nightColor += vec3(1.0, 0.8, 0.4) * cityLights;
+              // Day side
+              vec3 dayColor = surfaceColor * (ambient + diffuse * 0.9);
+              dayColor = mix(dayColor, cloudColor, clouds * 0.7 * dayMask);
               
-              // Final color with day/night
-              vec3 dayColor = surfaceColor * (ambient + diffuse * 0.85);
-              vec3 finalColor = mix(nightColor, dayColor, dayNight);
+              // Night side with city lights
+              vec3 nightBase = surfaceColor * 0.02;
               
-              // Atmospheric rim lighting (strong blue glow)
-              vec3 atmosphereColor = vec3(0.4, 0.7, 1.0);
-              finalColor += atmosphereColor * rimIntensity * 0.4;
+              // City lights - golden/orange glow
+              float cities = cityLights(vPosition, landMask);
+              vec3 cityGlow = vec3(1.0, 0.8, 0.4) * cities * 2.0;
+              
+              // Add twinkling effect
+              float twinkle = noise(vPosition.xz * 100.0 + time * 2.0);
+              cityGlow *= 0.7 + twinkle * 0.3;
+              
+              // Bloom effect for cities
+              float cityBloom = cities * 0.3;
+              cityGlow += vec3(1.0, 0.6, 0.2) * cityBloom;
+              
+              vec3 nightColor = nightBase + cityGlow;
+              
+              // Blend day and night
+              vec3 finalColor = mix(nightColor, dayColor, dayMask);
+              
+              // Atmospheric rim glow - stronger blue
+              vec3 atmosphereDay = vec3(0.4, 0.7, 1.0);
+              vec3 atmosphereNight = vec3(0.1, 0.2, 0.4);
+              vec3 atmosphere = mix(atmosphereNight, atmosphereDay, dayMask);
+              finalColor += atmosphere * fresnel * 0.5;
+              
+              // Terminator glow (sunrise/sunset)
+              float terminator = 1.0 - abs(daylight);
+              terminator = pow(terminator, 8.0) * smoothstep(-0.2, 0.1, daylight);
+              finalColor += vec3(1.0, 0.4, 0.2) * terminator * 0.3;
               
               gl_FragColor = vec4(finalColor, 1.0);
             }
@@ -244,29 +312,34 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
 
         const globe = new THREE.Mesh(globeGeometry, globeMaterial);
         globe.position.y = -3.2;
+        globe.rotation.x = 0.1;
         scene.add(globe);
 
-        // Inner atmosphere glow
-        const innerAtmoGeometry = new THREE.SphereGeometry(3.05, 64, 64);
+        // Inner atmosphere
+        const innerAtmoGeometry = new THREE.SphereGeometry(3.02, 64, 64);
         const innerAtmoMaterial = new THREE.ShaderMaterial({
           uniforms: {
-            glowIntensity: { value: 1.0 },
+            sunDirection: { value: new THREE.Vector3(0.6, 0.3, 0.8).normalize() },
           },
           vertexShader: `
             varying vec3 vNormal;
+            varying vec3 vWorldNormal;
             void main() {
               vNormal = normalize(normalMatrix * normal);
+              vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
           `,
           fragmentShader: `
             varying vec3 vNormal;
-            uniform float glowIntensity;
+            varying vec3 vWorldNormal;
+            uniform vec3 sunDirection;
             
             void main() {
-              float intensity = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 4.0);
-              vec3 glowColor = vec3(0.3, 0.6, 1.0);
-              gl_FragColor = vec4(glowColor * glowIntensity, intensity * 0.5);
+              float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 5.0);
+              float daylight = max(dot(vWorldNormal, sunDirection), 0.0);
+              vec3 glowColor = mix(vec3(0.1, 0.2, 0.5), vec3(0.3, 0.6, 1.0), daylight);
+              gl_FragColor = vec4(glowColor, fresnel * 0.4);
             }
           `,
           blending: THREE.AdditiveBlending,
@@ -279,17 +352,19 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
         innerAtmo.position.y = -3.2;
         scene.add(innerAtmo);
 
-        // Outer atmosphere (strong blue rim glow like the image)
-        const outerAtmoGeometry = new THREE.SphereGeometry(3.4, 64, 64);
+        // Outer atmosphere glow
+        const outerAtmoGeometry = new THREE.SphereGeometry(3.3, 64, 64);
         const outerAtmoMaterial = new THREE.ShaderMaterial({
           uniforms: {
-            glowIntensity: { value: 1.0 },
+            sunDirection: { value: new THREE.Vector3(0.6, 0.3, 0.8).normalize() },
           },
           vertexShader: `
             varying vec3 vNormal;
             varying vec3 vViewPosition;
+            varying vec3 vWorldNormal;
             void main() {
               vNormal = normalize(normalMatrix * normal);
+              vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
               vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
               vViewPosition = -mvPosition.xyz;
               gl_Position = projectionMatrix * mvPosition;
@@ -298,18 +373,19 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
           fragmentShader: `
             varying vec3 vNormal;
             varying vec3 vViewPosition;
-            uniform float glowIntensity;
+            varying vec3 vWorldNormal;
+            uniform vec3 sunDirection;
             
             void main() {
               vec3 viewDir = normalize(vViewPosition);
-              float intensity = pow(1.0 - abs(dot(vNormal, viewDir)), 3.0);
+              float fresnel = pow(1.0 - abs(dot(vNormal, viewDir)), 3.0);
+              float daylight = max(dot(vWorldNormal, sunDirection) + 0.3, 0.0);
               
-              // Bright cyan-blue atmosphere glow
-              vec3 innerGlow = vec3(0.5, 0.8, 1.0);
-              vec3 outerGlow = vec3(0.2, 0.5, 0.9);
-              vec3 glowColor = mix(outerGlow, innerGlow, intensity);
+              vec3 dayGlow = vec3(0.4, 0.7, 1.0);
+              vec3 nightGlow = vec3(0.05, 0.1, 0.2);
+              vec3 glowColor = mix(nightGlow, dayGlow, daylight);
               
-              gl_FragColor = vec4(glowColor * glowIntensity * 1.5, intensity * 0.7);
+              gl_FragColor = vec4(glowColor * 1.5, fresnel * 0.6);
             }
           `,
           blending: THREE.AdditiveBlending,
@@ -322,53 +398,9 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
         outerAtmo.position.y = -3.2;
         scene.add(outerAtmo);
 
-        // Horizon glow line (the bright blue line at the edge)
-        const horizonGeometry = new THREE.TorusGeometry(3.1, 0.08, 16, 100);
-        const horizonMaterial = new THREE.ShaderMaterial({
-          uniforms: {
-            time: { value: 0 },
-          },
-          vertexShader: `
-            varying vec3 vNormal;
-            void main() {
-              vNormal = normalize(normalMatrix * normal);
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-          `,
-          fragmentShader: `
-            varying vec3 vNormal;
-            uniform float time;
-            
-            void main() {
-              float intensity = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 1.5);
-              vec3 color = vec3(0.6, 0.85, 1.0);
-              float pulse = 0.9 + sin(time * 0.5) * 0.1;
-              gl_FragColor = vec4(color * pulse * 1.2, intensity * 0.9);
-            }
-          `,
-          blending: THREE.AdditiveBlending,
-          transparent: true,
-          depthWrite: false,
-        });
-
-        const horizonGlow = new THREE.Mesh(horizonGeometry, horizonMaterial);
-        horizonGlow.rotation.x = Math.PI / 2;
-        horizonGlow.position.y = -3.2;
-        scene.add(horizonGlow);
-
         // Ambient light
-        const ambientLight = new THREE.AmbientLight(0x334466, 0.3);
+        const ambientLight = new THREE.AmbientLight(0x112233, 0.2);
         scene.add(ambientLight);
-
-        // Sun light from upper-right
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        sunLight.position.set(5, 3, 5);
-        scene.add(sunLight);
-
-        // Subtle fill light
-        const fillLight = new THREE.DirectionalLight(0x4488ff, 0.2);
-        fillLight.position.set(-3, 1, 2);
-        scene.add(fillLight);
 
         let time = 0;
         
@@ -383,30 +415,23 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
           if (!mounted) return;
           animationFrameRef.current = requestAnimationFrame(render);
           
-          time += 0.005;
+          time += 0.008;
           if (globeMaterial.uniforms) {
             globeMaterial.uniforms.time.value = time;
           }
-          if (horizonMaterial.uniforms) {
-            horizonMaterial.uniforms.time.value = time;
-          }
 
           if (!isInteractingRef.current) {
-            globeState.rotationY += 0.001;
+            globeState.rotationY += 0.0008;
           }
 
           globe.rotation.y = globeState.rotationY;
-          globe.rotation.x = globeState.rotationX;
           innerAtmo.rotation.y = globeState.rotationY;
-          innerAtmo.rotation.x = globeState.rotationX;
           outerAtmo.rotation.y = globeState.rotationY * 0.5;
-          horizonGlow.rotation.y = globeState.rotationY;
           
           const s = globeState.scale;
           globe.scale.set(s, s, s);
           innerAtmo.scale.set(s, s, s);
           outerAtmo.scale.set(s, s, s);
-          horizonGlow.scale.set(s, s, s);
           
           camera.position.z = globeState.zoom;
           
@@ -471,8 +496,6 @@ export default function HorizonGlobe({ className = "" }: HorizonGlobeProps) {
           innerAtmoMaterial.dispose();
           outerAtmoGeometry.dispose();
           outerAtmoMaterial.dispose();
-          horizonGeometry.dispose();
-          horizonMaterial.dispose();
         };
       } catch (error) {
         console.warn("WebGL initialization failed:", error);
