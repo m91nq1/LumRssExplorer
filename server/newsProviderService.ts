@@ -55,46 +55,47 @@ interface MediastackResponse {
 }
 
 // Region to country code mappings for API calls
-const regionCountryCodes: Record<string, { newsapi: string[]; newsdata: string[]; mediastack: string[] }> = {
+// Note: Each provider has different supported countries - use only valid ones
+const regionCountryCodes: Record<string, { newsapi: string[]; newsdata: string[]; mediastack: string }> = {
   'US': {
     newsapi: ['us'],
     newsdata: ['us'],
-    mediastack: ['us'],
+    mediastack: 'us',
   },
   'UK': {
     newsapi: ['gb'],
     newsdata: ['gb'],
-    mediastack: ['gb'],
+    mediastack: 'gb',
   },
   'Europe': {
-    newsapi: ['de', 'fr'],
-    newsdata: ['de', 'fr'],
-    mediastack: ['de,fr'],
+    newsapi: ['de'],
+    newsdata: ['de'],
+    mediastack: 'de',
   },
   'Russia': {
     newsapi: ['ru'],
     newsdata: ['ru'],
-    mediastack: ['ru'],
+    mediastack: 'ru',
   },
   'China': {
-    newsapi: ['cn'],
-    newsdata: ['cn'],
-    mediastack: ['cn'],
+    newsapi: [],  // NewsAPI doesn't support China well
+    newsdata: [],  // Newsdata.io may have restrictions
+    mediastack: 'cn',
   },
   'Asia-Pacific': {
-    newsapi: ['jp', 'au', 'in'],
-    newsdata: ['jp', 'au', 'in'],
-    mediastack: ['jp,au,in'],
+    newsapi: ['au', 'in'],
+    newsdata: ['au', 'in'],
+    mediastack: 'au,in,jp',
   },
   'Middle East': {
-    newsapi: ['ae', 'il', 'eg'],
-    newsdata: ['ae', 'il', 'eg'],
-    mediastack: ['ae,il,eg'],
+    newsapi: ['ae'],
+    newsdata: ['ae'],
+    mediastack: 'ae,il',
   },
   'Africa': {
-    newsapi: ['za', 'ng', 'eg'],
-    newsdata: ['za', 'ng', 'eg'],
-    mediastack: ['za,ng,eg'],
+    newsapi: ['za'],
+    newsdata: ['za'],
+    mediastack: 'za,ng',
   },
 };
 
@@ -376,13 +377,19 @@ class NewsProviderService {
         
         switch (providerId) {
           case 'newsapi':
-            regionArticles = await this.fetchFromNewsAPI(apiKey, regionConfig.newsapi, category);
+            if (regionConfig.newsapi.length > 0) {
+              regionArticles = await this.fetchFromNewsAPI(apiKey, regionConfig.newsapi, category);
+            }
             break;
           case 'newsdata':
-            regionArticles = await this.fetchFromNewsdata(apiKey, regionConfig.newsdata, category);
+            if (regionConfig.newsdata.length > 0) {
+              regionArticles = await this.fetchFromNewsdata(apiKey, regionConfig.newsdata, category);
+            }
             break;
           case 'mediastack':
-            regionArticles = await this.fetchFromMediastack(apiKey, regionConfig.mediastack[0], category);
+            if (regionConfig.mediastack) {
+              regionArticles = await this.fetchFromMediastack(apiKey, regionConfig.mediastack, category);
+            }
             break;
         }
 

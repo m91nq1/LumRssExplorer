@@ -23,7 +23,7 @@ import {
   type SourceWithCount,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, ilike, gte, and, or, sql, inArray, count } from "drizzle-orm";
+import { eq, desc, ilike, gte, and, or, sql, inArray, count, isNull } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -151,7 +151,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEnabledFeedSources(): Promise<FeedSource[]> {
-    return db.select().from(feedSources).where(eq(feedSources.isEnabled, true)).orderBy(feedSources.name);
+    // Only return RSS feeds, not API sources (which are handled separately by newsProviderService)
+    return db.select().from(feedSources)
+      .where(and(
+        eq(feedSources.isEnabled, true),
+        or(eq(feedSources.sourceType, 'rss'), isNull(feedSources.sourceType))
+      ))
+      .orderBy(feedSources.name);
   }
 
   async getFeedSource(id: string): Promise<FeedSource | undefined> {
