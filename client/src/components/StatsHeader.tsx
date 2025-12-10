@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RefreshCw, Settings, Search, LogOut, User } from "lucide-react";
+import { RefreshCw, Settings, Search, LogOut, User, Home, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,9 +43,31 @@ export function StatsHeader({
   return (
     <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold" data-testid="text-app-title">
-          LUM News
-        </h1>
+        <div className="flex items-center gap-3">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="icon"
+              data-testid="button-landing-page"
+              title="Home"
+            >
+              <Home className="w-5 h-5" />
+            </Button>
+          </Link>
+          <Link href="/about">
+            <Button
+              variant="ghost"
+              size="icon"
+              data-testid="button-about-page"
+              title="About"
+            >
+              <Info className="w-5 h-5" />
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
+            LUM News
+          </h1>
+        </div>
 
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <div className="hidden sm:flex items-center gap-6" data-testid="stats-display">
