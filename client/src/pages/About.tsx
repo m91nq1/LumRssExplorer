@@ -16,10 +16,20 @@ import {
   Satellite,
   ArrowRight
 } from "lucide-react";
+import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div 
+      className="min-h-screen text-gray-900"
+      style={{
+        backgroundImage: `url(${cosmicLibraryBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <div className="absolute inset-0 bg-white/85 pointer-events-none" />
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <Link href="/">
