@@ -27,7 +27,17 @@ Preferred communication style: Simple, everyday language.
 
 **State Management**: TanStack Query (React Query) manages server state, data fetching, and caching. Local UI state is managed with React hooks (useState, useEffect, useRef).
 
-**Routing**: Wouter provides lightweight client-side routing with pages for Home (/), Article Detail (/article/:id), and Feed Management (/feeds).
+**Routing**: Wouter provides lightweight client-side routing with pages for:
+- Home (/) - Main feed view
+- Landing (/landing) - Public landing page with 3D globe
+- Article Detail (/article/:id) - Individual article view
+- Feed Management (/feeds) - Admin feed management
+- Settings (/settings) - User preferences
+- Profile (/profile) - Account info and topic/region preferences
+- Bookmarks (/bookmarks) - Saved articles
+- History (/history) - Read article timeline
+- Privacy Policy (/privacy) - Legal privacy policy
+- Terms of Service (/terms) - Legal terms of service
 
 **Layout Pattern**: Fixed sidebar layout (280px) with a fluid main content area. The interface uses a responsive grid system that adapts from single-column on mobile to two-column on desktop.
 
