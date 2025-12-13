@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Newspaper, Layers, Bell, TrendingUp, Zap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArticlesResponse } from "@shared/schema";
 import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
 
 export default function Landing() {
+  const { data: articlesData, isLoading } = useQuery<ArticlesResponse>({
+    queryKey: ["/api/articles", { limit: 5 }],
+  });
+
+  const topStories = articlesData?.articles?.slice(0, 5) || [];
   return (
     <div 
       className="min-h-screen text-white overflow-hidden"
@@ -98,13 +105,30 @@ export default function Landing() {
                     <TrendingUp className="w-6 h-6 text-blue-400" />
                   </div>
                   <h3 className="text-lg font-medium mb-2">Top Stories</h3>
-                  <p className="text-sm text-gray-400 mb-4">
+                  <p className="text-sm text-gray-400 mb-3">
                     Curated headlines from trusted global sources, updated every 10 minutes.
                   </p>
                   <div className="space-y-2">
-                    <div className="h-2 bg-white/5 rounded-full w-full" />
-                    <div className="h-2 bg-white/5 rounded-full w-4/5" />
-                    <div className="h-2 bg-white/5 rounded-full w-3/5" />
+                    {isLoading ? (
+                      <>
+                        <div className="h-2 bg-white/5 rounded-full w-full animate-pulse" />
+                        <div className="h-2 bg-white/5 rounded-full w-4/5 animate-pulse" />
+                        <div className="h-2 bg-white/5 rounded-full w-3/5 animate-pulse" />
+                      </>
+                    ) : topStories.length > 0 ? (
+                      topStories.map((article) => (
+                        <a 
+                          key={article.id} 
+                          href={`/article/${article.id}`}
+                          className="block text-xs text-gray-300 hover:text-white truncate transition-colors"
+                          data-testid={`top-story-${article.id}`}
+                        >
+                          {article.title}
+                        </a>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-500">No stories available</p>
+                    )}
                   </div>
                 </div>
               </div>
