@@ -16,14 +16,14 @@ import {
   Satellite,
   ArrowRight
 } from "lucide-react";
-import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
+import aboutBg from "@assets/1b72c7837edfe9b8b6eb157be336c36a_1765655121364.jpg";
 
 export default function About() {
   return (
     <div 
       className="min-h-screen text-white"
       style={{
-        backgroundImage: `url(${cosmicLibraryBg})`,
+        backgroundImage: `url(${aboutBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
