@@ -198,10 +198,45 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/10 py-8 px-6 text-center z-10">
-        <p className="text-sm text-gray-500">
-          LUM News — The world's narratives in your hands
-        </p>
+      <footer className="relative border-t border-white/10 py-12 px-6 z-10">
+        <div className="container mx-auto max-w-4xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
+              <div className="space-y-2">
+                <Link href="/home" className="block text-sm text-gray-400 hover:text-white transition-colors">Explore</Link>
+                <Link href="/about" className="block text-sm text-gray-400 hover:text-white transition-colors">About</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Account</h4>
+              <div className="space-y-2">
+                <Link href="/profile" className="block text-sm text-gray-400 hover:text-white transition-colors">Profile</Link>
+                <Link href="/bookmarks" className="block text-sm text-gray-400 hover:text-white transition-colors">Bookmarks</Link>
+                <Link href="/history" className="block text-sm text-gray-400 hover:text-white transition-colors">History</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Settings</h4>
+              <div className="space-y-2">
+                <Link href="/settings" className="block text-sm text-gray-400 hover:text-white transition-colors">Preferences</Link>
+                <Link href="/feeds" className="block text-sm text-gray-400 hover:text-white transition-colors">Manage Feeds</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Legal</h4>
+              <div className="space-y-2">
+                <Link href="/privacy" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-privacy">Privacy Policy</Link>
+                <Link href="/terms" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-terms">Terms of Service</Link>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-white/10 pt-6 text-center">
+            <p className="text-sm text-gray-500">
+              LUM News — The world's narratives in your hands
+            </p>
+          </div>
+        </div>
       </footer>
 
       <style>{`

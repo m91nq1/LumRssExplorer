@@ -1,0 +1,196 @@
+Here’s a single prompt you can paste into Replit to get all three pages built in your existing LUM News project:
+
+---
+
+### Replit Prompt – Profile, Bookmarks, and Read History Pages for LUM News
+
+In this existing **LUM News** project, add three new pages/routes using the current tech stack and styling:
+
+* **Profile page** → `/profile` – view/edit user account info and content preferences
+* **Bookmarks page** → `/bookmarks` – view all saved articles
+* **Read history page** → `/history` – view previously opened/read articles
+
+Re-use the existing **deep indigo / space theme** and story card layout.
+
+---
+
+## 1. Profile Page – `/profile`
+
+Create a **Profile** page that lets the user see and edit their basic account + preference info.
+
+### Layout
+
+* Main container centered with max-width ~800px.
+* Page title: **“Your Profile”**.
+* Two main sections/cards:
+
+  1. **Account Information**
+
+     * Fields (mocked, no real auth needed if not present yet):
+
+       * Display name (editable input).
+       * Email address (read-only text or disabled input).
+       * Optional avatar placeholder.
+     * “Save changes” button that:
+
+       * Saves values to in-memory state (and `localStorage` if available).
+       * Shows a small “Profile updated” toast/alert.
+
+  2. **Content Preferences**
+
+     * Subheading: “News preferences”.
+     * Controls for:
+
+       * **Favourite topics**: multi-select chips (e.g. War & Conflict, Technology, AI, Markets, Politics, Sports, Culture).
+       * **Preferred regions**: checkboxes or multi-select (Global, US, Europe, UK, Africa, Asia-Pacific, etc.).
+       * **Email / alerts toggle** (if applicable): simple switch like “Send me digests about my topics”.
+     * “Save preferences” button:
+
+       * Stores preferences in local state / `localStorage`.
+       * These preferences should be available to other parts of the app (e.g. Custom Feed, digests later).
+
+### Behavior
+
+* Pre-fill fields from any existing stored state/preferences if you already have them; otherwise use sensible defaults.
+* Show a simple success message when saving.
+* Responsive layout: stack sections vertically on mobile.
+
+---
+
+## 2. Bookmarks Page – `/bookmarks`
+
+Create a **Bookmarks** page that shows all saved stories.
+
+Assume the app already toggles bookmarks on each story card; use that same data source or create a simple in-memory store + `localStorage` fallback:
+
+```js
+// Example shape
+{
+  id,
+  title,
+  summary,
+  source,
+  timeAgo,
+  region,
+  sentiment,
+  url
+}
+```
+
+### Layout
+
+* Page title: **“Saved Stories”**.
+
+* Short subtitle: “Articles you’ve bookmarked to come back to later.”
+
+* If there are **no bookmarks**:
+
+  * Show an empty state box with an icon and message:
+
+    * “You haven’t saved any stories yet.”
+    * Button: “Browse Top Stories” (link back to main news page).
+
+* If there **are bookmarks**:
+
+  * Display them using the same story card style as the main feed:
+
+    * Title, summary, source, time, region tag, sentiment tag.
+    * Bookmark icon should appear in the “saved/active” state.
+  * Allow user to:
+
+    * **Remove** from bookmarks by clicking the icon again, updating both this page and the rest of the app state.
+  * Optional extras:
+
+    * Filter bar at the top (Region dropdown + Topic chips) that filters the bookmarked list only.
+
+### Behavior
+
+* Persist bookmarks in `localStorage` so they survive page reloads.
+* When a story is unbookmarked here, it should also be unbookmarked in the main feed (use a shared state or a simple event mechanism).
+
+---
+
+## 3. Read History Page – `/history`
+
+Create a **Read History** page showing articles the user has opened/read.
+
+### Tracking model
+
+* Whenever a user clicks “Open” / “Read more” on a story card in the main feed or bookmarks:
+
+  * Add an entry to a `readHistory` list in memory and `localStorage`.
+  * Do not duplicate endlessly:
+
+    * If the same story is read again, update its **lastRead** timestamp instead of adding a new row.
+
+Suggested shape:
+
+```js
+{
+  id,
+  title,
+  source,
+  region,
+  sentiment,
+  firstReadAt, // ISO string
+  lastReadAt   // ISO string
+}
+```
+
+### Layout
+
+* Page title: **“Reading History”**.
+
+* Subtitle: “A timeline of the stories you’ve opened on LUM News.”
+
+* Show:
+
+  * If **no history**:
+
+    * Empty state similar to bookmarks: “You haven’t read any stories yet.”
+  * If **history exists**:
+
+    * A vertical list or timeline sorted by `lastReadAt` (newest first).
+    * Each item:
+
+      * Title (clickable to open story again).
+      * Source name, region tag, sentiment tag.
+      * “Last read” time (e.g. “3h ago”, “Yesterday”, or formatted date/time).
+      * Optional: small “Read x times” counter if you track more than one view.
+
+* Add a **“Clear history”** button:
+
+  * Asks for confirmation.
+  * Clears `readHistory` from state and `localStorage`.
+
+### Behavior
+
+* Fully responsive.
+* Re-use existing story card styles or a slimmer “history row” style for visual consistency.
+* Make sure history updates immediately when the user opens a new story from anywhere in the app.
+
+---
+
+## 4. Navigation & styling
+
+* Ensure the top nav includes links (or dropdown entry) to:
+
+  * “Profile”
+  * “Bookmarks”
+  * “History”
+* Use the same deep indigo / space background and typography as the rest of LUM News.
+* All three pages should have:
+
+  * Consistent heading styles.
+  * Plenty of spacing.
+  * Smooth scroll and hover effects reused from other parts of the app.
+
+---
+
+**End result I expect:**
+
+* `/profile` – clean, editable profile + preferences page that reads/writes to shared state or localStorage.
+* `/bookmarks` – page listing all saved stories with the ability to unbookmark and navigate back to them.
+* `/history` – chronological view of what the user has read, with the ability to clear history.
+
+All three pages should integrate cleanly with the existing LUM News design and state.

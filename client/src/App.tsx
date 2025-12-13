@@ -12,6 +12,11 @@ import FeedManagement from "@/pages/FeedManagement";
 import ArticleDetail from "@/pages/ArticleDetail";
 import SearchExplore from "@/pages/SearchExplore";
 import Settings from "@/pages/Settings";
+import Profile from "@/pages/Profile";
+import Bookmarks from "@/pages/Bookmarks";
+import History from "@/pages/History";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +39,11 @@ function Router() {
       <Route path="/article/:id" component={ArticleDetail} />
       <Route path="/settings" component={Settings} />
       <Route path="/feeds" component={FeedManagement} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/bookmarks" component={Bookmarks} />
+      <Route path="/history" component={History} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       {isAuthenticated && (
         <>
           <Route path="/search" component={SearchExplore} />

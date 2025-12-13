@@ -71,6 +71,8 @@ export interface IStorage {
   getReadStatus(userId: number, articleId: string): Promise<ReadStatus | undefined>;
   markAsRead(userId: number, articleId: string): Promise<ReadStatus>;
   getUserReadArticles(userId: number): Promise<ReadStatus[]>;
+  getReadHistory(userId: number, limit?: number): Promise<any[]>;
+  clearReadHistory(userId: number): Promise<void>;
 
   // User Preferences
   getUserPreferences(userId: number): Promise<UserPreferences | undefined>;
@@ -493,6 +495,39 @@ export class DatabaseStorage implements IStorage {
 
   async getUserReadArticles(userId: number): Promise<ReadStatus[]> {
     return db.select().from(readStatus).where(eq(readStatus.userId, userId));
+  }
+
+  async getReadHistory(userId: number, limit: number = 50): Promise<any[]> {
+    const results = await db
+      .select({
+        id: articles.id,
+        title: articles.title,
+        link: articles.link,
+        sourceId: articles.sourceId,
+        sourceName: articles.sourceName,
+        publishedAt: articles.publishedAt,
+        summary: articles.summary,
+        imageUrl: articles.imageUrl,
+        topics: articles.topics,
+        readAt: readStatus.readAt,
+        region: feedSources.region,
+      })
+      .from(readStatus)
+      .innerJoin(articles, eq(readStatus.articleId, articles.id))
+      .innerJoin(feedSources, eq(articles.sourceId, feedSources.id))
+      .where(eq(readStatus.userId, userId))
+      .orderBy(desc(readStatus.readAt))
+      .limit(limit);
+    
+    return results.map(r => ({
+      ...r,
+      topic: r.topics?.[0] || null,
+      isRead: true,
+    }));
+  }
+
+  async clearReadHistory(userId: number): Promise<void> {
+    await db.delete(readStatus).where(eq(readStatus.userId, userId));
   }
 
   // ==================== USER PREFERENCES ====================

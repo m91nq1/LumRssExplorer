@@ -1,0 +1,238 @@
+Here’s a single, ready-to-paste **Replit prompt** that tells it to build both pages for your existing LUM News project.
+
+---
+
+### Replit Prompt – Privacy Policy & Terms of Service Pages for LUM News
+
+In this existing **LUM News** project, create two legal pages and link them from the footer:
+
+* **Privacy Policy** – `/privacy`
+* **Terms of Service** – `/terms`
+
+Use the same deep-indigo / space theme and typography as the rest of the site. These pages can be simple static pages (HTML/React components) – no backend logic needed.
+
+---
+
+#### 1. General layout
+
+For both pages:
+
+* Full-width section with centered content (`max-width` ± 800–960px).
+* Background consistent with the rest of the app (`#1E174B` or similar).
+* White / light grey text, good line spacing.
+* Sticky site header as usual, but focus is on the legal text.
+* Add a small notice at the top of each page:
+
+  > “This document is provided for information only and does not constitute legal advice. Please consult a qualified lawyer before relying on it.”
+
+Link these pages from the existing **Footer** under the *Legal* column:
+
+* “Privacy Policy” → `/privacy`
+* “Terms of Service” → `/terms`
+
+---
+
+#### 2. Privacy Policy content (for a news/intel app like LUM News)
+
+Create sections with clear headings (using `<h2>`/`<h3>`):
+
+1. **Introduction**
+
+   * Explain what LUM News is (AI-assisted global news aggregation and analysis).
+   * Mention that this policy explains how you collect, use, and protect information.
+
+2. **Information We Collect**
+
+   * **Account information:** email, password hash, display name.
+   * **Usage data:** pages visited, filters used, clicks, bookmarks, approximate location (if used), device/browser info.
+   * **Content preferences:** selected topics, regions, saved stories, alert settings.
+   * **Communication data:** email address for digests/alerts, support messages.
+   * Clarify that LUM News pulls **news articles from third-party sources** (APIs/RSS) but does not own that content.
+
+3. **How We Use Your Information**
+
+   * To provide and operate the service (show stories, personalize feeds).
+   * To improve the product (analytics, feature development).
+   * To send:
+
+     * Account emails (verification, security).
+     * Optional digests/alerts based on topics/regions.
+   * To prevent abuse, fraud, or security incidents.
+
+4. **AI & Third-Party Services**
+
+   * Explain that:
+
+     * AI models may be used for clustering, summarization, and sentiment analysis.
+     * Third-party APIs (e.g. news providers, email services such as Resend/Mailtrap, analytics, error logging) may process limited user data.
+   * State that these providers are bound by their own privacy terms.
+   * Clarify that AI summaries are generated from third-party news articles and may not be perfectly accurate.
+
+5. **Cookies & Tracking**
+
+   * Describe use of cookies or localStorage for:
+
+     * Keeping users logged in.
+     * Remembering preferences (topics, regions, theme).
+     * Basic analytics.
+   * Mention that users can control cookies via browser settings.
+
+6. **Data Sharing & Disclosure**
+
+   * State you do **not** sell personal data.
+   * List cases where data may be shared:
+
+     * Service providers (hosting, email, analytics, error monitoring).
+     * Legal requirements or to protect rights/security.
+   * Aggregated/anonymous stats may be shared publicly (e.g. total users, most viewed topics).
+
+7. **Data Retention**
+
+   * Explain how long you keep:
+
+     * Account data (while account is active + reasonable period).
+     * Logs/analytics (shorter, summarized).
+     * Email preferences and saved stories.
+
+8. **Security**
+
+   * Briefly describe reasonable security measures (encryption in transit, access controls, etc.).
+   * Clarify that no system is 100% secure.
+
+9. **Your Rights & Choices**
+
+   * Users can:
+
+     * Access and update account info.
+     * Change topic/region preferences.
+     * Opt in/out of emails.
+     * Request deletion of their account/data (with a simple explanation of the process).
+   * These rights should be written generically (not jurisdiction-specific) with a note to contact support.
+
+10. **International Transfers**
+
+    * Mention that data may be stored/processed in other countries depending on hosting/third-party providers.
+
+11. **Contact Us**
+
+    * Provide a placeholder contact email for privacy questions (e.g. `privacy@lumnews.app`).
+
+12. **Changes to This Policy**
+
+    * Explain that the policy may change and the “Last updated” date will be adjusted.
+    * Add a “Last updated: [placeholder date]” line at the top.
+
+---
+
+#### 3. Terms of Service content
+
+Create sections such as:
+
+1. **Introduction & Acceptance**
+
+   * State that by using LUM News, users agree to these Terms.
+   * Define “Service”, “User”, and “Content” (including third-party news content and AI-generated summaries).
+
+2. **Use of the Service**
+
+   * LUM News is for **personal and professional informational use**, not for medical, financial, or legal advice.
+   * Users must be of legal age in their jurisdiction (add a generic age requirement, e.g. 16/18, as a placeholder).
+   * Users agree to provide accurate registration info and keep credentials secure.
+
+3. **Accounts & Security**
+
+   * User responsibilities for maintaining the confidentiality of their account.
+   * Obligation to notify you of unauthorized access.
+
+4. **Acceptable Use Policy**
+
+   * Prohibit:
+
+     * Scraping, bulk downloading, or automated access beyond normal use.
+     * Reverse engineering or circumventing security.
+     * Misuse, harassment, or illegal activity.
+     * Using the service to generate or spread disinformation, hate, or illegal content.
+   * Allow reasonable personal/analytical use.
+
+5. **Content & Intellectual Property**
+
+   * Clarify:
+
+     * LUM News aggregates **third-party news content** (copyright remains with original publishers).
+     * AI summaries and visualizations are provided for convenience only.
+     * The LUM News brand, UI, and original code/assets are owned by you.
+   * Grant users a **limited, non-exclusive, non-transferable license** to use the service for personal/internal purposes.
+
+6. **AI & Information Accuracy**
+
+   * Disclaim that:
+
+     * AI-generated summaries and sentiment analysis may contain errors.
+     * The service is not responsible for the accuracy/completeness of third-party news or AI output.
+   * Encourage users to check the original sources.
+
+7. **Third-Party Links & Services**
+
+   * Mention that the site links to external sites and uses third-party APIs.
+   * You are not responsible for external content or policies.
+
+8. **Plans, Payments & Changes** (even if you’re not charging yet)
+
+   * Add a section that can handle future freemium/paid tiers:
+
+     * You may introduce or change pricing plans later.
+     * You may change or discontinue features with reasonable notice.
+   * If no payments yet, note that the service is currently free but subject to change.
+
+9. **Termination**
+
+   * You may suspend or terminate accounts that:
+
+     * Violate the Terms,
+     * Abuse the service,
+     * Pose security or legal risk.
+   * Users may stop using the service or request account deletion.
+
+10. **Limitation of Liability & Disclaimer**
+
+    * Standard SaaS-style disclaimer:
+
+      * Service provided “as is” and “as available”.
+      * No warranties of uninterrupted or error-free operation.
+      * Limit your liability to the maximum extent allowed (or to a nominal amount).
+    * Make clear it’s **not** legal/financial/medical advice.
+
+11. **Governing Law & Dispute Resolution**
+
+    * Add a placeholder jurisdiction (e.g. “These Terms are governed by the laws of [Your Country/Region].”).
+    * Simple dispute clause (e.g. attempt informal resolution before litigation).
+
+12. **Changes to the Terms**
+
+    * You may update Terms from time to time.
+    * Continued use after changes means acceptance.
+    * Show a “Last updated: [placeholder date]” at the top.
+
+13. **Contact**
+
+    * Provide a contact email for terms/abuse issues (e.g. `legal@lumnews.app`).
+
+---
+
+#### 4. Styling & interaction
+
+* Use headings, subheadings, and bullet lists for readability.
+* Add a small **table of contents** at the top of each page with anchor links to sections.
+* Use smooth scroll to jump to sections.
+* Ensure mobile readability (bigger font, enough spacing).
+
+---
+
+**End result I expect:**
+
+* Two new pages/components:
+
+  * `/privacy` – clear Privacy Policy tailored to a news-aggregation + AI summary service like LUM News.
+  * `/terms` – Terms of Service covering acceptable use, AI/accuracy disclaimers, IP, and liability.
+* Footer links under “Legal” correctly navigate to these pages.
+* Text is generic and clearly marked as **not legal advice**, ready to be reviewed by a real lawyer.

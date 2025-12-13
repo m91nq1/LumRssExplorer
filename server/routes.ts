@@ -355,6 +355,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/read-history", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+      const history = await storage.getReadHistory(userId, limit);
+      res.json({ articles: history, total: history.length });
+    } catch (error) {
+      console.error("Error fetching read history:", error);
+      res.status(500).json({ error: "Failed to fetch read history" });
+    }
+  });
+
+  app.delete("/api/read-history", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      await storage.clearReadHistory(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error clearing read history:", error);
+      res.status(500).json({ error: "Failed to clear read history" });
+    }
+  });
+
   // ==================== USER PREFERENCES ====================
   app.get("/api/preferences", async (req, res) => {
     try {
