@@ -29,7 +29,7 @@ export default function About() {
         backgroundAttachment: 'fixed',
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
       
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
