@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Newspaper, Layers, Bell, TrendingUp, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
