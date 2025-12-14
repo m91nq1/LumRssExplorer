@@ -174,7 +174,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/10 py-12 px-6 z-10">
+      <footer className="relative border-t border-white/10 py-12 px-6 z-10 bg-black/60 backdrop-blur-md">
         <div className="container mx-auto max-w-4xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
