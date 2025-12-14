@@ -1,16 +1,9 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Newspaper, Layers, Bell, TrendingUp, Zap } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { ArticlesResponse } from "@shared/schema";
+import { Newspaper, Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
 import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
 
 export default function Landing() {
-  const { data: articlesData, isLoading } = useQuery<ArticlesResponse>({
-    queryKey: ["/api/articles", { limit: 5 }],
-  });
-
-  const topStories = articlesData?.articles?.slice(0, 5) || [];
   return (
     <div 
       className="min-h-screen text-white overflow-hidden"
@@ -78,7 +71,7 @@ export default function Landing() {
                     Launch Dashboard
                   </Button>
                 </a>
-                <a href="/home">
+                <a href="/api/login">
                   <Button 
                     size="lg" 
                     variant="outline"
@@ -109,27 +102,9 @@ export default function Landing() {
                   <p className="text-sm text-gray-400 mb-3">
                     Curated headlines from trusted global sources, updated every 10 minutes.
                   </p>
-                  <div className="space-y-2">
-                    {isLoading ? (
-                      <>
-                        <div className="h-2 bg-white/5 rounded-full w-full animate-pulse" />
-                        <div className="h-2 bg-white/5 rounded-full w-4/5 animate-pulse" />
-                        <div className="h-2 bg-white/5 rounded-full w-3/5 animate-pulse" />
-                      </>
-                    ) : topStories.length > 0 ? (
-                      topStories.map((article) => (
-                        <a 
-                          key={article.id} 
-                          href={`/article/${article.id}`}
-                          className="block text-xs text-gray-300 hover:text-white truncate transition-colors"
-                          data-testid={`top-story-${article.id}`}
-                        >
-                          {article.title}
-                        </a>
-                      ))
-                    ) : (
-                      <p className="text-xs text-gray-500">No stories available</p>
-                    )}
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Lock className="w-3 h-3" />
+                    Sign in to view stories
                   </div>
                 </div>
               </div>
@@ -205,23 +180,23 @@ export default function Landing() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
               <div className="space-y-2">
-                <Link href="/home" className="block text-sm text-gray-400 hover:text-white transition-colors">Explore</Link>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Explore</a>
                 <Link href="/about" className="block text-sm text-gray-400 hover:text-white transition-colors">About</Link>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Account</h4>
               <div className="space-y-2">
-                <Link href="/profile" className="block text-sm text-gray-400 hover:text-white transition-colors">Profile</Link>
-                <Link href="/bookmarks" className="block text-sm text-gray-400 hover:text-white transition-colors">Bookmarks</Link>
-                <Link href="/history" className="block text-sm text-gray-400 hover:text-white transition-colors">History</Link>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Profile</a>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Bookmarks</a>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">History</a>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Settings</h4>
               <div className="space-y-2">
-                <Link href="/settings" className="block text-sm text-gray-400 hover:text-white transition-colors">Preferences</Link>
-                <Link href="/feeds" className="block text-sm text-gray-400 hover:text-white transition-colors">Manage Feeds</Link>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Preferences</a>
+                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Manage Feeds</a>
               </div>
             </div>
             <div>

@@ -35,18 +35,29 @@ function Router() {
       <Route path="/" component={isAuthenticated ? Home : Landing} />
       <Route path="/landing" component={Landing} />
       <Route path="/about" component={About} />
-      <Route path="/home" component={Home} />
-      <Route path="/article/:id" component={ArticleDetail} />
-      <Route path="/settings" component={Settings} />
-      <Route path="/feeds" component={FeedManagement} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/bookmarks" component={Bookmarks} />
-      <Route path="/history" component={History} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <>
+          <Route path="/home" component={Home} />
+          <Route path="/article/:id" component={ArticleDetail} />
+          <Route path="/settings" component={Settings} />
+          <Route path="/feeds" component={FeedManagement} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/bookmarks" component={Bookmarks} />
+          <Route path="/history" component={History} />
           <Route path="/search" component={SearchExplore} />
+        </>
+      ) : (
+        <>
+          <Route path="/home" component={Landing} />
+          <Route path="/article/:id" component={Landing} />
+          <Route path="/settings" component={Landing} />
+          <Route path="/feeds" component={Landing} />
+          <Route path="/profile" component={Landing} />
+          <Route path="/bookmarks" component={Landing} />
+          <Route path="/history" component={Landing} />
+          <Route path="/search" component={Landing} />
         </>
       )}
       <Route component={NotFound} />
