@@ -152,18 +152,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==================== AI SUMMARY ====================
   app.post("/api/articles/:id/ai-summary", async (req, res) => {
     try {
-      const { apiKey } = req.body;
       const articleId = req.params.id;
 
-      if (!apiKey) {
-        return res.status(400).json({ error: "OpenRouter API key is required" });
+      const serverApiKey = process.env.OPENROUTER_API_KEY;
+      if (!serverApiKey) {
+        return res.status(503).json({ error: "AI summary service is not configured" });
       }
 
-      if (!validateApiKey(apiKey)) {
-        return res.status(400).json({ error: "Invalid API key format" });
-      }
-
-      const result = await generateAISummary(articleId, apiKey);
+      const result = await generateAISummary(articleId, serverApiKey);
       res.json(result);
     } catch (error: any) {
       console.error("Error generating AI summary:", error);
