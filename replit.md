@@ -28,16 +28,20 @@ Preferred communication style: Simple, everyday language.
 **State Management**: TanStack Query (React Query) manages server state, data fetching, and caching. Local UI state is managed with React hooks (useState, useEffect, useRef).
 
 **Routing**: Wouter provides lightweight client-side routing with pages for:
-- Home (/) - Main feed view
-- Landing (/landing) - Public landing page with 3D globe
-- Article Detail (/article/:id) - Individual article view
-- Feed Management (/feeds) - Admin feed management
-- Settings (/settings) - User preferences
-- Profile (/profile) - Account info and topic/region preferences
-- Bookmarks (/bookmarks) - Saved articles
-- History (/history) - Read article timeline
-- Privacy Policy (/privacy) - Legal privacy policy
-- Terms of Service (/terms) - Legal terms of service
+- Home (/) - Main feed view (authenticated) or Landing page (unauthenticated)
+- Landing (/landing) - Public landing page
+- Article Detail (/article/:id) - Individual article view (requires auth)
+- Feed Management (/feeds) - Admin feed management (requires auth)
+- Settings (/settings) - User preferences (requires auth)
+- Profile (/profile) - Account info and topic/region preferences (requires auth)
+- Bookmarks (/bookmarks) - Saved articles (requires auth)
+- History (/history) - Read article timeline (requires auth)
+- Search (/search) - Search page (requires auth)
+- About (/about) - Public about page
+- Privacy Policy (/privacy) - Legal privacy policy (public)
+- Terms of Service (/terms) - Legal terms of service (public)
+
+**Route Protection**: Protected routes require authentication. Unauthenticated users are shown the Landing page when attempting to access protected routes.
 
 **Layout Pattern**: Fixed sidebar layout (280px) with a fluid main content area. The interface uses a responsive grid system that adapts from single-column on mobile to two-column on desktop.
 
