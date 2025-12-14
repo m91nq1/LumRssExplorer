@@ -46,13 +46,15 @@ export async function generateAISummary(
 
   const articleContent = article.content || article.summary || article.title;
   
-  const systemPrompt = `You are a professional news analyst. Your task is to provide clear, concise summaries of news articles. Focus on:
+  const systemPrompt = `You are a professional news analyst. Your task is to provide comprehensive summaries of news articles. Focus on:
 - The main facts and key points
 - Who is involved and what happened
+- The background and context
 - Why it matters (significance/impact)
+- Potential implications or what to watch for next
 - Keep it objective and neutral
 - Use simple, accessible language
-Format: Write 2-3 short paragraphs (about 100-150 words total).`;
+Format: Write 4-5 detailed paragraphs (about 300-400 words total).`;
 
   const userPrompt = `Please summarize this news article:
 
@@ -80,7 +82,7 @@ Source: ${article.sourceName || "Unknown"}`;
     body: JSON.stringify({
       model: MODEL,
       messages,
-      max_tokens: 500,
+      max_tokens: 1000,
       temperature: 0.7,
     }),
   });
