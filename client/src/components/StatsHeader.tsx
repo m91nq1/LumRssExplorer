@@ -11,6 +11,7 @@ import { RefreshCw, Settings, Search, LogOut, User, Home, Info } from "lucide-re
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import lumLogo from "@assets/Logo_maker_project_1765912575019.png";
 
 interface StatsHeaderProps {
   totalArticles: number;
@@ -45,14 +46,7 @@ export function StatsHeader({
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/landing">
-            <Button
-              variant="ghost"
-              size="icon"
-              data-testid="button-landing-page"
-              title="Home"
-            >
-              <Home className="w-5 h-5" />
-            </Button>
+            <img src={lumLogo} alt="LUM News" className="h-10 w-auto cursor-pointer" data-testid="img-logo" />
           </Link>
           <Link href="/about">
             <Button
@@ -64,9 +58,6 @@ export function StatsHeader({
               <Info className="w-5 h-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
-            LUM News
-          </h1>
         </div>
 
         <div className="flex items-center gap-6 text-sm text-muted-foreground">

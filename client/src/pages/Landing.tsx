@@ -1,7 +1,8 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Newspaper, Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
+import { Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
 import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
+import lumLogo from "@assets/Logo_maker_project_1765912575019.png";
 
 export default function Landing() {
   return (
@@ -18,10 +19,7 @@ export default function Landing() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Newspaper className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-semibold text-xl tracking-tight">LUM News</span>
+            <img src={lumLogo} alt="LUM News" className="h-10 w-auto" />
           </div>
           <nav className="flex items-center gap-4">
             <a href="/about">
@@ -51,14 +49,7 @@ export default function Landing() {
 
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
             <div className="text-center max-w-4xl px-6 animate-fadeIn">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4">
-                <span className="text-white">LUM</span>
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent font-normal"> News</span>
-              </h1>
-              
-              <p className="text-lg md:text-xl text-gray-300 tracking-widest uppercase mb-8">
-                The world's narratives in your hands
-              </p>
+              <img src={lumLogo} alt="LUM News" className="h-40 md:h-52 lg:h-64 w-auto mx-auto mb-8" />
 
               <div className="flex flex-wrap gap-4 justify-center">
                 <a href="/api/login">
