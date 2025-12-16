@@ -1,0 +1,81 @@
+Top Celebrity Gossip & Pop Culture RSS Feeds
+1. People Magazine – Top Stories (Celebrity + Pop Culture)
+https://people.com/feed
+
+2. TMZ – Entertainment News
+https://www.tmz.com/rss.xml
+
+3. E! News – Entertainment Headlines
+https://www.eonline.com/syndication/feeds/rss_feeds/top_stories.xml
+
+4. Entertainment Weekly (EW)
+https://ew.com/feed/
+
+5. Variety – Entertainment Industry
+https://variety.com/feed/
+
+6. Hollywood Reporter – Top News
+https://www.hollywoodreporter.com/feed/
+
+7. Rolling Stone – Culture & Entertainment
+https://www.rollingstone.com/feed/
+
+8. BuzzFeed Entertainment
+https://www.buzzfeed.com/entertainment.xml
+
+9. Just Jared – Celebrity Gossip
+https://www.justjared.com/feed/
+
+10. Page Six – Celebrity Gossip
+https://pagesix.com/feed/
+
+⭐ Pop Culture / Movies / TV RSS Feeds
+11. IGN – Entertainment
+https://feeds.ign.com/ign/all
+
+12. ScreenRant
+https://screenrant.com/feed/
+
+13. Collider – Movies & TV
+https://collider.com/rss/
+
+14. AV Club – Pop Culture
+https://www.avclub.com/rss
+
+15. Digital Spy – TV, Movies, Pop Culture
+https://www.digitalspy.com/rss/all.xml
+
+🌟 Optional: Music & Celebrity Culture
+16. Billboard – Music News
+https://www.billboard.com/feed/
+
+17. NME – Music & Culture
+https://www.nme.com/feed
+
+18. Pitchfork
+https://pitchfork.com/rss/news/
+
+⭐ Best combination for LUM News categories
+Category	Best RSS feeds
+Celebrity gossip	TMZ, Page Six, Just Jared
+Pop culture	People, E! News, AV Club, Digital Spy
+Movies/TV	Variety, Hollywood Reporter, Collider
+Music culture	Billboard, NME, Pitchfork
+General entertainment	Entertainment Weekly, BuzzFeed Entertainment
+
+These merge beautifully into your structure as a new Topic Category:
+
+“Celebrity & Pop Culture”
+Subtopics: Celebrities, Movies/TV, Music, Pop Trends
+
+✔️ If you want, I can also:
+
+Add these feeds to your Rocket.new / Replit prompt
+
+Build the story clustering logic for this new category
+
+Suggest AI summary prompts tailored to pop culture (less political, more event/person centered)
+
+Create the UI + iconography for the Pop Culture filter
+
+Just say “integrate these feeds into the prompt” and I’ll rewrite it.

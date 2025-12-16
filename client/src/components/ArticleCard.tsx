@@ -2,7 +2,7 @@ import { ArticleWithStatus } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, Bookmark, BookmarkCheck, ExternalLink } from "lucide-react";
+import { Clock, Bookmark, BookmarkCheck, ExternalLink, Star } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useLocation } from "wouter";
 
@@ -45,13 +45,25 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
     >
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
-          <Badge
-            variant="secondary"
-            className="text-xs font-medium uppercase tracking-wide shrink-0"
-            data-testid={`badge-source-${article.id}`}
-          >
-            {article.sourceName}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge
+              variant="secondary"
+              className="text-xs font-medium uppercase tracking-wide shrink-0"
+              data-testid={`badge-source-${article.id}`}
+            >
+              {article.sourceName}
+            </Badge>
+            {article.topics?.includes("Celebrity & Entertainment") && (
+              <Badge
+                variant="outline"
+                className="text-xs font-medium shrink-0 bg-primary/10 text-primary border-primary/30"
+                data-testid={`badge-entertainment-${article.id}`}
+              >
+                <Star className="w-3 h-3 mr-1" />
+                Entertainment
+              </Badge>
+            )}
+          </div>
           
           {onBookmark && (
             <Button

@@ -98,16 +98,39 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
   {
     topic: "Celebrity & Entertainment",
     keywords: [
+      // Celebrity gossip
       "celebrity", "famous", "star", "hollywood", "actor", "actress",
       "singer", "musician", "band", "concert", "tour", "album", "song",
+      "gossip", "scandal", "breakup", "dating", "romance", "engaged",
+      "wedding", "divorce", "relationship", "split", "couple", "cheating",
+      "paparazzi", "tabloid", "exclusive", "spotted", "rumor", "affair",
+      // Movies & TV
       "movie", "film", "director", "oscar", "grammy", "emmy", "award",
       "red carpet", "premiere", "box office", "streaming", "netflix",
-      "disney", "hbo", "tv show", "series", "reality tv", "influencer",
-      "social media star", "youtube", "tiktok star", "fashion", "model",
+      "disney", "hbo", "hulu", "amazon prime", "tv show", "series", 
+      "reality tv", "binge", "season finale", "trailer", "casting",
+      "blockbuster", "sequel", "franchise", "superhero", "marvel", "dc",
+      "animation", "pixar", "dreamworks", "studio", "screenplay",
+      // Music
+      "billboard", "chart", "hit single", "number one", "platinum",
+      "record deal", "music video", "lyrics", "rapper", "pop star",
+      "rock band", "country music", "hip hop", "r&b", "edm", "festival",
+      "coachella", "glastonbury", "mtv", "vma", "bts", "taylor swift",
+      "beyonce", "drake", "kanye", "rihanna", "ariana grande",
+      // Pop culture & influencers
+      "influencer", "social media star", "youtube", "youtuber", 
+      "tiktok star", "tiktoker", "instagram", "viral", "trending",
+      "fashion", "model", "vogue", "runway", "designer", "met gala",
+      // Sports celebrities
       "sports star", "athlete", "football", "basketball", "soccer",
       "tennis", "golf", "olympics", "world cup", "championship",
-      "royalty", "prince", "princess", "queen", "king", "wedding",
-      "divorce", "scandal", "gossip"
+      "nba", "nfl", "mlb", "fifa", "wimbledon", "super bowl",
+      // Royalty
+      "royalty", "prince", "princess", "queen", "king", "meghan",
+      "harry", "royal family", "palace", "windsor", "buckingham",
+      // Entertainment sources
+      "tmz", "e! news", "entertainment tonight", "people magazine",
+      "page six", "variety", "hollywood reporter", "just jared"
     ],
   },
   {

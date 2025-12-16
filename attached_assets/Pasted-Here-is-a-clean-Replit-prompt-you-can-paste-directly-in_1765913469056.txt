@@ -1,0 +1,169 @@
+Here is a **clean Replit prompt** you can paste directly into your existing LUM News project instructions.
+This version **adds celebrity gossip + pop culture RSS feeds** and integrates them into your filtering, topic system, and story aggregation.
+
+---
+
+# ⭐ **Replit Prompt – Add Celebrity Gossip & Pop Culture RSS Feeds to LUM News**
+
+In this existing **LUM News** project, extend the RSS ingestion system to include **celebrity gossip, entertainment, and pop culture** feeds. These should be treated as first-class topics alongside world news, politics, technology, AI, etc.
+
+---
+
+## **1. Add these RSS Feeds (celebrity, entertainment, pop culture)**
+
+Integrate all of the following RSS feeds into the existing ingestion pipeline. Place them in a topic category called **“Celebrity & Pop Culture”**, with subcategories **Celebrities**, **Movies & TV**, **Music**, and **General Entertainment**.
+
+### **Celebrity Gossip + Entertainment**
+
+```
+https://people.com/feed
+https://www.tmz.com/rss.xml
+https://www.eonline.com/syndication/feeds/rss_feeds/top_stories.xml
+https://ew.com/feed/
+https://variety.com/feed/
+https://www.hollywoodreporter.com/feed/
+https://www.rollingstone.com/feed/
+https://www.justjared.com/feed/
+https://pagesix.com/feed/
+https://www.buzzfeed.com/entertainment.xml
+```
+
+### **Movies & TV**
+
+```
+https://collider.com/rss/
+https://screenrant.com/feed/
+https://www.avclub.com/rss
+https://www.digitalspy.com/rss/all.xml
+https://feeds.ign.com/ign/all
+```
+
+### **Music Culture**
+
+```
+https://www.billboard.com/feed/
+https://www.nme.com/feed
+https://pitchfork.com/rss/news/
+```
+
+---
+
+## **2. Add a new Topic Category in the UI**
+
+Create a new selectable topic in the existing Topics filter called:
+
+### **Celebrity & Pop Culture**
+
+Under this topic, allow subtopic filtering:
+
+* **Celebrities** (TMZ, People, E! News, Page Six, Just Jared)
+* **Pop Culture** (BuzzFeed Entertainment, Rolling Stone, AV Club)
+* **Movies & TV** (Collider, ScreenRant, Digital Spy, Variety, Hollywood Reporter)
+* **Music** (Billboard, NME, Pitchfork)
+
+All filters should behave the same as existing news topics.
+
+---
+
+## **3. Update the story clustering system**
+
+Modify the clustering logic so that:
+
+* Articles from these RSS feeds can form **their own clusters**, separate from politics/world news.
+* Entities should include:
+
+  * Names of celebrities
+  * Movie titles
+  * TV shows
+  * Music artists
+  * Entertainment events (Oscars, Grammys, etc.)
+
+Add support for **lighter sentiment analysis**, since entertainment content usually has more positive/neutral tones.
+
+---
+
+## **4. Update the Story Cards UI**
+
+When a story is tagged under the new category:
+
+* Add a **purple/pink accent** (“Entertainment purple”) to story cards.
+* Include small icons depending on subtopic:
+
+  * 👤 for Celebrities
+  * 🎬 for Movies/TV
+  * 🎵 for Music
+  * ⭐ for Pop Culture
+
+Ensure the icon appears next to the story title or category tag.
+
+---
+
+## **5. Include the new topic in the Filters bar**
+
+In the Topics filter bar (chips or buttons):
+
+Add:
+
+### **• Celebrity & Pop Culture**
+
+Clicking this should immediately filter the feed to show only stories from the above RSS feeds.
+
+---
+
+## **6. Integrate into Search & Explore**
+
+Update the search index so that:
+
+* Searches for **celebrity names** return stories from these feeds.
+* Searches for movie titles, TV shows, musicians also match.
+* Entertainment stories appear under the new topic category in results.
+
+---
+
+## **7. Apply AI Summaries to these Feeds**
+
+Use your existing summarization function (e.g., via DeepSeek Chimera or any other model) to generate:
+
+* A short **card blurb** (1–2 lines)
+* A longer **story summary** in the Story Detail view
+
+Adjust the prompt for entertainment stories:
+
+* Avoid political framing unless explicitly present
+* Focus on:
+
+  * Who the celebrity is
+  * What happened
+  * Relevant dates/events
+  * Public reaction if included
+
+Maintain **neutral, factual language**.
+
+---
+
+## **8. Performance Considerations**
+
+Because entertainment feeds update frequently:
+
+* Cache results for 10–20 minutes
+* Limit the number of articles pulled per source
+* Display “Latest Entertainment Stories” on the Home feed when Celebrity & Pop Culture is selected
+
+---
+
+# ✔️ **End Result I Expect**
+
+After implementing this prompt:
+
+* LUM News shows a **new celebrity/pop culture topic**.
+* RSS ingestion pulls entertainment content from all sources above.
+* Story clustering forms entertainment “narratives.”
+* AI summaries work for gossip, movies, TV, and music stories.
+* Filters allow selecting **Celebrity**, **Movies/TV**, **Music**, or **General Pop Culture**.
+* UI updates with icons and entertainment color accents.
+
+The app now feels **more complete, broader in appeal, and more competitive with mainstream news apps.**
+
+---
+
+If you want, I can **merge this into your full Replit LUM News prompt** with world news, politics, AI, crime, etc.

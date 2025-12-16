@@ -123,8 +123,9 @@ Preferred communication style: Simple, everyday language.
 - **CSS Animations**: Fade-in effects on load, hover-elevate interactions
 
 ### Core Features
-- **Article Aggregation**: Ingests articles from 23+ RSS sources across 9 categories
+- **Article Aggregation**: Ingests articles from 50+ RSS sources across 10 categories including entertainment
 - **Topic-Based Filtering**: 10 topic categories (War/Conflict, US Politics, Europe Politics, AI & Technology, Finance & Markets, Crime & Justice, Science & Health, Celebrity & Entertainment, Environment/Climate, Other/Offbeat)
+- **Entertainment Coverage**: 18 dedicated celebrity/entertainment sources including TMZ, Variety, Hollywood Reporter, Rolling Stone, Billboard, Page Six, Screen Rant, IGN, Pitchfork, and more
 - **Region Filtering**: Filter by region (Global, US, Europe, UK, Russia, China, Africa, Middle East, Asia-Pacific)
 - **Most Polarised Toggle**: Sort articles by polarisation/controversy score
 - **Source Filtering**: Filter by source, time period, and search query
