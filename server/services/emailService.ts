@@ -1,4 +1,5 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 
 export interface StorySummary {
   title: string;
@@ -9,32 +10,42 @@ export interface StorySummary {
   publishedAt?: string;
 }
 
-let resend: Resend | null = null;
+let transporter: Transporter | null = null;
 
-function getResendClient(): Resend | null {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('[EmailService] RESEND_API_KEY not configured - emails will be skipped');
+function getTransporter(): Transporter | null {
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('[EmailService] SMTP credentials not configured - emails will be skipped');
     return null;
   }
-  if (!resend) {
-    resend = new Resend(process.env.RESEND_API_KEY);
+  
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
   }
-  return resend;
+  
+  return transporter;
 }
 
-const FROM_EMAIL = 'LUM News <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.EMAIL_FROM || 'LUM News <noreply@lumnews.app>';
 const APP_URL = process.env.REPLIT_DEV_DOMAIN 
   ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
   : 'https://lumnews.app';
 
 export async function sendWelcomeEmail(to: string, name?: string): Promise<void> {
-  const client = getResendClient();
-  if (!client) return;
+  const transport = getTransporter();
+  if (!transport) return;
 
   const greeting = name ? `Hello ${name}` : 'Hello';
 
   try {
-    await client.emails.send({
+    await transport.sendMail({
       from: FROM_EMAIL,
       to,
       subject: "Welcome to LUM News – The world's narratives in your hand",
@@ -90,6 +101,7 @@ export async function sendWelcomeEmail(to: string, name?: string): Promise<void>
     console.log(`[EmailService] Welcome email sent to ${to}`);
   } catch (error) {
     console.error('[EmailService] Failed to send welcome email:', error);
+    throw error;
   }
 }
 
@@ -99,8 +111,8 @@ export async function sendTopicDigestEmail(
   topics: string[],
   stories: StorySummary[]
 ): Promise<void> {
-  const client = getResendClient();
-  if (!client) return;
+  const transport = getTransporter();
+  if (!transport) return;
 
   if (stories.length === 0) {
     console.log(`[EmailService] No stories for digest, skipping email to ${to}`);
@@ -123,7 +135,7 @@ export async function sendTopicDigestEmail(
   `).join('');
 
   try {
-    await client.emails.send({
+    await transport.sendMail({
       from: FROM_EMAIL,
       to,
       subject: `Your LUM News update – Stories about ${topicsList}`,
@@ -173,5 +185,6 @@ export async function sendTopicDigestEmail(
     console.log(`[EmailService] Topic digest sent to ${to} with ${stories.length} stories`);
   } catch (error) {
     console.error('[EmailService] Failed to send topic digest email:', error);
+    throw error;
   }
 }
