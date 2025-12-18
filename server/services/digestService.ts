@@ -1,6 +1,5 @@
 import { storage } from '../storage';
 import { sendTopicDigestEmail, type StorySummary } from './emailService';
-import { fetchPersonalisedStories } from './newsProviderService';
 import type { User, UserPreferences } from '@shared/schema';
 
 export async function buildUserDigest(
@@ -9,10 +8,28 @@ export async function buildUserDigest(
   if (!preferences.favouriteTopics || preferences.favouriteTopics.length === 0) {
     return [];
   }
-  return fetchPersonalisedStories(
-    preferences.favouriteTopics,
-    preferences.preferredRegions || undefined
-  );
+
+  // Get articles from our database that match user's topic preferences
+  const oneDayAgo = new Date();
+  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+
+  const { articles } = await storage.getArticles({
+    topics: preferences.favouriteTopics,
+    regions: preferences.preferredRegions || undefined,
+    since: oneDayAgo,
+    page: 1,
+    pageSize: 15,
+  });
+
+  // Convert database articles to StorySummary format
+  return articles.map(article => ({
+    title: article.title,
+    source: article.sourceName || 'Unknown Source',
+    region: article.sourceRegion || undefined,
+    url: article.link,
+    summary: article.summary || article.aiSummary || undefined,
+    publishedAt: article.publishedAt,
+  }));
 }
 
 export async function runDigestsForAllUsers(): Promise<{
