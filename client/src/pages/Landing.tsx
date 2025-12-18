@@ -1,7 +1,8 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Newspaper, Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
+import { Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
 import heroBackground from "@assets/image_1766075796395.png";
+import lumLogo from "@assets/global-hands-icon-world-aid-vector-13489856_1766076827364.avif";
 
 export default function Landing() {
   return (
@@ -21,9 +22,11 @@ export default function Landing() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Newspaper className="w-5 h-5 text-white" />
-            </div>
+            <img 
+              src={lumLogo} 
+              alt="LUM News Logo" 
+              className="w-10 h-10 rounded-xl object-cover"
+            />
             <span className="font-semibold text-xl tracking-tight">LUM News</span>
           </div>
           <nav className="flex items-center gap-4">

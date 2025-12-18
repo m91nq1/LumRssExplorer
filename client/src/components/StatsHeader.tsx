@@ -7,10 +7,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RefreshCw, Settings, Search, LogOut, User, Home, Info } from "lucide-react";
+import { RefreshCw, Settings, Search, LogOut, User, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import lumLogo from "@assets/global-hands-icon-world-aid-vector-13489856_1766076827364.avif";
 
 interface StatsHeaderProps {
   totalArticles: number;
@@ -45,15 +46,17 @@ export function StatsHeader({
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/landing">
-            <Button
-              variant="ghost"
-              size="icon"
+            <img 
+              src={lumLogo} 
+              alt="LUM News Logo" 
+              className="w-9 h-9 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
               data-testid="button-landing-page"
               title="Home"
-            >
-              <Home className="w-5 h-5" />
-            </Button>
+            />
           </Link>
+          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
+            LUM News
+          </h1>
           <Link href="/about">
             <Button
               variant="ghost"
@@ -64,9 +67,6 @@ export function StatsHeader({
               <Info className="w-5 h-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
-            LUM News
-          </h1>
         </div>
 
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
