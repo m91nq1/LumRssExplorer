@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { FeedSource, NewsProvider } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAdmin } from "@/hooks/useAdmin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -86,6 +87,7 @@ const providerColors: Record<string, { bg: string; text: string; border: string;
 
 export default function FeedManagement() {
   const { toast } = useToast();
+  const { isAdmin, isLoading: isAdminLoading } = useAdmin();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<FeedSource | null>(null);
   const [expandedProviders, setExpandedProviders] = useState<Record<string, boolean>>({});
@@ -99,14 +101,17 @@ export default function FeedManagement() {
 
   const { data, isLoading } = useQuery<FeedsResponse>({
     queryKey: ["/api/feeds"],
+    enabled: isAdmin,
   });
 
   const { data: providersData, isLoading: providersLoading } = useQuery<ProvidersResponse>({
     queryKey: ["/api/providers"],
+    enabled: isAdmin,
   });
 
   const { data: sourcesData } = useQuery<SourcesResponse>({
     queryKey: ["/api/sources"],
+    enabled: isAdmin,
   });
 
   const toggleProviderMutation = useMutation({
@@ -271,6 +276,40 @@ export default function FeedManagement() {
   const toggleProviderExpanded = (id: string) => {
     setExpandedProviders(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  if (isAdminLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
+          <div className="h-full max-w-6xl mx-auto px-6 flex items-center gap-4">
+            <Link href="/">
+              <Button variant="ghost" size="icon">
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            </Link>
+            <h1 className="text-xl font-semibold">Access Denied</h1>
+          </div>
+        </header>
+        <main className="max-w-6xl mx-auto px-6 py-12 text-center">
+          <h2 className="text-2xl font-semibold mb-2">Admin Access Required</h2>
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access feed management. This area is restricted to administrators only.
+          </p>
+          <Link href="/">
+            <Button>Return to Home</Button>
+          </Link>
+        </main>
+      </div>
+    );
+  }
 
   const feeds = data?.feeds || [];
   const providers = providersData?.providers || [];

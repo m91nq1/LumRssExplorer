@@ -11,6 +11,7 @@ import { RefreshCw, Settings, Search, LogOut, User, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
 
 interface StatsHeaderProps {
@@ -29,6 +30,7 @@ export function StatsHeader({
   isRefreshing,
 }: StatsHeaderProps) {
   const { user, isAuthenticated } = useAuth();
+  const { isAdmin } = useAdmin();
   const formattedRefreshTime = lastRefreshTime
     ? formatDistanceToNow(new Date(lastRefreshTime), { addSuffix: true })
     : "Never";
@@ -99,15 +101,17 @@ export function StatsHeader({
               </Button>
             </Link>
 
-            <Link href="/feeds">
-              <Button
-                variant="ghost"
-                size="icon"
-                data-testid="button-feed-settings"
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/feeds">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  data-testid="button-feed-settings"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </Link>
+            )}
 
             <Button
               onClick={onRefresh}

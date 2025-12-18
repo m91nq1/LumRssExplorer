@@ -10,6 +10,36 @@ import { generateAISummary, validateApiKey } from "./summaryService";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import { sendWelcomeEmail } from "./services/emailService";
 
+// Admin email addresses from environment variable (comma-separated)
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com")
+  .split(",")
+  .map(e => e.trim().toLowerCase());
+
+function isAdminEmail(email: string | undefined | null): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase());
+}
+
+// Admin middleware - checks if authenticated user is an admin
+async function isAdmin(req: Request, res: Response, next: NextFunction) {
+  const sessionUser = req.user as any;
+  
+  if (!sessionUser?.claims?.sub) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  
+  try {
+    const user = await storage.getUserByReplitId(sessionUser.claims.sub);
+    if (!user || !isAdminEmail(user.email)) {
+      return res.status(403).json({ error: "Admin access required" });
+    }
+    next();
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return res.status(500).json({ error: "Failed to verify admin status" });
+  }
+}
+
 // Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
   const sessionUser = req.user as any;
@@ -197,8 +227,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ==================== FEED MANAGEMENT ====================
-  app.get("/api/feeds", async (req, res) => {
+  // ==================== ADMIN CHECK ====================
+  app.get("/api/admin/check", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUserByReplitId(userId);
+      const adminStatus = user ? isAdminEmail(user.email) : false;
+      res.json({ isAdmin: adminStatus });
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      res.json({ isAdmin: false });
+    }
+  });
+
+  // ==================== FEED MANAGEMENT (Admin Only) ====================
+  app.get("/api/feeds", isAdmin, async (req, res) => {
     try {
       const feeds = await storage.getFeedSources();
       res.json({ feeds });
@@ -208,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/feeds", async (req, res) => {
+  app.post("/api/feeds", isAdmin, async (req, res) => {
     try {
       const validationResult = insertFeedSourceSchema.safeParse(req.body);
       
@@ -227,7 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/feeds/:id", async (req, res) => {
+  app.patch("/api/feeds/:id", isAdmin, async (req, res) => {
     try {
       const feed = await storage.updateFeedSource(req.params.id, req.body);
       
@@ -242,7 +285,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/feeds/:id", async (req, res) => {
+  app.delete("/api/feeds/:id", isAdmin, async (req, res) => {
     try {
       await storage.deleteFeedSource(req.params.id);
       res.json({ success: true });
