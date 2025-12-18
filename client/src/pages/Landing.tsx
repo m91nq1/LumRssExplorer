@@ -10,8 +10,11 @@ export default function Landing() {
       style={{
         backgroundImage: `url(${heroBackground})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center 30%',
         backgroundAttachment: 'fixed',
+        imageRendering: 'auto',
+        WebkitBackfaceVisibility: 'hidden',
+        backfaceVisibility: 'hidden',
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
