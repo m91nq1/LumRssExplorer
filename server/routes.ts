@@ -7,7 +7,7 @@ import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
-import { runDigestsForAllUsers } from "./services/digestService";
+import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import { sendWelcomeEmail } from "./services/emailService";
 
 // Middleware to extract user ID from session or X-Username header (fallback)
@@ -46,6 +46,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   console.log("Initializing article store...");
   await articleStore.initialize();
   console.log("Article store initialized");
+
+  // Start the behavior-based digest scheduler (every 2 days)
+  startDigestScheduler();
 
   await setupAuth(app);
 
@@ -555,6 +558,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error running digests:", error);
       res.status(500).json({ error: "Failed to run digests" });
+    }
+  });
+
+  // ==================== BEHAVIOR-BASED DIGESTS (learns from reading history) ====================
+  app.post("/api/admin/run-behavior-digests", async (req, res) => {
+    try {
+      console.log("[Admin] Running behavior-based digest emails...");
+      const stats = await runBehaviorBasedDigests();
+      res.json({ 
+        success: true, 
+        message: `Processed ${stats.usersProcessed} users, sent ${stats.emailsSent} behavior-based emails`,
+        stats 
+      });
+    } catch (error) {
+      console.error("Error running behavior-based digests:", error);
+      res.status(500).json({ error: "Failed to run behavior-based digests" });
     }
   });
 

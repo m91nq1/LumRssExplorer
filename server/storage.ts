@@ -78,6 +78,10 @@ export interface IStorage {
   getUserPreferences(userId: number): Promise<UserPreferences | undefined>;
   upsertUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences>;
   getUsersWithDigestPreferences(): Promise<Array<{ user: User; preferences: UserPreferences }>>;
+  
+  // Inferred Topics from User Behavior
+  getUserInferredTopics(userId: number, limit?: number): Promise<string[]>;
+  getAllUsersWithEmail(): Promise<User[]>;
 
   // System Settings
   getLastRefreshTime(): Promise<string | null>;
@@ -574,6 +578,57 @@ export class DatabaseStorage implements IStorage {
         )
       );
     return results;
+  }
+
+  async getUserInferredTopics(userId: number, limit: number = 50): Promise<string[]> {
+    // Get topics from bookmarked articles (stronger signal - weight 2x)
+    const bookmarkedTopics = await db
+      .select({ topics: articles.topics })
+      .from(bookmarks)
+      .innerJoin(articles, eq(bookmarks.articleId, articles.id))
+      .where(eq(bookmarks.userId, userId))
+      .limit(limit);
+
+    // Get topics from read articles (normal weight)
+    const readTopics = await db
+      .select({ topics: articles.topics })
+      .from(readStatus)
+      .innerJoin(articles, eq(readStatus.articleId, articles.id))
+      .where(eq(readStatus.userId, userId))
+      .orderBy(desc(readStatus.readAt))
+      .limit(limit);
+
+    // Count topic occurrences with bookmarks weighted 2x
+    const topicCounts = new Map<string, number>();
+    
+    for (const row of bookmarkedTopics) {
+      if (row.topics) {
+        for (const topic of row.topics) {
+          topicCounts.set(topic, (topicCounts.get(topic) || 0) + 2);
+        }
+      }
+    }
+    
+    for (const row of readTopics) {
+      if (row.topics) {
+        for (const topic of row.topics) {
+          topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
+        }
+      }
+    }
+
+    // Sort by count and return top topics
+    return Array.from(topicCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([topic]) => topic);
+  }
+
+  async getAllUsersWithEmail(): Promise<User[]> {
+    return db
+      .select()
+      .from(users)
+      .where(sql`${users.email} IS NOT NULL AND ${users.email} != ''`);
   }
 
   // ==================== SYSTEM SETTINGS ====================
