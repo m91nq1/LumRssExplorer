@@ -149,10 +149,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Article Detail View
 - **Full Article View**: View complete article with metadata
-- **Related Articles**: See other articles from the same source
+- **Content Extraction**: On-demand extraction of full article content from original URLs using @extractus/article-extractor
+- **Collapsible Content Section**: Full article content displayed in expandable section with word count
+- **Related Articles**: Grid of related articles from same source with images, timestamps, and read status badges
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
-- **AI-Powered Summaries**: Generate intelligent article summaries using Grok AI via OpenRouter
+- **AI-Powered Summaries**: Generate intelligent article summaries using AI via OpenRouter
 
 ### AI Summary Feature
 - **OpenRouter Integration**: Uses OpenRouter API to access Grok 3.1 Mini model for generating summaries
