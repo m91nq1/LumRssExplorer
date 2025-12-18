@@ -118,7 +118,7 @@ export default function ArticleDetail() {
         title: data.cached ? "AI Summary Retrieved" : "AI Summary Generated",
         description: data.cached 
           ? "Loaded previously generated summary."
-          : "Summary generated using Grok AI.",
+          : "Summary generated using AI.",
       });
     },
     onError: (error: Error) => {
@@ -338,7 +338,7 @@ export default function ArticleDetail() {
                     <div className="text-left">
                       <h3 className="font-semibold">AI-Powered Summary</h3>
                       <p className="text-sm text-muted-foreground">
-                        Get an intelligent analysis using Grok AI
+                        Get an intelligent analysis using AI
                       </p>
                     </div>
                   </div>
@@ -361,7 +361,7 @@ export default function ArticleDetail() {
                     <div className="flex items-center gap-2 mb-3">
                       <Sparkles className="w-4 h-4 text-primary" />
                       <span className="text-xs font-medium text-primary uppercase tracking-wider">
-                        Grok AI Summary
+                        AI Summary
                       </span>
                     </div>
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">
