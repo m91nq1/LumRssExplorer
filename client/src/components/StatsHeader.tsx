@@ -11,7 +11,7 @@ import { RefreshCw, Settings, Search, LogOut, User, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import lumLogo from "@assets/global-hands-icon-world-aid-vector-13489856_1766076827364.avif";
+import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
 
 interface StatsHeaderProps {
   totalArticles: number;

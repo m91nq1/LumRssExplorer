@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
 import heroBackground from "@assets/image_1766075796395.png";
-import lumLogo from "@assets/global-hands-icon-world-aid-vector-13489856_1766076827364.avif";
+import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
 
 export default function Landing() {
   return (
