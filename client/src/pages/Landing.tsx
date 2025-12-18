@@ -1,14 +1,14 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Newspaper, Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
-import cosmicLibraryBg from "@assets/cosmic-library-bg.jpg";
+import heroBackground from "@assets/image_1766075796395.png";
 
 export default function Landing() {
   return (
     <div 
       className="min-h-screen text-white overflow-hidden"
       style={{
-        backgroundImage: `url(${cosmicLibraryBg})`,
+        backgroundImage: `url(${heroBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
