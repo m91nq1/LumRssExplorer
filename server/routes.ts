@@ -9,6 +9,7 @@ import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import { sendWelcomeEmail } from "./services/emailService";
+import { extractArticleContent } from "./contentExtractor";
 
 // Admin email addresses from environment variable (comma-separated)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com")
@@ -208,6 +209,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.status(500).json({ error: error.message || "Failed to generate AI summary" });
+    }
+  });
+
+  // ==================== CONTENT EXTRACTION ====================
+  app.get("/api/articles/:id/content", async (req, res) => {
+    try {
+      const articleId = req.params.id;
+      const content = await extractArticleContent(articleId);
+      res.json(content);
+    } catch (error: any) {
+      console.error("Error extracting article content:", error);
+      
+      if (error.message?.includes("Article not found")) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      
+      res.status(500).json({ error: error.message || "Failed to extract content" });
     }
   });
 

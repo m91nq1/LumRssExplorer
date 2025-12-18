@@ -25,6 +25,8 @@ import {
   Sparkles,
   ChevronDown,
   Loader2,
+  FileText,
+  BookOpen,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
@@ -38,6 +40,17 @@ interface ArticleNeighbors {
   next: string | null;
 }
 
+interface ExtractedContent {
+  title?: string;
+  content?: string;
+  author?: string;
+  publishedTime?: string;
+  source?: string;
+  image?: string;
+  wordCount: number;
+  cached: boolean;
+}
+
 export default function ArticleDetail() {
   const { toast } = useToast();
   const params = useParams<{ id: string }>();
@@ -45,6 +58,7 @@ export default function ArticleDetail() {
 
   const [aiSummaryOpen, setAiSummaryOpen] = useState(false);
   const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
+  const [showFullContent, setShowFullContent] = useState(false);
 
   const { data: article, isLoading: isLoadingArticle } = useQuery<ArticleWithStatus>({
     queryKey: [`/api/articles/${articleId}`],
@@ -59,6 +73,11 @@ export default function ArticleDetail() {
   const { data: neighbors } = useQuery<ArticleNeighbors>({
     queryKey: [`/api/articles/${articleId}/neighbors`],
     enabled: !!articleId,
+  });
+
+  const { data: extractedContent, isLoading: isExtractingContent, refetch: extractContent } = useQuery<ExtractedContent>({
+    queryKey: [`/api/articles/${articleId}/content`],
+    enabled: false,
   });
 
   const bookmarkMutation = useMutation({
@@ -398,14 +417,93 @@ export default function ArticleDetail() {
             </Card>
           </Collapsible>
 
+          <Collapsible
+            open={showFullContent}
+            onOpenChange={setShowFullContent}
+            className="mb-8"
+          >
+            <Card className="border-blue-500/20">
+              <CollapsibleTrigger asChild>
+                <button
+                  className="w-full p-4 flex items-center justify-between hover-elevate rounded-xl"
+                  data-testid="button-full-content-toggle"
+                  onClick={() => {
+                    if (!showFullContent && !extractedContent) {
+                      extractContent();
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-blue-500/10">
+                      <BookOpen className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold">Full Article Content</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {extractedContent
+                          ? `${extractedContent.wordCount} words${extractedContent.cached ? " (cached)" : ""}`
+                          : "Extract and read the full article here"}
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
+                      showFullContent ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="px-4 pb-4">
+                <Separator className="mb-4" />
+
+                {isExtractingContent ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-500 mr-3" />
+                    <span className="text-muted-foreground">Extracting article content...</span>
+                  </div>
+                ) : extractedContent?.content ? (
+                  <div className="space-y-4">
+                    {extractedContent.author && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <FileText className="w-4 h-4" />
+                        <span>By {extractedContent.author}</span>
+                      </div>
+                    )}
+                    <div
+                      className="prose prose-base dark:prose-invert max-w-none leading-relaxed"
+                      data-testid="text-full-content"
+                    >
+                      {extractedContent.content.split("\n\n").map((paragraph, idx) => (
+                        <p key={idx} className="mb-4">{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-muted-foreground mb-4">
+                      Unable to extract full content. The article may be behind a paywall or blocked.
+                    </p>
+                    <Button onClick={handleOpenArticle} variant="outline">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Read on {article.sourceName}
+                    </Button>
+                  </div>
+                )}
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+
           <div className="bg-muted/50 rounded-md p-6 mb-8">
-            <p className="text-sm text-muted-foreground mb-4">
-              This is a summary from the RSS feed. To read the full article:
-            </p>
-            <Button onClick={handleOpenArticle} className="w-full sm:w-auto">
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Read Full Article on {article.sourceName}
-            </Button>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <p className="text-sm text-muted-foreground">
+                Want to read the original article with all formatting?
+              </p>
+              <Button onClick={handleOpenArticle} className="w-full sm:w-auto">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open on {article.sourceName}
+              </Button>
+            </div>
           </div>
         </article>
 
@@ -419,32 +517,53 @@ export default function ArticleDetail() {
               </h2>
 
               {isLoadingRelated ? (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="h-24" />
+                    <Skeleton key={i} className="h-48" />
                   ))}
                 </div>
               ) : (
-                <div className="space-y-4" data-testid="related-articles">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="related-articles">
                   {relatedArticles.map((related) => (
                     <Link
                       key={related.id}
                       href={`/article/${related.id}`}
                     >
                       <Card
-                        className="p-4 hover-elevate cursor-pointer"
+                        className="overflow-hidden hover-elevate cursor-pointer h-full flex flex-col"
                         data-testid={`related-article-${related.id}`}
                       >
-                        <h3 className="font-medium line-clamp-2 mb-2">
-                          {related.title}
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Clock className="w-3 h-3" />
-                          <time dateTime={related.publishedAt}>
-                            {formatDistanceToNow(new Date(related.publishedAt), {
-                              addSuffix: true,
-                            })}
-                          </time>
+                        {related.imageUrl ? (
+                          <div className="aspect-video w-full overflow-hidden bg-muted">
+                            <img
+                              src={related.imageUrl}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="aspect-video w-full bg-muted flex items-center justify-center">
+                            <FileText className="w-8 h-8 text-muted-foreground/50" />
+                          </div>
+                        )}
+                        <div className="p-4 flex-1 flex flex-col">
+                          <h3 className="font-medium line-clamp-2 mb-2 flex-1">
+                            {related.title}
+                          </h3>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-auto">
+                            <Clock className="w-3 h-3" />
+                            <time dateTime={related.publishedAt}>
+                              {formatDistanceToNow(new Date(related.publishedAt), {
+                                addSuffix: true,
+                              })}
+                            </time>
+                            {related.isRead && (
+                              <>
+                                <span>•</span>
+                                <Badge variant="secondary" className="text-xs py-0">Read</Badge>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </Card>
                     </Link>
