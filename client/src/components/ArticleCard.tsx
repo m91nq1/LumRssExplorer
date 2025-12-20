@@ -63,7 +63,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
 
   return (
     <Card
-      className={`p-5 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 dark:bg-[#0B0B0F] dark:border-[#2a2a2a] ${article.isRead ? 'opacity-60' : ''}`}
+      className={`p-5 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 dark:bg-[#1a1a1f] dark:border-[#3a3a3f] ${article.isRead ? 'opacity-60' : ''}`}
       onClick={handleClick}
       data-testid={`card-article-${article.id}`}
     >
