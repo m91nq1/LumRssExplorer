@@ -8,6 +8,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 import feedBgImage from "@assets/grey-background-with-black-background-that-has-dark-grey-back_1766257409553.avif";
 
 type TimeFilterValue = "24h" | "7d" | "all";
@@ -18,6 +19,7 @@ interface PreferencesResponse {
 
 export default function Home() {
   const { toast } = useToast();
+  const { theme } = useTheme();
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -272,7 +274,8 @@ export default function Home() {
     <div 
       className="flex h-screen w-full overflow-hidden"
       style={{
-        backgroundImage: `url(${feedBgImage})`,
+        backgroundColor: theme === 'light' ? '#ffffff' : 'transparent',
+        backgroundImage: theme === 'dark' ? `url(${feedBgImage})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
