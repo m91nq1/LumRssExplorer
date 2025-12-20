@@ -8,6 +8,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import feedBgImage from "@assets/artistic-blurry-colorful-wallpaper-background_58702-8292_1766256880452.avif";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
@@ -268,7 +269,15 @@ export default function Home() {
   const lastRefreshTime = sourcesData?.lastRefreshTime || null;
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div 
+      className="flex h-screen w-full overflow-hidden"
+      style={{
+        backgroundImage: `url(${feedBgImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Sidebar
         sources={sources}
         selectedSources={selectedSources}
