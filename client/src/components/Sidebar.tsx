@@ -61,7 +61,7 @@ export function Sidebar({
 
   return (
     <aside
-      className="w-[280px] border-r border-border bg-sidebar flex-shrink-0"
+      className="w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0"
       data-testid="sidebar"
     >
       <ScrollArea className="h-full">
