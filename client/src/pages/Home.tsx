@@ -8,7 +8,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import feedBgImage from "@assets/artistic-blurry-colorful-wallpaper-background_58702-8292_1766256880452.avif";
+import feedBgImage from "@assets/dark-black-and-gray-blurred-gradient-background-has-a-little-a_1766257105860.jpg";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
