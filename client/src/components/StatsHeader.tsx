@@ -12,6 +12,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
 
 interface StatsHeaderProps {
@@ -91,6 +92,8 @@ export function StatsHeader({
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
+
             <Link href="/search">
               <Button
                 variant="ghost"

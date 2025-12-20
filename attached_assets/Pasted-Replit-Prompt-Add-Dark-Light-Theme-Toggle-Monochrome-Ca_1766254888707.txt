@@ -1,0 +1,78 @@
+Replit Prompt — Add Dark/Light Theme Toggle (Monochrome Cards) for LUM News
+
+In the existing LUM News project, add a theme switch that lets the user toggle between Dark mode and Light mode. Keep the layout and functionality the same. The feed cards must remain “monochrome” in both themes (no purple accents inside cards). The app background and general UI should adapt to the selected theme.
+
+1) Theme architecture
+- Use a single theme attribute on the root element:
+  <html data-theme="dark"> or <body data-theme="dark">
+- Implement theme tokens using CSS variables.
+- Theme should apply globally: background, text, borders, inputs, sidebar, header, and cards.
+
+2) Persist the theme
+- Save user preference to localStorage ("theme" = "dark" or "light").
+- On load, apply saved preference before rendering to avoid flicker.
+- If no preference saved, default to system theme using prefers-color-scheme.
+
+3) Add a toggle control
+- Place a theme toggle button in the top header bar (near the settings/refresh area).
+- Toggle UI can be:
+  - a switch, or
+  - a button with icons (moon/sun)
+- Must be keyboard accessible: focus-visible outline, aria-label, and proper button semantics.
+
+4) Monochrome card rules (apply in BOTH themes)
+- Cards never use purple/indigo accents inside the card UI.
+- Titles are high-contrast (black on light theme, white on dark theme).
+- Metadata/snippets are muted grayscale.
+- Icons and tags inside cards are grayscale only.
+- Card thumbnails are grayscale filtered:
+  filter: grayscale(1) contrast(1.05) brightness(0.95);
+
+5) Theme token definitions (example target values)
+Dark theme:
+- --app-bg: deep indigo/space (keep your current vibe)
+- --panel-bg: rgba(0,0,0,0.35) or very dark indigo
+- --text: #F5F5F5
+- --muted: #B8B8B8
+- --muted-2: #8A8A8A
+- --border: rgba(255,255,255,0.12)
+
+Card tokens (dark):
+- --card-bg: #0B0B0F (or rgba(0,0,0,0.75))
+- --card-border: rgba(255,255,255,0.12)
+- --card-border-hover: rgba(255,255,255,0.18)
+- --card-title: #FFFFFF
+- --card-meta: #B8B8B8
+- --card-muted: #8A8A8A
+
+Light theme:
+- --app-bg: off-white with a subtle “paper/space dust” feel (NOT pure white)
+- --panel-bg: rgba(255,255,255,0.75)
+- --text: #111111
+- --muted: #4A4A4A
+- --muted-2: #6B6B6B
+- --border: rgba(0,0,0,0.12)
+
+Card tokens (light):
+- --card-bg: #FFFFFF (or #F6F6F8 for slight softness)
+- --card-border: rgba(0,0,0,0.12)
+- --card-border-hover: rgba(0,0,0,0.20)
+- --card-title: #0B0B0F
+- --card-meta: #3A3A3A
+- --card-muted: #6B6B6B
+
+6) Hover/focus behavior
+- Hover: card translateY(-2px), border strengthens, shadow slightly increases
+- Focus-visible: visible outline using grayscale (not purple)
+
+7) Implementation
+- Refactor existing CSS/Tailwind styles to use the variables above.
+- Update the card component styles once so all card instances inherit the theme.
+- Ensure no inline hard-coded purple remains inside cards (chips/icons/badges).
+
+Acceptance criteria
+- User can toggle Dark/Light with one control.
+- Theme persists after refresh.
+- No “flash” of wrong theme on load.
+- Cards are monochrome and consistent in both themes.
+- App background + panels adapt appropriately per theme.

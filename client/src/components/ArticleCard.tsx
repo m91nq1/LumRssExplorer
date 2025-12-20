@@ -56,7 +56,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
             {article.topics?.includes("Celebrity & Entertainment") && (
               <Badge
                 variant="outline"
-                className="text-xs font-medium shrink-0 bg-primary/10 text-primary border-primary/30"
+                className="text-xs font-medium shrink-0"
                 data-testid={`badge-entertainment-${article.id}`}
               >
                 <Star className="w-3 h-3 mr-1" />
@@ -75,7 +75,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
               data-testid={`button-bookmark-${article.id}`}
             >
               {article.isBookmarked ? (
-                <BookmarkCheck className="w-4 h-4 text-primary" />
+                <BookmarkCheck className="w-4 h-4 text-foreground" />
               ) : (
                 <Bookmark className="w-4 h-4" />
               )}
