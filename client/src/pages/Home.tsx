@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-import feedBgImage from "@assets/grey-background-with-black-background-that-has-dark-grey-back_1766257409553.avif";
+import feedBgImage from "@assets/Vector-black-abstract-background-free-vector-download-01-scale_1766257999979.jpg";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
