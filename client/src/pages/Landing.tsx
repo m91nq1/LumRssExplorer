@@ -92,7 +92,7 @@ export default function Landing() {
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img 
@@ -346,7 +346,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/10 py-12 px-6 z-10 bg-black/60 backdrop-blur-md">
+      <footer className="relative border-t border-white/10 py-12 px-6 z-10 bg-black">
         <div className="container mx-auto max-w-4xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
