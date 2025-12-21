@@ -1,10 +1,83 @@
 import { Link } from "wouter";
+import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Layers, Bell, TrendingUp, Zap, Lock } from "lucide-react";
+import { Layers, Bell, TrendingUp, Zap, Lock, Play, Volume2, VolumeX } from "lucide-react";
 import heroBackground from "@assets/image_1766075796395.png";
 import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
+import demoVideo from "@assets/LUMnew1221_1766340637581.mp4";
 
 export default function Landing() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showPlayButton, setShowPlayButton] = useState(true);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const container = videoContainerRef.current;
+    if (!video || !container) return;
+
+    const handlePlay = () => {
+      setIsPlaying(true);
+      setShowPlayButton(false);
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      setShowPlayButton(true);
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(container);
+    return () => {
+      observer.disconnect();
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+    };
+  }, []);
+
+  const handlePlayClick = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  };
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  };
+
   return (
     <div 
       className="min-h-screen text-white overflow-hidden"
@@ -87,6 +160,99 @@ export default function Landing() {
                     Explore Stories
                   </Button>
                 </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 px-6 md:px-12 lg:px-16 relative z-10">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left animate-fadeIn animation-delay-300">
+                <h2 className="text-3xl md:text-4xl font-light mb-4">
+                  See LUM News in action
+                </h2>
+                <p className="text-lg text-gray-400 mb-8">
+                  A quick walkthrough of the globe, lenses, and alerts.
+                </p>
+                <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                  <a href="/api/login">
+                    <Button 
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-8"
+                      data-testid="button-get-started-demo"
+                    >
+                      Get Started Free
+                    </Button>
+                  </a>
+                  <a href="/api/login">
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      className="border-white/30 bg-black/40 hover:bg-white/10 text-white px-8 backdrop-blur-sm"
+                      data-testid="button-explore-demo"
+                    >
+                      Explore Stories
+                    </Button>
+                  </a>
+                </div>
+                <p className="text-sm text-gray-500 mt-4">
+                  No credit card required.
+                </p>
+              </div>
+
+              <div 
+                ref={videoContainerRef}
+                className="relative group animate-fadeIn animation-delay-500"
+              >
+                <div className="absolute -inset-1 bg-gradient-to-r from-violet-600/40 via-purple-600/40 to-indigo-600/40 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity" />
+                <div className="relative bg-gray-900/80 backdrop-blur-xl rounded-2xl border border-violet-500/30 overflow-hidden shadow-2xl shadow-violet-500/10">
+                  <div className="flex items-center gap-2 px-4 py-3 bg-gray-900/90 border-b border-white/5">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <span className="ml-2 text-xs text-gray-500">LUM News Demo</span>
+                  </div>
+                  <div 
+                    className="relative"
+                    onMouseEnter={() => !isMobile && setShowControls(true)}
+                    onMouseLeave={() => !isMobile && setShowControls(false)}
+                  >
+                    <video
+                      ref={videoRef}
+                      src={demoVideo}
+                      className="w-full aspect-video object-cover"
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      controls={isMobile || showControls}
+                      data-testid="video-demo"
+                    />
+                    {showPlayButton && (
+                      <button
+                        onClick={handlePlayClick}
+                        className="absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity hover:bg-black/40"
+                        data-testid="button-play-video"
+                      >
+                        <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                          <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+                        </div>
+                      </button>
+                    )}
+                    <button
+                      onClick={toggleMute}
+                      className={`absolute bottom-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center border border-white/20 transition-opacity z-10 ${isMobile ? 'opacity-100' : showControls ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                      data-testid="button-mute-toggle"
+                    >
+                      {isMuted ? (
+                        <VolumeX className="w-5 h-5 text-white" />
+                      ) : (
+                        <Volume2 className="w-5 h-5 text-white" />
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
