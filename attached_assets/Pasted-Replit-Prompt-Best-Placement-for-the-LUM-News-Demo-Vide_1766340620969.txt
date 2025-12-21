@@ -1,0 +1,53 @@
+Replit Prompt — Best Placement for the LUM News Demo Video
+In this existing LUM News project, add a Demo Video section to the homepage and place it in the most effective conversion spot based on the content of the video (the video already shows the landing page flow: hero branding, feature cards like Top Stories/Lenses/Alerts, then the “Get Started Free” CTA).
+Where to put the video (placement requirement)
+✅ Place the demo video directly BELOW the hero section and ABOVE the feature cards/“How it works” section.
+Reason: the hero already sells the idea; the video shows the UI in action and confirms value immediately. Putting it below the hero turns the scroll into a natural sequence:
+Hero (hook) → Demo video (proof) → Features (detail) → CTA (conversion)
+Do NOT put the demo video inside the hero
+•	The hero already has a big 3D Earth and headline.
+•	The demo video also shows the same visual concept.
+•	Putting both in the hero will feel cluttered and repetitive, and it will hurt performance.
+Video section design
+Create a section like:
+•	Heading: “See LUM News in action”
+•	Subheading: “A quick walkthrough of the globe, lenses, and alerts.”
+•	On desktop: two-column layout
+o	Left: text + bullets (what viewers will see)
+o	Right: the video in a premium frame
+•	On mobile: stack text above video.
+Styling (match LUM News theme)
+•	Background: keep the deep violet/space theme (#1E174B / dark overlay)
+•	Video container:
+o	Glassmorphism card
+o	Subtle violet border glow
+o	Rounded corners (16–24px)
+o	Soft shadow
+•	Add a subtle “browser window” frame above the video (3 dots) to make it look like a product demo.
+Video behavior (conversion-friendly)
+•	Video should:
+o	Autoplay muted
+o	Loop
+o	Plays inline
+o	Show controls only on hover (desktop) or always on mobile
+•	Add a centered overlay play button (even if autoplay is on) for user clarity.
+•	Use IntersectionObserver:
+o	Autoplay when at least 50% visible
+o	Pause when scrolled away (saves CPU/battery)
+•	Include a “Unmute” button.
+CTA near the video (important)
+Add a strong CTA beside or below the video:
+•	Primary button: “Get Started Free”
+•	Secondary: “Explore Stories”
+•	Short line under buttons: “No credit card required.”
+Implementation notes
+•	Assume the MP4 demo file is stored in the project as:
+o	/public/demo.mp4 (React/Vite) OR assets/demo.mp4 (static)
+•	Add a poster thumbnail image if available (optional but recommended).
+•	Do not break the existing page; only insert this new section below the hero.
+Optional (recommended): mobile fallback logic
+If the site has a heavy Three.js globe in the hero, then on mobile:
+•	keep the hero lighter (or reduce globe size),
+•	and let the demo video become the main “wow” element immediately after the hero.
+End result: Users land on the page, see the hero message, then instantly see a crisp demo proving what LUM News does, then scroll into features and sign up.
+
