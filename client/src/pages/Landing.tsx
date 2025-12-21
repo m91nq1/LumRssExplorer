@@ -91,7 +91,7 @@ export default function Landing() {
         backfaceVisibility: 'hidden',
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 pointer-events-none" style={{ top: '72px', bottom: '200px' }} />
       <header className="fixed top-0 left-0 right-0 z-50 bg-black">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
