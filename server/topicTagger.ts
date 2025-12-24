@@ -162,22 +162,49 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
 
 export function tagArticleTopics(title: string, summary?: string | null): string[] {
   const text = `${title} ${summary || ""}`.toLowerCase();
-  const matchedTopics: Set<string> = new Set();
-
+  
+  // Count keyword matches for each topic
+  const topicScores: Map<string, number> = new Map();
+  
   for (const { topic, keywords } of TOPIC_KEYWORDS) {
+    let matchCount = 0;
     for (const keyword of keywords) {
-      if (text.includes(keyword.toLowerCase())) {
-        matchedTopics.add(topic);
-        break;
+      // Use word boundary matching for short keywords to avoid false positives
+      if (keyword.length <= 3) {
+        const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+        if (regex.test(text)) {
+          matchCount++;
+        }
+      } else if (text.includes(keyword.toLowerCase())) {
+        matchCount++;
       }
+    }
+    if (matchCount > 0) {
+      topicScores.set(topic, matchCount);
     }
   }
 
-  if (matchedTopics.size === 0) {
-    matchedTopics.add("Other / Offbeat");
+  // If no topics matched, return Other / Offbeat
+  if (topicScores.size === 0) {
+    return ["Other / Offbeat"];
   }
 
-  return Array.from(matchedTopics);
+  // Sort by score and take only the top topic(s)
+  const sortedTopics = Array.from(topicScores.entries())
+    .sort((a, b) => b[1] - a[1]);
+  
+  const topScore = sortedTopics[0][1];
+  
+  // Only include topics that have at least 50% of the top score's matches
+  // This ensures we only get the most relevant topics
+  const threshold = Math.max(topScore * 0.5, 1);
+  
+  const bestTopics = sortedTopics
+    .filter(([_, score]) => score >= threshold)
+    .slice(0, 2) // Maximum 2 topics per article
+    .map(([topic]) => topic);
+
+  return bestTopics;
 }
 
 export function generatePolarisationScore(): number {

@@ -2,7 +2,9 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { articleStore } from "./articleStore";
 import { storage } from "./storage";
-import { articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import { articles, articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
@@ -603,6 +605,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching from provider:", error);
       res.status(500).json({ error: "Failed to fetch from provider" });
+    }
+  });
+
+  // ==================== ADMIN: RE-TAG ARTICLES ====================
+  app.post("/api/admin/retag-articles", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      console.log("[Admin] Re-tagging all articles with improved topic logic...");
+      const { tagArticleTopics } = await import("./topicTagger");
+      
+      // Get all articles
+      const allArticles = await db.select({
+        id: articles.id,
+        title: articles.title,
+        summary: articles.summary,
+      }).from(articles);
+      
+      let updated = 0;
+      for (const article of allArticles) {
+        const newTopics = tagArticleTopics(article.title, article.summary);
+        await db.update(articles)
+          .set({ topics: newTopics })
+          .where(eq(articles.id, article.id));
+        updated++;
+      }
+      
+      console.log(`[Admin] Re-tagged ${updated} articles`);
+      res.json({ 
+        success: true, 
+        message: `Re-tagged ${updated} articles with improved topic logic`,
+        articlesUpdated: updated
+      });
+    } catch (error) {
+      console.error("Error re-tagging articles:", error);
+      res.status(500).json({ error: "Failed to re-tag articles" });
     }
   });
 
