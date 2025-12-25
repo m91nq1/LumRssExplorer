@@ -106,11 +106,12 @@ export const insertArticleSchema = createInsertSchema(articles).omit({
 export type InsertArticle = z.infer<typeof insertArticleSchema>;
 export type Article = typeof articles.$inferSelect;
 
-// Users table (Replit Auth compatible)
+// Users table (Supabase Auth compatible)
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   replitId: varchar("replit_id", { length: 50 }).unique(),
+  supabaseId: varchar("supabase_id", { length: 100 }).unique(),
   email: text("email").unique(),
   firstName: text("first_name"),
   lastName: text("last_name"),
@@ -208,7 +209,9 @@ export const userPreferences = pgTable("user_preferences", {
   preferredRegions: text("preferred_regions").array(),
   defaultSearchQuery: text("default_search_query"),
   defaultTimeFilter: text("default_time_filter").default("all"),
-  emailDigestEnabled: boolean("email_digest_enabled").default(false),
+  emailDigestEnabled: boolean("email_digest_enabled").default(true),
+  loginNotificationEnabled: boolean("login_notification_enabled").default(true),
+  lastDigestSentAt: timestamp("last_digest_sent_at"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 

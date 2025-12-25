@@ -105,6 +105,84 @@ export async function sendWelcomeEmail(to: string, name?: string): Promise<void>
   }
 }
 
+export async function sendLoginNotificationEmail(to: string, name?: string): Promise<void> {
+  const transport = getTransporter();
+  if (!transport) return;
+
+  const greeting = name ? `Hi ${name}` : 'Hi there';
+  const loginTime = new Date().toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+
+  try {
+    await transport.sendMail({
+      from: FROM_EMAIL,
+      to,
+      subject: 'New sign-in to your LUM News account',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5; }
+            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+            .header { background: linear-gradient(135deg, #1E174B 0%, #2D2066 100%); padding: 30px; text-align: center; }
+            .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; }
+            .content { padding: 30px; }
+            .greeting { font-size: 18px; color: #1E174B; margin-bottom: 15px; }
+            .info-box { background: #f8f8f8; border-radius: 8px; padding: 20px; margin: 20px 0; }
+            .info-row { display: flex; margin-bottom: 8px; }
+            .info-label { color: #888; font-size: 14px; min-width: 80px; }
+            .info-value { color: #333; font-size: 14px; font-weight: 500; }
+            .notice { color: #666; font-size: 14px; margin-top: 20px; }
+            .button { display: inline-block; background: #1E174B; color: #ffffff !important; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px; }
+            .footer { background: #f8f8f8; padding: 20px 30px; text-align: center; color: #888; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Sign-in Notification</h1>
+            </div>
+            <div class="content">
+              <p class="greeting">${greeting},</p>
+              <p>We noticed a new sign-in to your LUM News account:</p>
+              <div class="info-box">
+                <div style="margin-bottom: 8px;">
+                  <span style="color: #888; font-size: 14px;">Time: </span>
+                  <span style="color: #333; font-size: 14px; font-weight: 500;">${loginTime}</span>
+                </div>
+              </div>
+              <p class="notice">
+                If this was you, no action is needed. If you didn't sign in, please secure your account immediately.
+              </p>
+              <p style="margin-top: 25px;">
+                <a href="${APP_URL}/home" class="button">Go to LUM News</a>
+              </p>
+            </div>
+            <div class="footer">
+              <p>You can disable login notifications in your <a href="${APP_URL}/settings" style="color: #1E174B;">account settings</a>.</p>
+              <p>&copy; ${new Date().getFullYear()} LUM News. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    console.log(`[EmailService] Login notification sent to ${to}`);
+  } catch (error) {
+    console.error('[EmailService] Failed to send login notification:', error);
+  }
+}
+
 export async function sendTopicDigestEmail(
   to: string,
   name: string,
