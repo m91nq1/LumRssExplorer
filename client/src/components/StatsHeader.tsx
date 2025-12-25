@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RefreshCw, Settings, Search, LogOut, User, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Link } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
+import { Link, useLocation } from "wouter";
+import { useSupabaseAuth } from "@/contexts/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
@@ -30,19 +30,15 @@ export function StatsHeader({
   onRefresh,
   isRefreshing,
 }: StatsHeaderProps) {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, signOut } = useSupabaseAuth();
   const { isAdmin } = useAdmin();
+  const [, setLocation] = useLocation();
   const formattedRefreshTime = lastRefreshTime
     ? formatDistanceToNow(new Date(lastRefreshTime), { addSuffix: true })
     : "Never";
 
-  const userInitials = user?.firstName && user?.lastName
-    ? `${user.firstName[0]}${user.lastName[0]}`
-    : user?.email?.[0]?.toUpperCase() || "U";
-
-  const userName = user?.firstName && user?.lastName
-    ? `${user.firstName} ${user.lastName}`
-    : user?.email || "User";
+  const userInitials = user?.email?.[0]?.toUpperCase() || "U";
+  const userName = user?.email || "User";
 
   return (
     <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
@@ -140,11 +136,6 @@ export function StatsHeader({
                     data-testid="button-user-menu"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={user?.profileImageUrl || undefined}
-                        alt={userName}
-                        className="object-cover"
-                      />
                       <AvatarFallback className="text-xs">
                         {userInitials}
                       </AvatarFallback>
@@ -159,11 +150,16 @@ export function StatsHeader({
                     )}
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <a href="/api/logout" className="cursor-pointer" data-testid="button-logout">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign Out
-                    </a>
+                  <DropdownMenuItem 
+                    onClick={async () => {
+                      await signOut();
+                      setLocation('/');
+                    }}
+                    className="cursor-pointer" 
+                    data-testid="button-logout"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

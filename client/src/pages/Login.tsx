@@ -10,8 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { useSupabaseAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import lumLogo from '@assets/LUM_logo_v4.png';
-import heroBackground from '@assets/hero_bckgrnd.png';
+import lumLogo from '@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg';
+import heroBackground from '@assets/image_1766075796395.png';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
