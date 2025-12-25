@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { ArrowLeft, Save, Mail, Bell, Globe, Tag } from "lucide-react";
+import { ArrowLeft, Save, Mail, Bell, Globe, Tag, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +15,8 @@ export default function Settings() {
   const { toast } = useToast();
   const [favouriteTopics, setFavouriteTopics] = useState<string[]>([]);
   const [preferredRegions, setPreferredRegions] = useState<string[]>([]);
-  const [emailDigestEnabled, setEmailDigestEnabled] = useState(false);
+  const [emailDigestEnabled, setEmailDigestEnabled] = useState(true);
+  const [loginNotificationEnabled, setLoginNotificationEnabled] = useState(true);
 
   const { data: prefsData, isLoading } = useQuery<{ preferences: UserPreferences | null }>({
     queryKey: ["/api/preferences"],
@@ -25,12 +26,13 @@ export default function Settings() {
     if (prefsData?.preferences) {
       setFavouriteTopics(prefsData.preferences.favouriteTopics || []);
       setPreferredRegions(prefsData.preferences.preferredRegions || []);
-      setEmailDigestEnabled(prefsData.preferences.emailDigestEnabled || false);
+      setEmailDigestEnabled(prefsData.preferences.emailDigestEnabled ?? true);
+      setLoginNotificationEnabled(prefsData.preferences.loginNotificationEnabled ?? true);
     }
   }, [prefsData]);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: { favouriteTopics: string[]; preferredRegions: string[]; emailDigestEnabled: boolean }) => {
+    mutationFn: async (data: { favouriteTopics: string[]; preferredRegions: string[]; emailDigestEnabled: boolean; loginNotificationEnabled: boolean }) => {
       const response = await apiRequest("PUT", "/api/users/me/preferences", data);
       return response.json();
     },
@@ -71,6 +73,7 @@ export default function Settings() {
       favouriteTopics,
       preferredRegions,
       emailDigestEnabled,
+      loginNotificationEnabled,
     });
   };
 
@@ -109,18 +112,18 @@ export default function Settings() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5" />
-              Email Digests
+              Email Notifications
             </CardTitle>
             <CardDescription>
-              Receive personalized news digests based on your favorite topics
+              Manage your email notification preferences
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label htmlFor="email-digest">Enable Email Digests</Label>
+                <Label htmlFor="email-digest">News Digests</Label>
                 <p className="text-sm text-muted-foreground">
-                  Get daily updates about stories matching your topics
+                  Receive personalized news digests based on your reading history
                 </p>
               </div>
               <Switch
@@ -128,6 +131,23 @@ export default function Settings() {
                 checked={emailDigestEnabled}
                 onCheckedChange={setEmailDigestEnabled}
                 data-testid="switch-email-digest"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                  <Label htmlFor="login-notification">Login Notifications</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Get notified when someone signs into your account
+                </p>
+              </div>
+              <Switch
+                id="login-notification"
+                checked={loginNotificationEnabled}
+                onCheckedChange={setLoginNotificationEnabled}
+                data-testid="switch-login-notification"
               />
             </div>
           </CardContent>

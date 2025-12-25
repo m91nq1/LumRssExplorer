@@ -52,18 +52,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [localUser, setLocalUser] = useState<LocalUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const syncedUserIds = useRef<Set<string>>(new Set());
+  const initialSessionLoaded = useRef(false);
+  const syncedSessionId = useRef<string | null>(null);
 
   useEffect(() => {
+    // Load initial session (restore from storage - no login notification)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      initialSessionLoaded.current = true;
       
-      // Sync with backend on initial load (but don't trigger login notification)
-      if (session?.user && !syncedUserIds.current.has(session.user.id)) {
-        const local = await syncUserWithBackend(session.user);
-        setLocalUser(local);
-        syncedUserIds.current.add(session.user.id);
+      // Fetch local user data without triggering login notification
+      if (session?.user) {
+        try {
+          const response = await fetch(`/api/auth/supabase-user/${session.user.id}`);
+          if (response.ok) {
+            const userData = await response.json();
+            setLocalUser(userData);
+          }
+        } catch (error) {
+          console.error('Failed to fetch local user:', error);
+        }
       }
       
       setIsLoading(false);
@@ -74,14 +83,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Sync on SIGNED_IN event (login/signup)
-        if (event === 'SIGNED_IN' && session?.user) {
-          const local = await syncUserWithBackend(session.user);
-          setLocalUser(local);
-          syncedUserIds.current.add(session.user.id);
+        // Only sync on actual SIGNED_IN event (not session restore)
+        // Also check we're not re-processing the same session
+        if (event === 'SIGNED_IN' && session?.user && initialSessionLoaded.current) {
+          const sessionId = session.access_token.slice(-20); // Use last 20 chars as session identifier
+          if (syncedSessionId.current !== sessionId) {
+            syncedSessionId.current = sessionId;
+            const local = await syncUserWithBackend(session.user);
+            setLocalUser(local);
+          }
         } else if (event === 'SIGNED_OUT') {
           setLocalUser(null);
-          syncedUserIds.current.clear();
+          syncedSessionId.current = null;
         }
         
         setIsLoading(false);
