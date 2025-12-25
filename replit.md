@@ -57,7 +57,7 @@ Preferred communication style: Simple, everyday language.
 
 **Data Storage**: PostgreSQL database using Drizzle ORM for type-safe queries. Neon serverless driver for connection pooling.
 
-**User Authentication**: Lightweight header-based user identification using X-Username header. LocalStorage on frontend stores username, middleware on backend retrieves or creates user records.
+**User Authentication**: Supabase Auth for email/password authentication. Users table has `supabaseId` column linking Supabase auth to local user records. AuthContext syncs user data with backend on login and fetches local user data on session restore (without triggering login notifications).
 
 **RSS Ingestion**: 
 - Custom RSS parser using the `rss-parser` library
@@ -92,10 +92,10 @@ Preferred communication style: Simple, everyday language.
 **Tables**:
 - `articles`: id, sourceId, title, link, summary, content, imageUrl, aiSummary, publishedAt, createdAt
 - `feed_sources`: id, name, url, sourceType, country, category, isEnabled
-- `users`: id, username, replitId, email, firstName, lastName, profileImageUrl
+- `users`: id, username, replitId, supabaseId, email, firstName, lastName, profileImageUrl
 - `bookmarks`: id, userId, articleId (unique constraint per user)
 - `read_status`: id, userId, articleId (unique constraint per user)
-- `user_preferences`: id, userId, favoriteSources, favouriteTopics, preferredRegions, defaultSearchQuery, defaultTimeFilter, emailDigestEnabled
+- `user_preferences`: id, userId, favoriteSources, favouriteTopics, preferredRegions, defaultSearchQuery, defaultTimeFilter, emailDigestEnabled, loginNotificationEnabled, lastDigestSentAt
 - `sessions`: sid, sess, expire (Replit Auth session storage)
 - `news_providers`: id, name, baseUrl, apiKeyEnvVar, isEnabled, rateLimitPerDay, supportedCategories, supportedCountries
 
@@ -103,7 +103,7 @@ Preferred communication style: Simple, everyday language.
 
 **PostgreSQL Storage**: Full persistence for articles, user data, bookmarks, read tracking, and preferences. Data survives restarts.
 
-**Header-Based User Identification**: Simple username in localStorage sent via X-Username header. No password authentication for MVP - users are identified by username only.
+**Supabase Authentication**: Users authenticate via Supabase Auth with email/password. The supabaseId field in users table links Supabase auth to local user records. Login triggers email notifications (configurable per user).
 
 **Scheduled Refresh Pattern**: 10-minute intervals balance freshness with API politeness. Manual refresh available for immediate updates.
 

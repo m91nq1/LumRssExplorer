@@ -556,7 +556,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/users/me/preferences", async (req, res) => {
     try {
       const userId = (req as any).userId as number | undefined;
-      const { favouriteTopics, preferredRegions, emailDigestEnabled } = req.body;
+      const { favouriteTopics, preferredRegions, emailDigestEnabled, loginNotificationEnabled } = req.body;
       
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
@@ -571,7 +571,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         preferredRegions: preferredRegions || existingPrefs?.preferredRegions,
         defaultSearchQuery: existingPrefs?.defaultSearchQuery,
         defaultTimeFilter: existingPrefs?.defaultTimeFilter,
-        emailDigestEnabled: emailDigestEnabled ?? existingPrefs?.emailDigestEnabled ?? false,
+        emailDigestEnabled: emailDigestEnabled ?? existingPrefs?.emailDigestEnabled ?? true,
+        loginNotificationEnabled: loginNotificationEnabled ?? existingPrefs?.loginNotificationEnabled ?? true,
       });
 
       res.json({ preferences });
