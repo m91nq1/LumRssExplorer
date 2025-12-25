@@ -19,6 +19,7 @@ import Bookmarks from "@/pages/Bookmarks";
 import History from "@/pages/History";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import ForYou from "@/pages/ForYou";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -44,6 +45,7 @@ function Router() {
       {isAuthenticated ? (
         <>
           <Route path="/home" component={Home} />
+          <Route path="/for-you" component={ForYou} />
           <Route path="/article/:id" component={ArticleDetail} />
           <Route path="/settings" component={Settings} />
           <Route path="/feeds" component={FeedManagement} />
@@ -55,6 +57,7 @@ function Router() {
       ) : (
         <>
           <Route path="/home" component={Landing} />
+          <Route path="/for-you" component={Landing} />
           <Route path="/article/:id" component={Landing} />
           <Route path="/settings" component={Landing} />
           <Route path="/feeds" component={Landing} />

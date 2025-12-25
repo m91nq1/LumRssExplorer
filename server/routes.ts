@@ -582,6 +582,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ==================== FOR YOU (PERSONALIZED FEED) ====================
+  app.get("/api/for-you", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required for personalized feed" });
+      }
+
+      const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+      const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string, 10) : 20;
+
+      const result = await storage.getPersonalizedArticles(userId, page, pageSize);
+      
+      res.json({
+        articles: result.articles,
+        inferredTopics: result.topics,
+        total: result.total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(result.total / pageSize),
+      });
+    } catch (error) {
+      console.error("Error fetching personalized feed:", error);
+      res.status(500).json({ error: "Failed to fetch personalized feed" });
+    }
+  });
+
+  // ==================== STORY CLUSTERS ====================
+  app.get("/api/clusters", async (req, res) => {
+    try {
+      const hours = req.query.hours ? parseInt(req.query.hours as string, 10) : 24;
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 5;
+      
+      const since = new Date(Date.now() - hours * 60 * 60 * 1000);
+      const clusters = await storage.getArticleClusters({ since, limit });
+      
+      res.json({ clusters });
+    } catch (error) {
+      console.error("Error fetching article clusters:", error);
+      res.status(500).json({ error: "Failed to fetch article clusters" });
+    }
+  });
+
+  // ==================== BREAKING NEWS ====================
+  app.get("/api/breaking-news", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        // Return general breaking news without personalization
+        const clusters = await storage.getArticleClusters({ 
+          since: new Date(Date.now() - 2 * 60 * 60 * 1000),
+          limit: 3 
+        });
+        const articles = clusters.flatMap(c => c.articles).slice(0, 10);
+        return res.json({ articles, personalized: false });
+      }
+
+      const articles = await storage.getBreakingNews(userId);
+      res.json({ articles, personalized: true });
+    } catch (error) {
+      console.error("Error fetching breaking news:", error);
+      res.status(500).json({ error: "Failed to fetch breaking news" });
+    }
+  });
+
+  // ==================== READING PROGRESS ====================
+  app.get("/api/reading-progress/:articleId", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      const progress = await storage.getReadingProgress(userId, req.params.articleId);
+      res.json({ progress: progress || null });
+    } catch (error) {
+      console.error("Error fetching reading progress:", error);
+      res.status(500).json({ error: "Failed to fetch reading progress" });
+    }
+  });
+
+  app.post("/api/reading-progress", async (req, res) => {
+    try {
+      const userId = (req as any).userId as number | undefined;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      const { articleId, scrollPosition, percentRead } = req.body;
+      
+      if (!articleId) {
+        return res.status(400).json({ error: "articleId is required" });
+      }
+
+      const progress = await storage.upsertReadingProgress({
+        userId,
+        articleId,
+        scrollPosition: scrollPosition ?? 0,
+        percentRead: percentRead ?? 0,
+      });
+
+      res.json({ progress });
+    } catch (error) {
+      console.error("Error saving reading progress:", error);
+      res.status(500).json({ error: "Failed to save reading progress" });
+    }
+  });
+
   // ==================== NEWS PROVIDERS ====================
   const providerFeatureMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (!newsProviderService.isAvailable()) {

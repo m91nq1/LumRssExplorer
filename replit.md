@@ -30,6 +30,7 @@ Preferred communication style: Simple, everyday language.
 **Routing**: Wouter provides lightweight client-side routing with pages for:
 - Home (/) - Main feed view (authenticated) or Landing page (unauthenticated)
 - Landing (/landing) - Public landing page
+- For You (/for-you) - Personalized feed based on reading behavior (requires auth)
 - Article Detail (/article/:id) - Individual article view (requires auth)
 - Feed Management (/feeds) - Admin feed management (requires auth)
 - Settings (/settings) - User preferences (requires auth)
@@ -95,6 +96,7 @@ Preferred communication style: Simple, everyday language.
 - `users`: id, username, replitId, supabaseId, email, firstName, lastName, profileImageUrl
 - `bookmarks`: id, userId, articleId (unique constraint per user)
 - `read_status`: id, userId, articleId (unique constraint per user)
+- `reading_progress`: id, userId, articleId, scrollPosition, percentRead, updatedAt (reading progress tracking)
 - `user_preferences`: id, userId, favoriteSources, favouriteTopics, preferredRegions, defaultSearchQuery, defaultTimeFilter, emailDigestEnabled, loginNotificationEnabled, lastDigestSentAt
 - `sessions`: sid, sess, expire (Replit Auth session storage)
 - `news_providers`: id, name, baseUrl, apiKeyEnvVar, isEnabled, rateLimitPerDay, supportedCategories, supportedCountries
@@ -147,6 +149,14 @@ Preferred communication style: Simple, everyday language.
 - **Run Digests**: POST /api/admin/run-digests triggers personalized email digests for all users with topic preferences
 - **Send Welcome Email**: POST /api/admin/send-welcome sends test welcome email
 
+### For You Page (/for-you)
+- **Personalized Feed**: AI-powered article recommendations based on reading behavior
+- **Topic Inference**: Analyzes user bookmarks (2x weight) and read articles (1x weight) to infer interests
+- **Breaking News Section**: Live articles from last 2 hours matching user's topics with "Live" badge
+- **Story Clusters**: Groups articles by topic showing multiple perspectives from different sources
+- **Fallback Content**: Shows trending articles when no reading behavior is available
+- **Loading States**: Skeleton loaders for all sections during data fetch
+
 ### Article Detail View
 - **Full Article View**: View complete article with metadata
 - **Content Extraction**: On-demand extraction of full article content from original URLs using @extractus/article-extractor
@@ -155,6 +165,8 @@ Preferred communication style: Simple, everyday language.
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
 - **AI-Powered Summaries**: Generate intelligent article summaries using AI via OpenRouter
+- **Reading Progress Tracking**: Visual progress bar at top, estimated read time, scroll position persistence
+- **Progress Restoration**: Automatically restores reading position when returning to an article
 
 ### AI Summary Feature
 - **OpenRouter Integration**: Uses OpenRouter API to access Grok 3.1 Mini model for generating summaries

@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Save, ChevronDown, Zap, Globe, Tag, Newspaper, Settings } from "lucide-react";
+import { Save, ChevronDown, Zap, Globe, Tag, Newspaper, Settings, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
 
@@ -241,6 +241,18 @@ export function Sidebar({
           )}
 
           <Separator />
+
+          <Link href="/for-you">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+              data-testid="link-for-you"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              For You
+            </Button>
+          </Link>
 
           <Link href="/settings">
             <Button

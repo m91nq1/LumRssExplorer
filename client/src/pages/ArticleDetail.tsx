@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ArticleWithStatus } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,9 +28,16 @@ import {
   Loader2,
   FileText,
   BookOpen,
+  Timer,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
+
+function estimateReadTime(content?: string | null, summary?: string | null): number {
+  const text = content || summary || "";
+  const words = text.split(/\s+/).filter(w => w.length > 0).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
 
 interface RelatedArticlesResponse {
   articles: ArticleWithStatus[];
@@ -59,6 +67,9 @@ export default function ArticleDetail() {
   const [aiSummaryOpen, setAiSummaryOpen] = useState(false);
   const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
   const [showFullContent, setShowFullContent] = useState(false);
+  const [readProgress, setReadProgress] = useState(0);
+  const mainRef = useRef<HTMLElement>(null);
+  const progressSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: article, isLoading: isLoadingArticle } = useQuery<ArticleWithStatus>({
     queryKey: [`/api/articles/${articleId}`],
@@ -149,6 +160,71 @@ export default function ArticleDetail() {
     },
   });
 
+  const saveProgressMutation = useMutation({
+    mutationFn: (data: { scrollPosition: number; percentRead: number }) => 
+      apiRequest("POST", "/api/reading-progress", { articleId, ...data }),
+  });
+
+  const { data: savedProgress } = useQuery<{ progress: { scrollPosition: number; percentRead: number } | null }>({
+    queryKey: [`/api/reading-progress/${articleId}`],
+    enabled: !!articleId,
+  });
+
+  const saveProgress = useCallback((scrollPos: number, percent: number) => {
+    if (progressSaveTimeoutRef.current) {
+      clearTimeout(progressSaveTimeoutRef.current);
+    }
+    progressSaveTimeoutRef.current = setTimeout(() => {
+      saveProgressMutation.mutate({ scrollPosition: scrollPos, percentRead: percent });
+    }, 2000);
+  }, [saveProgressMutation]);
+
+  useEffect(() => {
+    if (savedProgress?.progress && savedProgress.progress.percentRead > 0) {
+      setReadProgress(savedProgress.progress.percentRead);
+      if (savedProgress.progress.scrollPosition > 0) {
+        window.scrollTo({ top: savedProgress.progress.scrollPosition, behavior: "smooth" });
+      }
+    }
+  }, [savedProgress]);
+
+  useEffect(() => {
+    let rafId: number | null = null;
+    let lastScrollTime = 0;
+    const THROTTLE_MS = 100;
+    
+    const handleScroll = () => {
+      const now = Date.now();
+      if (now - lastScrollTime < THROTTLE_MS) {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => updateProgress());
+        return;
+      }
+      lastScrollTime = now;
+      updateProgress();
+    };
+    
+    const updateProgress = () => {
+      if (!mainRef.current) return;
+      
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = docHeight > 0 ? Math.min(100, Math.round((scrollTop / docHeight) * 100)) : 0;
+      
+      setReadProgress(percent);
+      saveProgress(scrollTop, percent);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+      if (progressSaveTimeoutRef.current) {
+        clearTimeout(progressSaveTimeoutRef.current);
+      }
+    };
+  }, [saveProgress]);
+
   const handleOpenArticle = () => {
     if (article) {
       readMutation.mutate();
@@ -229,10 +305,14 @@ export default function ArticleDetail() {
   });
   const fullDate = format(new Date(article.publishedAt), "MMMM d, yyyy 'at' h:mm a");
   const relatedArticles = relatedData?.articles || [];
+  const readTime = estimateReadTime(article.content, article.summary);
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Progress value={readProgress} className="h-1 rounded-none" />
+      </div>
+      <header className="h-16 border-b border-border bg-background sticky top-0 z-10 mt-1">
         <div className="h-full max-w-4xl mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/">
@@ -299,7 +379,7 @@ export default function ArticleDetail() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main ref={mainRef} className="max-w-4xl mx-auto px-6 py-8">
         <article>
           <h1
             className="text-3xl font-bold leading-tight mb-4"
@@ -308,7 +388,7 @@ export default function ArticleDetail() {
             {article.title}
           </h1>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+          <div className="flex items-center flex-wrap gap-4 text-sm text-muted-foreground mb-8">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
               <time dateTime={article.publishedAt} title={fullDate}>
@@ -317,6 +397,17 @@ export default function ArticleDetail() {
             </div>
             <span>•</span>
             <span>{article.sourceName}</span>
+            <span>•</span>
+            <div className="flex items-center gap-2">
+              <Timer className="w-4 h-4" />
+              <span data-testid="text-read-time">{readTime} min read</span>
+            </div>
+            {readProgress > 0 && (
+              <>
+                <span>•</span>
+                <span className="text-primary" data-testid="text-read-progress">{readProgress}% read</span>
+              </>
+            )}
           </div>
 
           {article.imageUrl && (

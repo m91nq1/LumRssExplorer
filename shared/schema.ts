@@ -229,6 +229,36 @@ export const insertUserPreferencesSchema = createInsertSchema(userPreferences).o
 export type InsertUserPreferences = z.infer<typeof insertUserPreferencesSchema>;
 export type UserPreferences = typeof userPreferences.$inferSelect;
 
+// Reading Progress table (for remembering scroll position and read time)
+export const readingProgress = pgTable("reading_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  articleId: varchar("article_id", { length: 64 }).notNull().references(() => articles.id),
+  scrollPosition: integer("scroll_position").default(0),
+  percentRead: integer("percent_read").default(0),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => [
+  index("reading_progress_user_article_idx").on(table.userId, table.articleId),
+]);
+
+export const readingProgressRelations = relations(readingProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [readingProgress.userId],
+    references: [users.id],
+  }),
+  article: one(articles, {
+    fields: [readingProgress.articleId],
+    references: [articles.id],
+  }),
+}));
+
+export const insertReadingProgressSchema = createInsertSchema(readingProgress).omit({
+  id: true,
+  updatedAt: true,
+});
+export type InsertReadingProgress = z.infer<typeof insertReadingProgressSchema>;
+export type ReadingProgress = typeof readingProgress.$inferSelect;
+
 // System Settings table (for last refresh time, etc.)
 export const systemSettings = pgTable("system_settings", {
   key: varchar("key", { length: 50 }).primaryKey(),

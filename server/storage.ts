@@ -6,6 +6,7 @@ import {
   readStatus,
   userPreferences,
   systemSettings,
+  readingProgress,
   type User,
   type InsertUser,
   type UpsertUser,
@@ -21,6 +22,8 @@ import {
   type InsertUserPreferences,
   type ArticleWithStatus,
   type SourceWithCount,
+  type ReadingProgress,
+  type InsertReadingProgress,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, ilike, gte, and, or, sql, inArray, count, isNull } from "drizzle-orm";
@@ -84,6 +87,19 @@ export interface IStorage {
   // Inferred Topics from User Behavior
   getUserInferredTopics(userId: number, limit?: number): Promise<string[]>;
   getAllUsersWithEmail(): Promise<User[]>;
+
+  // Reading Progress
+  getReadingProgress(userId: number, articleId: string): Promise<ReadingProgress | undefined>;
+  upsertReadingProgress(data: InsertReadingProgress): Promise<ReadingProgress>;
+  
+  // Personalized Feed
+  getPersonalizedArticles(userId: number, page: number, pageSize: number): Promise<{ articles: ArticleWithStatus[]; topics: string[]; total: number }>;
+  
+  // Story Clustering
+  getArticleClusters(options: { since?: Date; limit?: number }): Promise<Array<{ topic: string; articles: ArticleWithStatus[] }>>;
+  
+  // Breaking News
+  getBreakingNews(userId: number): Promise<ArticleWithStatus[]>;
 
   // System Settings
   getLastRefreshTime(): Promise<string | null>;
@@ -159,7 +175,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUserBySupabaseId(data: { supabaseId: string; email: string; firstName?: string; lastName?: string }): Promise<{ user: User; isNewUser: boolean }> {
-    const existingUser = await this.getUserBySupabaseId(data.supabaseId);
+    // First check by supabaseId
+    let existingUser = await this.getUserBySupabaseId(data.supabaseId);
+    
+    // If not found by supabaseId, check by email (user may exist with null supabaseId)
+    if (!existingUser) {
+      const [userByEmail] = await db.select().from(users).where(eq(users.email, data.email));
+      if (userByEmail) {
+        // Update existing user with supabaseId
+        const [updated] = await db
+          .update(users)
+          .set({
+            supabaseId: data.supabaseId,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, userByEmail.id))
+          .returning();
+        return { user: updated, isNewUser: false };
+      }
+    }
     
     if (existingUser) {
       const [updated] = await db
@@ -749,6 +785,197 @@ export class DatabaseStorage implements IStorage {
     const nextId = nextArticle.length > 0 ? nextArticle[0].id : null;
 
     return { prev: prevId, next: nextId };
+  }
+
+  // ==================== READING PROGRESS ====================
+  async getReadingProgress(userId: number, articleId: string): Promise<ReadingProgress | undefined> {
+    const [progress] = await db
+      .select()
+      .from(readingProgress)
+      .where(and(eq(readingProgress.userId, userId), eq(readingProgress.articleId, articleId)));
+    return progress || undefined;
+  }
+
+  async upsertReadingProgress(data: InsertReadingProgress): Promise<ReadingProgress> {
+    const existing = await this.getReadingProgress(data.userId, data.articleId);
+    
+    if (existing) {
+      const [updated] = await db
+        .update(readingProgress)
+        .set({ 
+          scrollPosition: data.scrollPosition ?? existing.scrollPosition,
+          percentRead: data.percentRead ?? existing.percentRead,
+          updatedAt: new Date()
+        })
+        .where(eq(readingProgress.id, existing.id))
+        .returning();
+      return updated;
+    }
+    
+    const [created] = await db.insert(readingProgress).values(data).returning();
+    return created;
+  }
+
+  // ==================== PERSONALIZED FEED ====================
+  async getPersonalizedArticles(userId: number, page: number, pageSize: number): Promise<{ articles: ArticleWithStatus[]; topics: string[]; total: number }> {
+    // Get user's inferred topics from reading behavior
+    const inferredTopics = await this.getUserInferredTopics(userId);
+    
+    if (inferredTopics.length === 0) {
+      // No behavior data - return recent trending articles instead
+      const result = await this.getArticles({
+        page,
+        pageSize,
+        userId,
+        mostPolarised: true,
+      });
+      return { articles: result.articles, topics: [], total: result.total };
+    }
+
+    // Get articles matching user's inferred topics
+    const result = await this.getArticles({
+      topics: inferredTopics,
+      page,
+      pageSize,
+      userId,
+    });
+
+    return { articles: result.articles, topics: inferredTopics, total: result.total };
+  }
+
+  // ==================== STORY CLUSTERING ====================
+  async getArticleClusters(options: { since?: Date; limit?: number }): Promise<Array<{ topic: string; articles: ArticleWithStatus[] }>> {
+    const { since, limit = 5 } = options;
+    
+    const sinceDate = since || new Date(Date.now() - 24 * 60 * 60 * 1000); // Default last 24h
+    
+    // Get articles with topics from the time period
+    const recentArticles = await db
+      .select({
+        id: articles.id,
+        title: articles.title,
+        link: articles.link,
+        sourceName: articles.sourceName,
+        sourceId: articles.sourceId,
+        publishedAt: articles.publishedAt,
+        summary: articles.summary,
+        imageUrl: articles.imageUrl,
+        topics: articles.topics,
+        polarisationScore: articles.polarisationScore,
+      })
+      .from(articles)
+      .leftJoin(feedSources, eq(articles.sourceId, feedSources.id))
+      .where(gte(articles.publishedAt, sinceDate))
+      .orderBy(desc(articles.publishedAt))
+      .limit(200);
+
+    // Group articles by their primary topic
+    const topicGroups = new Map<string, ArticleWithStatus[]>();
+    
+    for (const article of recentArticles) {
+      const primaryTopic = article.topics?.[0] || 'Other / Offbeat';
+      
+      if (!topicGroups.has(primaryTopic)) {
+        topicGroups.set(primaryTopic, []);
+      }
+      
+      const group = topicGroups.get(primaryTopic)!;
+      if (group.length < 5) { // Max 5 articles per cluster
+        group.push({
+          id: article.id,
+          title: article.title,
+          link: article.link,
+          sourceName: article.sourceName,
+          sourceId: article.sourceId,
+          publishedAt: article.publishedAt.toISOString(),
+          summary: article.summary,
+          imageUrl: article.imageUrl,
+          topics: article.topics,
+          polarisationScore: article.polarisationScore,
+        });
+      }
+    }
+
+    // Sort clusters by article count and return top N
+    return Array.from(topicGroups.entries())
+      .filter(([_, articles]) => articles.length >= 2) // Only clusters with 2+ articles
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, limit)
+      .map(([topic, articles]) => ({ topic, articles }));
+  }
+
+  // ==================== BREAKING NEWS ====================
+  async getBreakingNews(userId: number): Promise<ArticleWithStatus[]> {
+    // Get user's preferred topics
+    const inferredTopics = await this.getUserInferredTopics(userId);
+    
+    // Get articles from last 2 hours with high polarisation or breaking keywords
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    
+    const conditions = [gte(articles.publishedAt, twoHoursAgo)];
+    
+    // If user has topic preferences, filter by them
+    if (inferredTopics.length > 0) {
+      conditions.push(
+        sql`${articles.topics} && ARRAY[${sql.join(inferredTopics.map(t => sql`${t}`), sql`, `)}]::text[]`
+      );
+    }
+
+    const breakingArticles = await db
+      .select({
+        id: articles.id,
+        title: articles.title,
+        link: articles.link,
+        sourceName: articles.sourceName,
+        sourceId: articles.sourceId,
+        sourceRegion: feedSources.region,
+        publishedAt: articles.publishedAt,
+        summary: articles.summary,
+        imageUrl: articles.imageUrl,
+        topics: articles.topics,
+        polarisationScore: articles.polarisationScore,
+      })
+      .from(articles)
+      .leftJoin(feedSources, eq(articles.sourceId, feedSources.id))
+      .where(and(...conditions))
+      .orderBy(desc(articles.polarisationScore), desc(articles.publishedAt))
+      .limit(10);
+
+    // Get user's bookmarks and read status for these articles
+    const articleIds = breakingArticles.map(a => a.id);
+    
+    let userBookmarks: string[] = [];
+    let userReadStatus: string[] = [];
+    
+    if (articleIds.length > 0) {
+      const bookmarkRows = await db
+        .select({ articleId: bookmarks.articleId })
+        .from(bookmarks)
+        .where(and(eq(bookmarks.userId, userId), inArray(bookmarks.articleId, articleIds)));
+      userBookmarks = bookmarkRows.map(b => b.articleId);
+      
+      const readRows = await db
+        .select({ articleId: readStatus.articleId })
+        .from(readStatus)
+        .where(and(eq(readStatus.userId, userId), inArray(readStatus.articleId, articleIds)));
+      userReadStatus = readRows.map(r => r.articleId);
+    }
+
+    return breakingArticles.map(article => ({
+      id: article.id,
+      title: article.title,
+      link: article.link,
+      sourceName: article.sourceName,
+      sourceId: article.sourceId,
+      sourceRegion: article.sourceRegion || undefined,
+      publishedAt: article.publishedAt.toISOString(),
+      summary: article.summary,
+      imageUrl: article.imageUrl,
+      topics: article.topics,
+      polarisationScore: article.polarisationScore,
+      isBookmarked: userBookmarks.includes(article.id),
+      isRead: userReadStatus.includes(article.id),
+    }));
   }
 }
 
