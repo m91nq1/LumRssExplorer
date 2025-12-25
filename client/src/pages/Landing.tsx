@@ -112,7 +112,7 @@ export default function Landing() {
                 About
               </Button>
             </a>
-            <a href="/api/login">
+            <Link href="/login">
               <Button 
                 variant="outline" 
                 className="border-white/20 bg-white/5 hover:bg-white/10 text-white"
@@ -120,7 +120,7 @@ export default function Landing() {
               >
                 Sign In
               </Button>
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -140,7 +140,7 @@ export default function Landing() {
               </p>
 
               <div className="flex flex-wrap gap-4 justify-center">
-                <a href="/api/login">
+                <Link href="/signup">
                   <Button 
                     size="lg"
                     className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-8"
@@ -149,8 +149,8 @@ export default function Landing() {
                     <Zap className="w-4 h-4 mr-2" />
                     Launch Dashboard
                   </Button>
-                </a>
-                <a href="/api/login">
+                </Link>
+                <Link href="/login">
                   <Button 
                     size="lg" 
                     variant="outline"
@@ -159,7 +159,7 @@ export default function Landing() {
                   >
                     Explore Stories
                   </Button>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function Landing() {
                   A quick walkthrough of the globe, lenses, and alerts.
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                  <a href="/api/login">
+                  <Link href="/signup">
                     <Button 
                       size="lg"
                       className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-8"
@@ -184,8 +184,8 @@ export default function Landing() {
                     >
                       Get Started Free
                     </Button>
-                  </a>
-                  <a href="/api/login">
+                  </Link>
+                  <Link href="/login">
                     <Button 
                       size="lg" 
                       variant="outline"
@@ -194,7 +194,7 @@ export default function Landing() {
                     >
                       Explore Stories
                     </Button>
-                  </a>
+                  </Link>
                 </div>
                 <p className="text-sm text-gray-500 mt-4">
                   No credit card required.
@@ -333,7 +333,7 @@ export default function Landing() {
             <p className="text-gray-400 mb-8">
               Sign in to unlock personalized feeds, bookmarks, and AI-powered insights.
             </p>
-            <a href="/api/login">
+            <Link href="/signup">
               <Button 
                 size="lg"
                 className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white border-0 shadow-lg shadow-blue-500/25 px-10"
@@ -341,7 +341,7 @@ export default function Landing() {
               >
                 Get Started Free
               </Button>
-            </a>
+            </Link>
           </div>
         </section>
       </main>
@@ -352,23 +352,23 @@ export default function Landing() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
               <div className="space-y-2">
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Explore</a>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Explore</Link>
                 <Link href="/about" className="block text-sm text-gray-400 hover:text-white transition-colors">About</Link>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Account</h4>
               <div className="space-y-2">
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Profile</a>
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Bookmarks</a>
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">History</a>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Profile</Link>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Bookmarks</Link>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">History</Link>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Settings</h4>
               <div className="space-y-2">
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Preferences</a>
-                <a href="/api/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Manage Feeds</a>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Preferences</Link>
+                <Link href="/login" className="block text-sm text-gray-400 hover:text-white transition-colors">Manage Feeds</Link>
               </div>
             </div>
             <div>
