@@ -30,9 +30,11 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByReplitId(replitId: string): Promise<User | undefined>;
+  getUserBySupabaseId(supabaseId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getOrCreateUser(username: string): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
+  upsertUserBySupabaseId(data: { supabaseId: string; email: string; firstName?: string; lastName?: string }): Promise<{ user: User; isNewUser: boolean }>;
 
   // Feed Sources
   getFeedSources(): Promise<FeedSource[]>;
@@ -148,6 +150,59 @@ export class DatabaseStorage implements IStorage {
         })
         .returning();
       return created;
+    }
+  }
+
+  async getUserBySupabaseId(supabaseId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.supabaseId, supabaseId));
+    return user || undefined;
+  }
+
+  async upsertUserBySupabaseId(data: { supabaseId: string; email: string; firstName?: string; lastName?: string }): Promise<{ user: User; isNewUser: boolean }> {
+    const existingUser = await this.getUserBySupabaseId(data.supabaseId);
+    
+    if (existingUser) {
+      const [updated] = await db
+        .update(users)
+        .set({
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.supabaseId, data.supabaseId))
+        .returning();
+      return { user: updated, isNewUser: false };
+    } else {
+      // Generate unique username from email
+      const baseUsername = data.email.split("@")[0];
+      let username = baseUsername;
+      let counter = 1;
+      
+      while (await this.getUserByUsername(username)) {
+        username = `${baseUsername}${counter}`;
+        counter++;
+      }
+      
+      const [created] = await db
+        .insert(users)
+        .values({
+          username,
+          supabaseId: data.supabaseId,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        })
+        .returning();
+      
+      // Create default preferences for new user (with email digest enabled by default)
+      await db.insert(userPreferences).values({
+        userId: created.id,
+        emailDigestEnabled: true,
+        loginNotificationEnabled: true,
+      }).onConflictDoNothing();
+      
+      return { user: created, isNewUser: true };
     }
   }
 
@@ -556,6 +611,7 @@ export class DatabaseStorage implements IStorage {
           defaultSearchQuery: prefs.defaultSearchQuery,
           defaultTimeFilter: prefs.defaultTimeFilter,
           emailDigestEnabled: prefs.emailDigestEnabled,
+          loginNotificationEnabled: prefs.loginNotificationEnabled,
           updatedAt: new Date(),
         },
       })

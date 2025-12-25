@@ -10,7 +10,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
-import { sendWelcomeEmail } from "./services/emailService";
+import { sendWelcomeEmail, sendLoginNotificationEmail } from "./services/emailService";
 import { extractArticleContent } from "./contentExtractor";
 
 // Admin email addresses from environment variable (comma-separated)
@@ -93,6 +93,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Supabase auth - handle login/signup and send notifications
+  app.post("/api/auth/supabase-login", async (req, res) => {
+    try {
+      const { supabaseId, email, firstName, lastName } = req.body;
+      
+      if (!supabaseId || !email) {
+        return res.status(400).json({ error: "supabaseId and email are required" });
+      }
+
+      const { user, isNewUser } = await storage.upsertUserBySupabaseId({
+        supabaseId,
+        email,
+        firstName,
+        lastName,
+      });
+
+      // Send appropriate email
+      if (isNewUser) {
+        // Send welcome email for new users
+        sendWelcomeEmail(email, firstName || user.username).catch(err => 
+          console.error("Failed to send welcome email:", err)
+        );
+      } else {
+        // Send login notification for existing users (if enabled)
+        const prefs = await storage.getUserPreferences(user.id);
+        if (!prefs || prefs.loginNotificationEnabled !== false) {
+          sendLoginNotificationEmail(email, firstName || user.username).catch(err =>
+            console.error("Failed to send login notification:", err)
+          );
+        }
+      }
+
+      res.json({ user, isNewUser });
+    } catch (error) {
+      console.error("Error handling Supabase login:", error);
+      res.status(500).json({ error: "Failed to process login" });
+    }
+  });
+
+  // Get user by Supabase ID
+  app.get("/api/auth/supabase-user/:supabaseId", async (req, res) => {
+    try {
+      const user = await storage.getUserBySupabaseId(req.params.supabaseId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching Supabase user:", error);
+      res.status(500).json({ error: "Failed to fetch user" });
     }
   });
 
