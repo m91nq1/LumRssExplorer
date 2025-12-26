@@ -32,7 +32,7 @@ async function isAdmin(req: Request, res: Response, next: NextFunction) {
   }
   
   try {
-    const user = await storage.getUserByReplitId(sessionUser.claims.sub);
+    const user = await storage.getUserBySupabaseId(sessionUser.claims.sub);
     if (!user || !isAdminEmail(user.email)) {
       return res.status(403).json({ error: "Admin access required" });
     }
@@ -49,7 +49,7 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
   
   if (sessionUser?.claims?.sub) {
     try {
-      const user = await storage.getUserByReplitId(sessionUser.claims.sub);
+      const user = await storage.getUserBySupabaseId(sessionUser.claims.sub);
       if (user) {
         (req as any).userId = user.id;
       }
@@ -304,7 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/check", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const user = await storage.getUserByReplitId(userId);
+      const user = await storage.getUserBySupabaseId(userId);
       const adminStatus = user ? isAdminEmail(user.email) : false;
       res.json({ isAdmin: adminStatus });
     } catch (error) {
