@@ -25,7 +25,6 @@ export async function apiRequest(
   const headers: Record<string, string> = {
     "X-Username": getUsername(),
   };
-  
   if (data) {
     headers["Content-Type"] = "application/json";
   }

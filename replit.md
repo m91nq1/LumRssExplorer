@@ -144,7 +144,6 @@ Preferred communication style: Simple, everyday language.
 - **Email Digests**: Opt-in to receive personalized news digests via email
 
 ### Admin Features
-- **Email-Based Admin Access**: Users with admin emails (ljmginqi0.1@gmail.com, lumginqi1@gmail.com) automatically get admin privileges
 - **Feed Management**: Add, edit, delete, enable/disable RSS feeds at /feeds
 - **Manual Refresh**: Trigger immediate feed refresh
 - **Run Digests**: POST /api/admin/run-digests triggers personalized email digests for all users with topic preferences
