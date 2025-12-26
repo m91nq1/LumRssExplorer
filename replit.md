@@ -144,8 +144,7 @@ Preferred communication style: Simple, everyday language.
 - **Email Digests**: Opt-in to receive personalized news digests via email
 
 ### Admin Features
-- **Admin Login**: Dedicated admin login at /admin with username "admin" and password "admin123456789"
-- **Token-Based Auth**: Admin sessions use JWT-like tokens stored in localStorage
+- **Email-Based Admin Access**: Users with admin emails (ljmginqi0.1@gmail.com, lumginqi1@gmail.com) automatically get admin privileges
 - **Feed Management**: Add, edit, delete, enable/disable RSS feeds at /feeds
 - **Manual Refresh**: Trigger immediate feed refresh
 - **Run Digests**: POST /api/admin/run-digests triggers personalized email digests for all users with topic preferences
