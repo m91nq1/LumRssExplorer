@@ -283,6 +283,8 @@ export class DatabaseStorage implements IStorage {
     topics?: string[];
     regions?: string[];
     search?: string;
+    caseSensitive?: boolean;
+    exactPhrase?: boolean;
     since?: Date;
     page: number;
     pageSize: number;
@@ -291,7 +293,7 @@ export class DatabaseStorage implements IStorage {
     unreadOnly?: boolean;
     mostPolarised?: boolean;
   }): Promise<{ articles: ArticleWithStatus[]; total: number }> {
-    const { sourceId, topics, regions, search, since, page, pageSize, userId, bookmarkedOnly, unreadOnly, mostPolarised } = options;
+    const { sourceId, topics, regions, search, caseSensitive, exactPhrase, since, page, pageSize, userId, bookmarkedOnly, unreadOnly, mostPolarised } = options;
     const offset = (page - 1) * pageSize;
 
     const conditions: any[] = [];
@@ -310,12 +312,52 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (search) {
-      conditions.push(
-        or(
-          ilike(articles.title, `%${search}%`),
-          ilike(articles.summary, `%${search}%`)
-        )
-      );
+      if (caseSensitive) {
+        // Case-sensitive search using PostgreSQL LIKE (case-sensitive by default)
+        if (exactPhrase) {
+          // Exact phrase match with case sensitivity
+          conditions.push(
+            or(
+              sql`${articles.title} LIKE ${'%' + search + '%'}`,
+              sql`${articles.summary} LIKE ${'%' + search + '%'}`
+            )
+          );
+        } else {
+          // Token-based matching: all words must appear (case-sensitive)
+          const tokens = search.trim().split(/\s+/).filter(t => t.length > 0);
+          const tokenConditions = tokens.map(token => 
+            or(
+              sql`${articles.title} LIKE ${'%' + token + '%'}`,
+              sql`${articles.summary} LIKE ${'%' + token + '%'}`
+            )
+          );
+          if (tokenConditions.length > 0) {
+            conditions.push(and(...tokenConditions));
+          }
+        }
+      } else {
+        // Case-insensitive search (original behavior)
+        if (exactPhrase !== false) {
+          conditions.push(
+            or(
+              ilike(articles.title, `%${search}%`),
+              ilike(articles.summary, `%${search}%`)
+            )
+          );
+        } else {
+          // Token-based matching: all words must appear (case-insensitive)
+          const tokens = search.trim().split(/\s+/).filter(t => t.length > 0);
+          const tokenConditions = tokens.map(token => 
+            or(
+              ilike(articles.title, `%${token}%`),
+              ilike(articles.summary, `%${token}%`)
+            )
+          );
+          if (tokenConditions.length > 0) {
+            conditions.push(and(...tokenConditions));
+          }
+        }
+      }
     }
 
     if (since) {

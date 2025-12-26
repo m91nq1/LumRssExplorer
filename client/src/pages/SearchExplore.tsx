@@ -9,6 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { 
   Search, 
   Grid3X3, 
@@ -21,7 +23,10 @@ import {
   ChevronRight,
   ExternalLink,
   ArrowLeft,
-  X
+  X,
+  CaseSensitive,
+  Quote,
+  AlertCircle
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,6 +49,8 @@ export default function SearchExplore() {
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [page, setPage] = useState(1);
+  const [caseSensitive, setCaseSensitive] = useState(true);
+  const [exactPhrase, setExactPhrase] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -92,6 +99,8 @@ export default function SearchExplore() {
   }
   if (debouncedQuery) {
     queryParams.set("search", debouncedQuery);
+    queryParams.set("caseSensitive", caseSensitive.toString());
+    queryParams.set("exactPhrase", exactPhrase.toString());
   }
   const sinceDate = getSinceDate(timeFilter);
   if (sinceDate) {
@@ -474,7 +483,7 @@ export default function SearchExplore() {
           </aside>
 
           <main className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
               <div>
                 <h2 className="text-xl font-semibold" data-testid="text-results-title">
                   {debouncedQuery ? `Results for "${debouncedQuery}"` : "Latest News"}
@@ -483,6 +492,42 @@ export default function SearchExplore() {
                   {totalArticles.toLocaleString()} articles found
                 </p>
               </div>
+              
+              {debouncedQuery && (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        id="exact-phrase"
+                        checked={exactPhrase}
+                        onCheckedChange={setExactPhrase}
+                        data-testid="switch-exact-phrase"
+                      />
+                      <Label htmlFor="exact-phrase" className="text-sm flex items-center gap-1 cursor-pointer">
+                        <Quote className="w-3.5 h-3.5" />
+                        Exact phrase
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        id="case-sensitive"
+                        checked={caseSensitive}
+                        onCheckedChange={setCaseSensitive}
+                        data-testid="switch-case-sensitive"
+                      />
+                      <Label htmlFor="case-sensitive" className="text-sm flex items-center gap-1 cursor-pointer">
+                        <CaseSensitive className="w-3.5 h-3.5" />
+                        Case-sensitive
+                      </Label>
+                    </div>
+                  </div>
+                  {caseSensitive && exactPhrase && (
+                    <p className="text-xs text-muted-foreground">
+                      Case-sensitive exact match is ON — results must contain the exact text.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {isLoadingArticles ? (
@@ -501,6 +546,44 @@ export default function SearchExplore() {
                   </Card>
                 ))}
               </div>
+            ) : debouncedQuery && articles.length === 0 ? (
+              <Card className="p-8 text-center border-border/50">
+                <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No exact case-sensitive matches found</h3>
+                <p className="text-muted-foreground mb-6">
+                  We couldn't find articles containing "{debouncedQuery}" with {caseSensitive ? "exact casing" : "the specified options"}.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {caseSensitive && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setCaseSensitive(false)}
+                      data-testid="button-try-case-insensitive"
+                    >
+                      Try case-insensitive
+                    </Button>
+                  )}
+                  {exactPhrase && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setExactPhrase(false)}
+                      data-testid="button-try-partial-match"
+                    >
+                      Try partial match
+                    </Button>
+                  )}
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setDebouncedQuery("");
+                    }}
+                    data-testid="button-clear-search-empty"
+                  >
+                    Clear search
+                  </Button>
+                </div>
+              </Card>
             ) : viewMode === "articles" ? (
               <motion.div
                 initial={{ opacity: 0 }}

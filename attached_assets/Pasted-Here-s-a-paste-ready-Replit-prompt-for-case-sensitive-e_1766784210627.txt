@@ -1,0 +1,140 @@
+Here’s a paste-ready **Replit prompt** for **case-sensitive, exact-name search** (only show articles that contain the exact name/phrase, matching uppercase/lowercase exactly). I’m also adding the practical bits you’ll need so it doesn’t feel broken (quotes toggle + fallback messaging).
+
+---
+
+## Replit Prompt — Add Case-Sensitive Exact-Match Search (LUM News)
+
+In this existing **LUM News** project, update the **Search & Explore** feature so users can perform a **case-sensitive exact-match search**.
+
+### Goal
+
+When a user searches a name/phrase (person, place, organisation, product), only show articles where the text contains that **exact phrase with the same casing**.
+
+Example:
+
+* Search: `Putin`
+
+  * Matches: “Putin says …”
+  * Does **not** match: “putin says …” or “PUTIN says …”
+* Search: `Taylor Swift`
+
+  * Matches only if the article contains exactly `Taylor Swift` (same casing).
+  * Does not match `TAYLOR SWIFT` or `taylor swift`.
+
+---
+
+## 1) UI changes (simple but clear)
+
+In the search bar area add two controls:
+
+1. **Exact phrase** toggle (default ON)
+2. **Case-sensitive** toggle (default ON)
+
+Also allow quoting:
+
+* If the user types `"Taylor Swift"` treat it as exact phrase automatically.
+
+Show a helper text under the search field:
+
+* “Case-sensitive exact match is ON — results must contain the exact text.”
+
+---
+
+## 2) Search behavior rules
+
+When search is run:
+
+### A) Case-sensitive exact phrase (default)
+
+Use a strict `includes()` check:
+
+* Search against:
+
+  * `title`
+  * `description/summary`
+  * `content` (if you store it)
+  * `sourceName` (optional)
+
+Only include articles if **any** of those fields includes the query string exactly.
+
+### B) Optional: if Exact phrase OFF
+
+Then do token-based matching but **still case-sensitive**:
+
+* Split query by spaces.
+* All tokens must appear with exact casing.
+
+### C) Empty search
+
+* Show default feed (no filter).
+
+### D) No results
+
+If no exact matches:
+
+* Show an empty state that says:
+
+  * “No exact case-sensitive matches found.”
+* Offer one-click fallback actions:
+
+  * Button: “Try case-insensitive”
+  * Button: “Try partial match”
+
+(These should only change the toggles and rerun search.)
+
+---
+
+## 3) Implementation details (frontend)
+
+Add a `searchArticles()` function that accepts:
+
+```ts
+type SearchOptions = {
+  query: string;
+  exactPhrase: boolean;
+  caseSensitive: boolean;
+};
+
+function searchArticles(articles, options): Article[] { ... }
+```
+
+### Matching logic
+
+* If `caseSensitive === true`:
+
+  * Use `field.includes(query)`
+* If `caseSensitive === false`:
+
+  * Compare using `.toLowerCase()` on both sides
+* If `exactPhrase === false`:
+
+  * Tokenize query into words and require ALL tokens match (respect caseSensitive toggle)
+
+---
+
+## 4) Performance (don’t lag)
+
+* Debounce typing by 250–400ms.
+* If there are many articles, pre-build a `searchText` field per article:
+
+  * `searchText = title + " " + description + " " + content`
+* Search against that combined field to avoid repeated concatenations.
+
+---
+
+## 5) Acceptance criteria
+
+After implementation:
+
+* Search is **case-sensitive by default**
+* Only exact text matches appear (same casing)
+* User can toggle:
+
+  * Exact phrase ON/OFF
+  * Case sensitive ON/OFF
+* Clear no-results message + fallback buttons
+* No changes to RSS ingestion or backend required (if current search is frontend-driven)
+
+---
+
+If you want this to be *even stricter* (like “whole word match only”, so `Putin` doesn’t match `Putin’s`), say so and I’ll tweak the prompt to use regex word boundaries.

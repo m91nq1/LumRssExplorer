@@ -361,6 +361,8 @@ export class ArticleStore {
     topics?: string;
     regions?: string;
     search?: string;
+    caseSensitive?: boolean;
+    exactPhrase?: boolean;
     since?: string;
     page?: number;
     pageSize?: number;
@@ -374,6 +376,8 @@ export class ArticleStore {
       topics,
       regions,
       search,
+      caseSensitive,
+      exactPhrase,
       since,
       page = 1,
       pageSize = 20,
@@ -392,6 +396,8 @@ export class ArticleStore {
       topics: topicsArray,
       regions: regionsArray,
       search,
+      caseSensitive,
+      exactPhrase,
       since: sinceDate,
       page,
       pageSize,

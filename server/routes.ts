@@ -160,6 +160,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         topics: req.query.topics,
         regions: req.query.regions,
         search: req.query.search,
+        caseSensitive: req.query.caseSensitive === "true",
+        exactPhrase: req.query.exactPhrase === "true",
         since: req.query.since,
         page: req.query.page ? parseInt(req.query.page as string, 10) : 1,
         pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string, 10) : 20,
@@ -175,7 +177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { sourceId, topics, regions, search, since, page, pageSize, bookmarkedOnly, unreadOnly, mostPolarised } = validationResult.data;
+      const { sourceId, topics, regions, search, caseSensitive, exactPhrase, since, page, pageSize, bookmarkedOnly, unreadOnly, mostPolarised } = validationResult.data;
       
       // Get userId from session if available
       const userId = (req as any).userId || undefined;
@@ -185,6 +187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         topics,
         regions,
         search,
+        caseSensitive,
+        exactPhrase,
         since,
         page,
         pageSize,

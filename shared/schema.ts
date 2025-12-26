@@ -342,6 +342,8 @@ export const articleQuerySchema = z.object({
   topics: z.string().optional(),
   regions: z.string().optional(),
   search: z.string().optional(),
+  caseSensitive: z.boolean().optional(),
+  exactPhrase: z.boolean().optional(),
   since: z.string().optional(),
   page: z.number().default(1),
   pageSize: z.number().default(20),
