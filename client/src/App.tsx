@@ -20,6 +20,7 @@ import History from "@/pages/History";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import ForYou from "@/pages/ForYou";
+import AdminLogin from "@/pages/AdminLogin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -42,6 +43,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/admin" component={AdminLogin} />
       {isAuthenticated ? (
         <>
           <Route path="/home" component={Home} />

@@ -13,6 +13,11 @@ import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } 
 import { sendWelcomeEmail, sendLoginNotificationEmail } from "./services/emailService";
 import { extractArticleContent } from "./contentExtractor";
 
+// Admin credentials
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123456789";
+const ADMIN_TOKEN = "lum-admin-" + Buffer.from(ADMIN_PASSWORD).toString("base64");
+
 // Admin email addresses from environment variable (comma-separated)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com")
   .split(",")
@@ -23,8 +28,24 @@ function isAdminEmail(email: string | undefined | null): boolean {
   return ADMIN_EMAILS.includes(email.toLowerCase());
 }
 
-// Admin middleware - checks if authenticated user is an admin
+// Validate admin token from Authorization header
+function validateAdminToken(req: Request): boolean {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.substring(7);
+    return token === ADMIN_TOKEN;
+  }
+  return false;
+}
+
+// Admin middleware - checks if authenticated user is an admin OR has valid admin token
 async function isAdmin(req: Request, res: Response, next: NextFunction) {
+  // First check for admin token
+  if (validateAdminToken(req)) {
+    return next();
+  }
+  
+  // Fall back to session-based admin check
   const sessionUser = req.user as any;
   
   if (!sessionUser?.claims?.sub) {
@@ -84,6 +105,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   startDigestScheduler();
 
   await setupAuth(app);
+
+  // Admin login endpoint
+  app.post("/api/admin/login", (req, res) => {
+    const { username, password } = req.body;
+    
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      res.json({ success: true, token: ADMIN_TOKEN });
+    } else {
+      res.status(401).json({ success: false, error: "Invalid credentials" });
+    }
+  });
+
+  // Admin token verification endpoint
+  app.get("/api/admin/verify", (req, res) => {
+    if (validateAdminToken(req)) {
+      res.json({ valid: true });
+    } else {
+      res.status(401).json({ valid: false });
+    }
+  });
 
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
     try {
