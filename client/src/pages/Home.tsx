@@ -120,8 +120,14 @@ export default function Home() {
   const queryString = queryParams.toString();
   const articlesUrl = `/api/articles${queryString ? `?${queryString}` : ""}`;
 
-  const { data: articlesData, isLoading: isLoadingArticles } = useQuery<ArticlesResponse>({
-    queryKey: [articlesUrl],
+  const { data: articlesData, isLoading: isLoadingArticles, isFetching } = useQuery<ArticlesResponse>({
+    queryKey: ["/api/articles", { sourceId: selectedSources.join(","), topics: selectedTopics.join(","), regions: selectedRegions.join(","), search: searchQuery, timeFilter, mostPolarised, page }],
+    queryFn: async () => {
+      const response = await fetch(articlesUrl);
+      if (!response.ok) throw new Error("Failed to fetch articles");
+      return response.json();
+    },
+    staleTime: 0,
   });
 
   const refreshMutation = useMutation({
@@ -317,7 +323,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 py-8">
             <ArticleGrid 
               articles={articles} 
-              isLoading={isLoadingArticles}
+              isLoading={isLoadingArticles || isFetching}
               onBookmark={handleBookmark}
               onRead={handleRead}
               isBookmarking={bookmarkMutation.isPending}
