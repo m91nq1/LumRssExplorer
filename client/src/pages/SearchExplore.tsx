@@ -109,8 +109,17 @@ export default function SearchExplore() {
   queryParams.set("page", page.toString());
   queryParams.set("pageSize", "20");
 
-  const { data: articlesData, isLoading: isLoadingArticles } = useQuery<ArticlesResponse>({
-    queryKey: [`/api/articles?${queryParams.toString()}`],
+  const articlesUrl = `/api/articles?${queryParams.toString()}`;
+  const { data: articlesData, isLoading: isLoadingArticles, isFetching } = useQuery<ArticlesResponse>({
+    queryKey: ["/api/articles", { search: debouncedQuery, caseSensitive, exactPhrase, sources: selectedSources.join(","), timeFilter, page }],
+    queryFn: async () => {
+      const response = await fetch(articlesUrl);
+      if (!response.ok) throw new Error("Failed to fetch articles");
+      return response.json();
+    },
+    staleTime: 0,
+    refetchOnMount: true,
+    placeholderData: undefined,
   });
 
   const sources = sourcesData?.sources || [];
@@ -530,7 +539,7 @@ export default function SearchExplore() {
               )}
             </div>
 
-            {isLoadingArticles ? (
+            {(isLoadingArticles || isFetching) ? (
               <div className="grid gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <Card key={i} className="p-4">
@@ -708,7 +717,7 @@ export default function SearchExplore() {
               </motion.div>
             )}
 
-            {!isLoadingArticles && articles.length === 0 && (
+            {!isLoadingArticles && !isFetching && articles.length === 0 && (
               <Card className="p-12 text-center border-border/50">
                 <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No articles found</h3>
@@ -721,7 +730,7 @@ export default function SearchExplore() {
               </Card>
             )}
 
-            {!isLoadingArticles && articles.length > 0 && totalPages > 1 && (
+            {!isLoadingArticles && !isFetching && articles.length > 0 && totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center gap-4">
                 <Button
                   variant="outline"

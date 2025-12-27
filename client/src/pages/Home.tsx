@@ -128,6 +128,8 @@ export default function Home() {
       return response.json();
     },
     staleTime: 0,
+    refetchOnMount: true,
+    placeholderData: undefined,
   });
 
   const refreshMutation = useMutation({

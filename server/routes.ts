@@ -309,7 +309,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUserBySupabaseId(userId);
-      const adminStatus = user ? isAdminEmail(user.email) : false;
+      const userEmail = user?.email?.toLowerCase();
+      const adminStatus = userEmail ? ADMIN_EMAILS.includes(userEmail) : false;
+      console.log("[Admin Check] User email:", userEmail, "Admin emails:", ADMIN_EMAILS, "Is admin:", adminStatus);
       res.json({ isAdmin: adminStatus });
     } catch (error) {
       console.error("Error checking admin status:", error);
