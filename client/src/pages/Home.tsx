@@ -104,6 +104,8 @@ export default function Home() {
   }
   if (searchQuery) {
     queryParams.set("search", searchQuery);
+    queryParams.set("caseSensitive", "false");
+    queryParams.set("exactPhrase", "true");
   }
   const sinceDate = getSinceDate(timeFilter);
   if (sinceDate) {

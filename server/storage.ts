@@ -53,6 +53,8 @@ export interface IStorage {
     topics?: string[];
     regions?: string[];
     search?: string;
+    caseSensitive?: boolean;
+    exactPhrase?: boolean;
     since?: Date;
     page: number;
     pageSize: number;
