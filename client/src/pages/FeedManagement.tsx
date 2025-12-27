@@ -4,6 +4,7 @@ import { FeedSource, NewsProvider } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useSupabaseAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -88,6 +89,8 @@ const providerColors: Record<string, { bg: string; text: string; border: string;
 export default function FeedManagement() {
   const { toast } = useToast();
   const { isAdmin, isLoading: isAdminLoading } = useAdmin();
+  const { user } = useSupabaseAuth();
+  const supabaseId = user?.id;
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<FeedSource | null>(null);
   const [expandedProviders, setExpandedProviders] = useState<Record<string, boolean>>({});
@@ -100,13 +103,23 @@ export default function FeedManagement() {
   });
 
   const { data, isLoading } = useQuery<FeedsResponse>({
-    queryKey: ["/api/feeds"],
-    enabled: isAdmin,
+    queryKey: ["/api/feeds", supabaseId],
+    queryFn: async () => {
+      const response = await fetch(`/api/feeds?supabaseId=${supabaseId}`);
+      if (!response.ok) throw new Error("Failed to fetch feeds");
+      return response.json();
+    },
+    enabled: isAdmin && !!supabaseId,
   });
 
   const { data: providersData, isLoading: providersLoading } = useQuery<ProvidersResponse>({
-    queryKey: ["/api/providers"],
-    enabled: isAdmin,
+    queryKey: ["/api/providers", supabaseId],
+    queryFn: async () => {
+      const response = await fetch(`/api/providers?supabaseId=${supabaseId}`);
+      if (!response.ok) throw new Error("Failed to fetch providers");
+      return response.json();
+    },
+    enabled: isAdmin && !!supabaseId,
   });
 
   const { data: sourcesData } = useQuery<SourcesResponse>({
@@ -114,11 +127,28 @@ export default function FeedManagement() {
     enabled: isAdmin,
   });
 
+  const adminFetch = async (url: string, options: RequestInit = {}) => {
+    const separator = url.includes('?') ? '&' : '?';
+    const fullUrl = `${url}${separator}supabaseId=${supabaseId}`;
+    const response = await fetch(fullUrl, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+    if (!response.ok) throw new Error('Request failed');
+    return response;
+  };
+
   const toggleProviderMutation = useMutation({
     mutationFn: ({ id, isEnabled }: { id: string; isEnabled: boolean }) =>
-      apiRequest("PATCH", `/api/providers/${id}`, { isEnabled }),
+      adminFetch(`/api/providers/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isEnabled }),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/providers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/providers", supabaseId] });
       toast({
         title: "Provider updated",
         description: "The news provider status has been updated.",
@@ -135,13 +165,16 @@ export default function FeedManagement() {
 
   const createMutation = useMutation({
     mutationFn: (feed: typeof formData) =>
-      apiRequest("POST", "/api/feeds", {
-        ...feed,
-        sourceType: "rss",
-        isEnabled: true,
+      adminFetch("/api/feeds", {
+        method: 'POST',
+        body: JSON.stringify({
+          ...feed,
+          sourceType: "rss",
+          isEnabled: true,
+        }),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/feeds", supabaseId] });
       queryClient.invalidateQueries({ queryKey: ["/api/sources"] });
       setIsAddDialogOpen(false);
       resetForm();
@@ -161,9 +194,12 @@ export default function FeedManagement() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, ...data }: Partial<FeedSource> & { id: string }) =>
-      apiRequest("PATCH", `/api/feeds/${id}`, data),
+      adminFetch(`/api/feeds/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/feeds", supabaseId] });
       queryClient.invalidateQueries({ queryKey: ["/api/sources"] });
       setEditingFeed(null);
       resetForm();
@@ -182,9 +218,9 @@ export default function FeedManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => apiRequest("DELETE", `/api/feeds/${id}`),
+    mutationFn: (id: string) => adminFetch(`/api/feeds/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/feeds", supabaseId] });
       queryClient.invalidateQueries({ queryKey: ["/api/sources"] });
       toast({
         title: "Feed deleted",
@@ -202,9 +238,12 @@ export default function FeedManagement() {
 
   const toggleMutation = useMutation({
     mutationFn: ({ id, isEnabled }: { id: string; isEnabled: boolean }) =>
-      apiRequest("PATCH", `/api/feeds/${id}`, { isEnabled }),
+      adminFetch(`/api/feeds/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isEnabled }),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/feeds", supabaseId] });
       queryClient.invalidateQueries({ queryKey: ["/api/sources"] });
     },
     onError: () => {

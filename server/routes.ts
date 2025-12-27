@@ -23,16 +23,16 @@ function isAdminEmail(email: string | undefined | null): boolean {
   return ADMIN_EMAILS.includes(email.toLowerCase());
 }
 
-// Admin middleware - checks if authenticated user is an admin
+// Admin middleware - checks if user is an admin (via query param or header)
 async function isAdmin(req: Request, res: Response, next: NextFunction) {
-  const sessionUser = req.user as any;
+  const supabaseId = req.query.supabaseId as string || req.headers['x-supabase-id'] as string;
   
-  if (!sessionUser?.claims?.sub) {
+  if (!supabaseId) {
     return res.status(401).json({ error: "Authentication required" });
   }
   
   try {
-    const user = await storage.getUserBySupabaseId(sessionUser.claims.sub);
+    const user = await storage.getUserBySupabaseId(supabaseId);
     if (!user || !isAdminEmail(user.email)) {
       return res.status(403).json({ error: "Admin access required" });
     }
@@ -305,10 +305,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== ADMIN CHECK ====================
-  app.get("/api/admin/check", isAuthenticated, async (req: any, res) => {
+  app.get("/api/admin/check", async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUserBySupabaseId(userId);
+      const supabaseId = req.query.supabaseId as string;
+      if (!supabaseId) {
+        return res.json({ isAdmin: false });
+      }
+      const user = await storage.getUserBySupabaseId(supabaseId);
       const userEmail = user?.email?.toLowerCase();
       const adminStatus = userEmail ? ADMIN_EMAILS.includes(userEmail) : false;
       console.log("[Admin Check] User email:", userEmail, "Admin emails:", ADMIN_EMAILS, "Is admin:", adminStatus);
