@@ -92,6 +92,7 @@ export default function FeedManagement() {
   const { user } = useSupabaseAuth();
   const supabaseId = user?.id;
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAddProviderDialogOpen, setIsAddProviderDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<FeedSource | null>(null);
   const [expandedProviders, setExpandedProviders] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({
@@ -100,6 +101,15 @@ export default function FeedManagement() {
     url: "",
     country: "",
     category: "world",
+  });
+  const [providerFormData, setProviderFormData] = useState({
+    id: "",
+    name: "",
+    baseUrl: "",
+    apiKeyEnvVar: "",
+    rateLimitPerDay: "1000",
+    supportedCategories: "general",
+    supportedCountries: "us",
   });
 
   const { data, isLoading } = useQuery<FeedsResponse>({
@@ -158,6 +168,56 @@ export default function FeedManagement() {
       toast({
         title: "Error",
         description: "Failed to update provider status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const createProviderMutation = useMutation({
+    mutationFn: (data: typeof providerFormData) =>
+      adminFetch("/api/providers", {
+        method: 'POST',
+        body: JSON.stringify({
+          id: data.id,
+          name: data.name,
+          baseUrl: data.baseUrl,
+          apiKeyEnvVar: data.apiKeyEnvVar,
+          rateLimitPerDay: parseInt(data.rateLimitPerDay) || 1000,
+          supportedCategories: data.supportedCategories.split(',').map(s => s.trim()).filter(Boolean),
+          supportedCountries: data.supportedCountries.split(',').map(s => s.trim()).filter(Boolean),
+        }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/providers", supabaseId] });
+      setIsAddProviderDialogOpen(false);
+      resetProviderForm();
+      toast({
+        title: "Provider added",
+        description: "The external news API has been added successfully. Set up the API key in Secrets to enable it.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add provider. The ID might already exist.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteProviderMutation = useMutation({
+    mutationFn: (id: string) => adminFetch(`/api/providers/${id}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/providers", supabaseId] });
+      toast({
+        title: "Provider deleted",
+        description: "The external news API has been removed.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete provider.",
         variant: "destructive",
       });
     },
@@ -263,6 +323,23 @@ export default function FeedManagement() {
       country: "",
       category: "world",
     });
+  };
+
+  const resetProviderForm = () => {
+    setProviderFormData({
+      id: "",
+      name: "",
+      baseUrl: "",
+      apiKeyEnvVar: "",
+      rateLimitPerDay: "1000",
+      supportedCategories: "general",
+      supportedCountries: "us",
+    });
+  };
+
+  const handleProviderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createProviderMutation.mutate(providerFormData);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -481,18 +558,154 @@ export default function FeedManagement() {
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
         {/* News API Providers Section */}
         <section>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center border border-primary/20">
-              <Zap className="w-5 h-5 text-primary" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center border border-primary/20">
+                <Zap className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold" data-testid="text-providers-heading">
+                  External News APIs
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Connect to premium news sources for comprehensive coverage
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg font-semibold" data-testid="text-providers-heading">
-                External News APIs
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Connect to premium news sources for comprehensive coverage
-              </p>
-            </div>
+            
+            <Dialog open={isAddProviderDialogOpen} onOpenChange={setIsAddProviderDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  onClick={() => resetProviderForm()}
+                  data-testid="button-add-provider"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add API
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Add External News API</DialogTitle>
+                  <DialogDescription>
+                    Configure a new external news API provider. You'll need to add the API key as a secret after adding the provider.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleProviderSubmit}>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="provider-id">Provider ID</Label>
+                      <Input
+                        id="provider-id"
+                        placeholder="e.g., gnews, currents, thenewsapi"
+                        value={providerFormData.id}
+                        onChange={(e) =>
+                          setProviderFormData({ ...providerFormData, id: e.target.value.toLowerCase().replace(/\s+/g, '-') })
+                        }
+                        required
+                        data-testid="input-provider-id"
+                      />
+                      <p className="text-xs text-muted-foreground">Unique identifier (lowercase, no spaces)</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="provider-name">Display Name</Label>
+                      <Input
+                        id="provider-name"
+                        placeholder="e.g., GNews, Currents API"
+                        value={providerFormData.name}
+                        onChange={(e) =>
+                          setProviderFormData({ ...providerFormData, name: e.target.value })
+                        }
+                        required
+                        data-testid="input-provider-name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="provider-url">Base URL</Label>
+                      <Input
+                        id="provider-url"
+                        placeholder="e.g., https://gnews.io/api/v4"
+                        value={providerFormData.baseUrl}
+                        onChange={(e) =>
+                          setProviderFormData({ ...providerFormData, baseUrl: e.target.value })
+                        }
+                        required
+                        data-testid="input-provider-url"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="provider-apikey">API Key Secret Name</Label>
+                      <Input
+                        id="provider-apikey"
+                        placeholder="e.g., GNEWS_API_KEY"
+                        value={providerFormData.apiKeyEnvVar}
+                        onChange={(e) =>
+                          setProviderFormData({ ...providerFormData, apiKeyEnvVar: e.target.value.toUpperCase().replace(/\s+/g, '_') })
+                        }
+                        required
+                        data-testid="input-provider-apikey"
+                      />
+                      <p className="text-xs text-muted-foreground">The name of the secret to store the API key</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="provider-limit">Daily Rate Limit</Label>
+                        <Input
+                          id="provider-limit"
+                          type="number"
+                          placeholder="1000"
+                          value={providerFormData.rateLimitPerDay}
+                          onChange={(e) =>
+                            setProviderFormData({ ...providerFormData, rateLimitPerDay: e.target.value })
+                          }
+                          data-testid="input-provider-limit"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="provider-categories">Categories</Label>
+                        <Input
+                          id="provider-categories"
+                          placeholder="general, business, tech"
+                          value={providerFormData.supportedCategories}
+                          onChange={(e) =>
+                            setProviderFormData({ ...providerFormData, supportedCategories: e.target.value })
+                          }
+                          data-testid="input-provider-categories"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="provider-countries">Supported Countries (comma-separated codes)</Label>
+                      <Input
+                        id="provider-countries"
+                        placeholder="us, gb, de, au"
+                        value={providerFormData.supportedCountries}
+                        onChange={(e) =>
+                          setProviderFormData({ ...providerFormData, supportedCountries: e.target.value })
+                        }
+                        data-testid="input-provider-countries"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsAddProviderDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={createProviderMutation.isPending}
+                      data-testid="button-submit-provider"
+                    >
+                      Add Provider
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {providersLoading ? (
@@ -666,6 +879,24 @@ export default function FeedManagement() {
                                 </div>
                               )}
                             </div>
+                          </div>
+                          
+                          {/* Delete Provider */}
+                          <div className="mt-4 pt-4 border-t border-border/50 flex justify-end">
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to delete the ${provider.name} provider?`)) {
+                                  deleteProviderMutation.mutate(provider.id);
+                                }
+                              }}
+                              disabled={deleteProviderMutation.isPending}
+                              data-testid={`button-delete-provider-${provider.id}`}
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete Provider
+                            </Button>
                           </div>
                         </div>
                       </CollapsibleContent>

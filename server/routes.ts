@@ -728,6 +728,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create new provider (admin only)
+  app.post("/api/providers", providerFeatureMiddleware, isAdmin, async (req, res) => {
+    try {
+      const { id, name, baseUrl, apiKeyEnvVar, rateLimitPerDay, supportedCategories, supportedCountries } = req.body;
+      
+      if (!id || !name || !baseUrl || !apiKeyEnvVar) {
+        return res.status(400).json({ error: "id, name, baseUrl, and apiKeyEnvVar are required" });
+      }
+
+      const provider = await newsProviderService.createProvider({
+        id,
+        name,
+        baseUrl,
+        apiKeyEnvVar,
+        isEnabled: false,
+        rateLimitPerDay: rateLimitPerDay || 1000,
+        supportedCategories: supportedCategories || ['general'],
+        supportedCountries: supportedCountries || ['us'],
+      });
+      
+      res.status(201).json(provider);
+    } catch (error: any) {
+      console.error("Error creating provider:", error);
+      if (error.message?.includes('duplicate')) {
+        return res.status(400).json({ error: "A provider with this ID already exists" });
+      }
+      res.status(500).json({ error: "Failed to create provider" });
+    }
+  });
+
+  // Delete provider (admin only)
+  app.delete("/api/providers/:id", providerFeatureMiddleware, isAdmin, async (req, res) => {
+    try {
+      const deleted = await newsProviderService.deleteProvider(req.params.id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Provider not found" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting provider:", error);
+      res.status(500).json({ error: "Failed to delete provider" });
+    }
+  });
+
   app.patch("/api/providers/:id", providerFeatureMiddleware, async (req, res) => {
     try {
       const { isEnabled } = req.body;

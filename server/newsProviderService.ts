@@ -207,6 +207,40 @@ class NewsProviderService {
     return updated;
   }
 
+  async createProvider(data: {
+    id: string;
+    name: string;
+    baseUrl: string;
+    apiKeyEnvVar: string;
+    isEnabled?: boolean;
+    rateLimitPerDay?: number;
+    supportedCategories?: string[];
+    supportedCountries?: string[];
+  }) {
+    const [provider] = await db
+      .insert(newsProviders)
+      .values({
+        id: data.id,
+        name: data.name,
+        baseUrl: data.baseUrl,
+        apiKeyEnvVar: data.apiKeyEnvVar,
+        isEnabled: data.isEnabled ?? false,
+        rateLimitPerDay: data.rateLimitPerDay ?? 1000,
+        supportedCategories: data.supportedCategories ?? ['general'],
+        supportedCountries: data.supportedCountries ?? ['us'],
+      })
+      .returning();
+    return provider;
+  }
+
+  async deleteProvider(id: string) {
+    const [deleted] = await db
+      .delete(newsProviders)
+      .where(eq(newsProviders.id, id))
+      .returning();
+    return deleted;
+  }
+
   private getApiKey(envVarName: string): string | undefined {
     return process.env[envVarName];
   }
