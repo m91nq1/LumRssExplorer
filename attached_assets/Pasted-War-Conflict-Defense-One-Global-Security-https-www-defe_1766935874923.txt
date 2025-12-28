@@ -1,0 +1,101 @@
+War / Conflict
+
+Defense One – Global Security — https://www.defenseone.com/rss/all/
+
+Foreign Policy – Security & Defense — https://foreignpolicy.com/feed/defense/
+
+The Economist – International — https://www.economist.com/international/rss.xml
+
+Reuters – World News — https://feeds.reuters.com/reuters/worldNews
+
+Global Times – Military — https://www.globaltimes.cn/rss/military.xml
+
+🇺🇸 US Politics
+
+The Hill – Politics — https://thehill.com/homenews/feed/
+
+Axios – Politics — https://www.axios.com/feeds/politics.xml
+
+CBS News – Politics — https://www.cbsnews.com/latest/rss/politics
+
+NPR – Washington News — https://feeds.npr.org/1001/rss.xml
+
+RealClearPolitics – Commentary — https://www.realclearpolitics.com/index.xml
+
+🇪🇺 Europe Politics
+
+DW (Deutsche Welle) – Europe — https://rss.dw.com/rdf/rss-en-eu
+
+France24 – Europe — https://www.france24.com/en/europe/rss
+
+Politico Germany — https://www.politico.eu/feed/germany/
+
+Euronews – Politics — https://www.euronews.com/rss?level=theme&name=Politics
+
+Irish Times – Europe — https://www.irishtimes.com/news/world/europe/rss
+
+🤖 AI & Technology
+
+Wired – AI Section — https://www.wired.com/feed/category/ai/latest/rss
+
+ZDNet – AI & Automation — https://www.zdnet.com/topic/artificial-intelligence/rss.xml
+
+VentureBeat – AI — https://venturebeat.com/category/ai/feed/
+
+CNET – Tech News — https://www.cnet.com/rss/news/
+
+IEEE Spectrum – AI — https://spectrum.ieee.org/rss/topic/artificial-intelligence
+
+💸 Finance & Markets
+
+Bloomberg – Markets — https://feeds.bloomberg.com/markets/news.rss
+
+Financial Times – Markets — https://www.ft.com/?format=rss
+
+CNBC – World Business — https://www.cnbc.com/id/100727362/device/rss/rss.html
+
+Reuters – Business News — https://feeds.reuters.com/reuters/businessNews
+
+Morningstar – Investing News — https://www.morningstar.com/rss
+
+⚖️ Crime & Justice
+
+Reuters – Crime — https://feeds.reuters.com/reuters/crime
+
+AP News – Crime — https://apnews.com/rss/topic/crime
+
+BBC News – Crime & Policing (UK) — https://feeds.bbci.co.uk/news/uk/england/rss.xml
+
+Justice.gov (Press Releases) — https://www.justice.gov/feeds/press-releases
+
+Courthouse News Service — https://www.courthousenews.com/feed/
+
+🧬 Science & Health
+
+Nature – Latest Research — https://www.nature.com/subjects/all/rss.xml
+
+WHO – News Releases — https://www.who.int/feeds/entity/mediacentre/news/en/rss.xml
+
+The Lancet – Health News — https://www.thelancet.com/rssfeed/current.xml
+
+New Scientist – Latest — https://www.newscientist.com/feed/home/
+
+Healthline – News — https://www.healthline.com/rss
+
+🌍 Environment / Climate
+
+Reuters – Climate — https://www.reuters.com/rssFeed/environment
+
+Guardian – Environment — https://www.theguardian.com/environment/rss
+
+National Geographic – Environment — https://www.nationalgeographic.com/environment/rss/
+
+World Economic Forum – Climate — https://www.weforum.org/agenda/feed/environment
+
+Yale Environment 360 — https://e360.yale.edu/rss
+
+Bonus – Celebrity / Entertainment (if you need extras)
+
+Rolling Stone — https://www.rollingstone.com/feed/
+
+Variety — https://variety.com/feed/
