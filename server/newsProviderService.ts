@@ -54,48 +54,71 @@ interface MediastackResponse {
   }>;
 }
 
+interface CurrentsAPIResponse {
+  status: string;
+  news: Array<{
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    author: string;
+    image: string;
+    language: string;
+    category: string[];
+    published: string;
+  }>;
+}
+
 // Region to country code mappings for API calls
 // Note: Each provider has different supported countries - use only valid ones
-const regionCountryCodes: Record<string, { newsapi: string[]; newsdata: string[]; mediastack: string }> = {
+const regionCountryCodes: Record<string, { newsapi: string[]; newsdata: string[]; mediastack: string; currentsapi: string }> = {
   'US': {
     newsapi: ['us'],
     newsdata: ['us'],
     mediastack: 'us',
+    currentsapi: 'us',
   },
   'UK': {
     newsapi: ['gb'],
     newsdata: ['gb'],
     mediastack: 'gb',
+    currentsapi: 'gb',
   },
   'Europe': {
     newsapi: ['de'],
     newsdata: ['de'],
     mediastack: 'de',
+    currentsapi: 'de',
   },
   'Russia': {
     newsapi: ['ru'],
     newsdata: ['ru'],
     mediastack: 'ru',
+    currentsapi: 'ru',
   },
   'China': {
     newsapi: [],  // NewsAPI doesn't support China well
     newsdata: [],  // Newsdata.io may have restrictions
     mediastack: 'cn',
+    currentsapi: 'cn',
   },
   'Asia-Pacific': {
     newsapi: ['au', 'in'],
     newsdata: ['au', 'in'],
     mediastack: 'au,in,jp',
+    currentsapi: 'au',
   },
   'Middle East': {
     newsapi: ['ae'],
     newsdata: ['ae'],
     mediastack: 'ae,il',
+    currentsapi: 'ae',
   },
   'Africa': {
     newsapi: ['za'],
     newsdata: ['za'],
     mediastack: 'za,ng',
+    currentsapi: 'za',
   },
 };
 
@@ -349,6 +372,33 @@ class NewsProviderService {
     }
   }
 
+  private async fetchFromCurrentsAPI(apiKey: string, country: string, category: string = 'general'): Promise<ExternalArticle[]> {
+    try {
+      const url = `https://api.currentsapi.services/v1/latest-news?apiKey=${apiKey}&country=${country}&category=${category}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.error(`CurrentsAPI error: ${response.status}`);
+        return [];
+      }
+
+      const data: CurrentsAPIResponse = await response.json();
+      
+      return (data.news || []).map(article => ({
+        title: article.title,
+        description: article.description,
+        url: article.url,
+        publishedAt: article.published,
+        source: article.author || 'Unknown',
+        imageUrl: article.image || undefined,
+        region: this.countryCodeToRegion(country),
+      }));
+    } catch (error) {
+      console.error('Error fetching from CurrentsAPI:', error);
+      return [];
+    }
+  }
+
   private countryCodeToRegion(countryCode: string): string {
     const code = countryCode.toLowerCase();
     const mapping: Record<string, string> = {
@@ -423,6 +473,11 @@ class NewsProviderService {
           case 'mediastack':
             if (regionConfig.mediastack) {
               regionArticles = await this.fetchFromMediastack(apiKey, regionConfig.mediastack, category);
+            }
+            break;
+          case 'currentsapi':
+            if (regionConfig.currentsapi) {
+              regionArticles = await this.fetchFromCurrentsAPI(apiKey, regionConfig.currentsapi, category);
             }
             break;
         }
