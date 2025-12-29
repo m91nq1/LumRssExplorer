@@ -1,0 +1,197 @@
+War / Conflict (more)
+
+War on the Rocks — War/Conflict — Global — https://warontherocks.com/feed/
+
+Bellingcat — War/Conflict — Global — https://www.bellingcat.com/feed/
+
+International Crisis Group — War/Conflict — Global — https://www.crisisgroup.org/rss.xml
+
+ReliefWeb (Updates) — War/Conflict — Global — https://reliefweb.int/updates/rss.xml
+
+UNHCR (News) — War/Conflict — Global — https://www.unhcr.org/rss.xml
+
+NATO (News) — War/Conflict — Europe — https://www.nato.int/rss/news.xml
+
+RAND (Defense/Security) — War/Conflict — Global — https://www.rand.org/topics/national-security.rss
+
+CSIS (All content) — War/Conflict — US — https://www.csis.org/feeds/rss
+
+US Politics (more)
+
+White House (Briefing Room) — US Politics — US — https://www.whitehouse.gov/briefing-room/feed/
+
+US Senate Press Releases — US Politics — US — https://www.senate.gov/general/committee_schedules/committee_rss.xml
+
+House Press Releases — US Politics — US — https://www.house.gov/rss.xml
+
+SCOTUSblog — US Politics / Justice — US — https://www.scotusblog.com/feed/
+
+Ballotpedia (News) — US Politics — US — https://ballotpedia.org/Feed:News
+
+Just Security — US Politics — US — https://www.justsecurity.org/feed/
+
+Europe Politics (more)
+
+European Commission (Press Releases) — Europe Politics — Europe — https://ec.europa.eu/commission/presscorner/api/rss?language=en
+
+European Parliament (News) — Europe Politics — Europe — https://www.europarl.europa.eu/rss/en/news.xml
+
+Council of the EU (Press) — Europe Politics — Europe — https://www.consilium.europa.eu/en/press/rss/
+
+Deutsche Welle (Germany/Europe) — Europe Politics — Europe — https://rss.dw.com/rdf/rss-en-ger
+
+France24 (Europe) — Europe Politics — Europe — https://www.france24.com/en/europe/rss
+
+RFI (Europe) — Europe Politics — Europe — https://www.rfi.fr/en/europe/rss
+
+UK (more)
+
+UK Government (News) — Europe Politics — UK — https://www.gov.uk/search/news-and-communications.atom
+
+UK Parliament (News) — Europe Politics — UK — https://www.parliament.uk/business/news/rss/
+
+The Independent (UK) — Europe Politics — UK — https://www.independent.co.uk/rss
+
+The Spectator (UK) — Europe Politics — UK — https://www.spectator.co.uk/feed/
+
+Russia (more)
+
+TASS (English) — Europe Politics — Russia — https://tass.com/rss/v2.xml
+
+RBC (English) — Europe Politics — Russia — https://www.rbc.ru/rss/rbcnews_en.xml
+
+The Insider (EN) — Europe Politics — Russia — https://theins.ru/en/rss
+
+China (more)
+
+Caixin (English) — Finance/Politics — China — https://www.caixinglobal.com/rss
+
+Global Times (China) — Europe Politics — China — https://www.globaltimes.cn/rss/outbrain.xml
+
+Nikkei Asia (Top) — Finance/Politics — Asia-Pacific — https://asia.nikkei.com/rss/feed/nar
+
+Africa (more)
+
+The Conversation (Africa) — Science/Politics — Africa — https://theconversation.com/africa/articles.atom
+
+The Conversation (South Africa) — US Politics (current affairs) — Africa — https://theconversation.com/south-africa/articles.atom
+
+SABC News — Global/Politics — Africa — https://www.sabcnews.com/sabcnews/feed/
+
+IOL News — Global/Politics — Africa — https://www.iol.co.za/cmlink/1.640
+
+The Africa Report — Global/Politics — Africa — https://www.theafricareport.com/feed/
+
+Middle East (more)
+
+Middle East Monitor — War/Conflict — Middle East — https://www.middleeastmonitor.com/feed/
+
+Haaretz (English) — War/Conflict — Middle East — https://www.haaretz.com/cmlink/1.5390940
+
+Jerusalem Post — War/Conflict — Middle East — https://www.jpost.com/Rss/RssFeedsHeadlines.aspx
+
+Iran International — War/Conflict — Middle East — https://www.iranintl.com/en/rss
+
+Asia-Pacific (more)
+
+Channel NewsAsia — Global/Politics — Asia-Pacific — https://www.channelnewsasia.com/rssfeeds/8395986
+
+The Straits Times — Global/Politics — Asia-Pacific — https://www.straitstimes.com/news/world/rss.xml
+
+The Hindu (International) — Global/Politics — Asia-Pacific — https://www.thehindu.com/news/international/feeder/default.rss
+
+Korea JoongAng Daily — Global/Politics — Asia-Pacific — https://koreajoongangdaily.joins.com/rss/all.xml
+
+AI & Technology (more)
+
+Google AI Blog — AI & Tech — US — https://blog.google/technology/ai/rss/
+
+DeepMind Blog — AI & Tech — UK — https://deepmind.google/blog/rss.xml
+
+Microsoft Security Blog — AI & Tech — US — https://www.microsoft.com/en-us/security/blog/feed/
+
+Cloudflare Blog — AI & Tech — US — https://blog.cloudflare.com/rss/
+
+Schneier on Security — AI & Tech — US — https://www.schneier.com/feed/atom/
+
+The Register — AI & Tech — UK — https://www.theregister.com/headlines.atom
+
+Stack Overflow Blog — AI & Tech — Global — https://stackoverflow.blog/feed/
+
+arXiv (cs.AI) — AI & Tech — Global — http://export.arxiv.org/rss/cs.AI
+
+arXiv (cs.LG) — AI & Tech — Global — http://export.arxiv.org/rss/cs.LG
+
+Finance & Markets (more)
+
+IMF Blog — Finance & Markets — Global — https://www.imf.org/en/Blogs/rss
+
+World Bank (News) — Finance & Markets — Global — https://www.worldbank.org/en/news/all?feed=rss
+
+OECD (Newsroom) — Finance & Markets — Europe — https://www.oecd.org/newsroom/rss.xml
+
+Bank for International Settlements (All) — Finance & Markets — Global — https://www.bis.org/rss.xml
+
+Investing.com (News) — Finance & Markets — Global — https://www.investing.com/rss/news.rss
+
+FRED Blog — Finance & Markets — US — https://fredblog.stlouisfed.org/feed/
+
+Crime & Justice (more)
+
+Interpol (News) — Crime & Justice — Global — https://www.interpol.int/rss/news
+
+Europol (News) — Crime & Justice — Europe — https://www.europol.europa.eu/rss.xml
+
+US DOJ (Press Releases) — Crime & Justice — US — https://www.justice.gov/feeds/press-releases.xml
+
+FBI (News) — Crime & Justice — US — https://www.fbi.gov/feeds/news.xml
+
+CISA Advisories — Crime & Justice — US — https://www.cisa.gov/uscert/ncas/bulletins.xml
+
+Science & Health (more)
+
+WHO (News releases) — Science & Health — Global — https://www.who.int/rss-feeds/news-english.xml
+
+ECDC (News) — Science & Health — Europe — https://www.ecdc.europa.eu/en/all-topics-0/rss.xml
+
+Nature (News) — Science & Health — Global — https://www.nature.com/subjects/scientific-community/rss
+
+New England Journal of Medicine (This Week) — Science & Health — US — https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss
+
+FDA (Press Announcements) — Science & Health — US — https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-announcements/rss.xml
+
+USGS (Earthquakes) — Science & Health — Global — https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.atom
+
+Environment / Climate (more)
+
+UNEP (News) — Environment — Global — https://www.unep.org/rss.xml
+
+NOAA Climate.gov (News/Features) — Environment — US — https://www.climate.gov/feeds/features/rss.xml
+
+Copernicus Climate Change Service — Environment — Europe — https://climate.copernicus.eu/rss.xml
+
+Mongabay (Environmental news) — Environment — Global — https://news.mongabay.com/feed/
+
+Yale Environment 360 — Environment — US — https://e360.yale.edu/feed
+
+NASA Climate — Environment — Global — https://climate.nasa.gov/rss/
+
+Celebrity & Entertainment (more)
+
+Variety — Celebrity & Entertainment — US — https://variety.com/feed/
+
+Rolling Stone — Celebrity & Entertainment — US — https://www.rollingstone.com/feed/
+
+NME — Celebrity & Entertainment — UK — https://www.nme.com/feed
+
+Kotaku — Celebrity & Entertainment — US — https://kotaku.com/rss
+
+IGN (All) — Celebrity & Entertainment — US — https://feeds.ign.com/ign/all
+
+Other / Offbeat (more)
+
+The Onion — Offbeat — US — https://www.theonion.com/rss
+
+Boing Boing — Offbeat — US — https://boingboing.net/feed
+
+Fark — Offbeat — US — https://www.fark.com/rss/
