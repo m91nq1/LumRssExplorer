@@ -1,0 +1,203 @@
+War / Conflict (more)
+
+Small Wars Journal — Global — https://smallwarsjournal.com/rss.xml
+
+RealClearDefense — US/Global — https://www.realcleardefense.com/index.xml
+
+Defense News — Global — https://www.defensenews.com/arc/outboundfeeds/rss/
+
+Army Times — US — https://www.armytimes.com/arc/outboundfeeds/rss/
+
+The War Zone (The Drive) — Global — https://www.thedrive.com/the-war-zone/feed
+
+ACLED (Blog) — Global — https://acleddata.com/blog/feed/
+
+ICRC (News) — Global — https://www.icrc.org/en/rss.xml
+
+US Politics (more)
+
+FiveThirtyEight — US — https://fivethirtyeight.com/feed/
+
+RealClearPolitics — US — https://www.realclearpolitics.com/index.xml
+
+C-SPAN (Top News) — US — https://www.c-span.org/rss/news.xml
+
+Congress.gov (Bills - Atom) — US — https://www.congress.gov/rss/bills.xml
+
+US Supreme Court (Opinions - RSS) — US — https://www.supremecourt.gov/opinions/rss.aspx
+
+Federal Register (Daily Journal) — US — https://www.federalregister.gov/documents/search.rss
+
+Europe Politics (more)
+
+EU Commission – Statements (RSS) — Europe — https://ec.europa.eu/commission/presscorner/api/rss?language=en&format=xml
+
+NATO Review — Europe — https://www.nato.int/docu/review/rss-en.xml
+
+The Local (Europe) — Europe — https://feeds.thelocal.com/rss/eu
+
+Balkan Insight — Europe — https://balkaninsight.com/feed/
+
+France24 (World) — Global — https://www.france24.com/en/rss
+
+Euronews (Latest) — Europe — https://www.euronews.com/rss?level=theme&name=news
+
+UK (more)
+
+Ofcom (News) — UK — https://www.ofcom.org.uk/rss/news
+
+Financial Times (World) — UK/Global — https://www.ft.com/world?format=rss
+
+Financial Times (Technology) — UK/Global — https://www.ft.com/technology?format=rss
+
+The Economist (Latest) — UK/Global — https://www.economist.com/the-world-this-week/rss.xml
+
+UK Met Office (News) — UK — https://www.metoffice.gov.uk/rss/news
+
+Russia (more)
+
+Kommersant (English) — Russia — https://www.kommersant.com/rss/main.xml
+
+RFE/RL (Radio Free Europe/Radio Liberty) — Russia/Eurasia — https://www.rferl.org/api/zrqiteuuir
+
+Novaya Gazeta Europe (EN) — Russia/Europe — https://novayagazeta.eu/rss/en
+
+China (more)
+
+Xinhua (English – China) — China — http://www.xinhuanet.com/english/rss/chinarss.xml
+
+Xinhua (English – World) — Global — http://www.xinhuanet.com/english/rss/worldrss.xml
+
+Asia Times — Asia-Pacific/China — https://asiatimes.com/feed/
+
+The Paper (if you use aggregators) – skip if blocked — China — (often regional-access issues)
+
+Africa (more)
+
+African Arguments — Africa — https://africanarguments.org/feed/
+
+Africa Confidential (News) — Africa — https://africaconfidential.com/rss
+
+Premium Times (Nigeria) — Africa — https://www.premiumtimesng.com/feed
+
+Daily Nation (Kenya) — Africa — https://nation.africa/kenya/rss
+
+The EastAfrican — Africa — https://www.theeastafrican.co.ke/rss
+
+Eyewitness News (South Africa) — Africa — https://ewn.co.za/rss
+
+Middle East (more)
+
+Arab News — Middle East — https://www.arabnews.com/rss.xml
+
+Gulf News — Middle East — https://gulfnews.com/rss
+
+The National (UAE) — Middle East — https://www.thenationalnews.com/rss
+
+Oman Observer — Middle East — https://www.omanobserver.om/feed/
+
+Asia-Pacific (more)
+
+RNZ (New Zealand – Top) — Asia-Pacific — https://www.rnz.co.nz/rss/national.xml
+
+SBS Australia (News) — Asia-Pacific — https://www.sbs.com.au/news/feed
+
+The Manila Times — Asia-Pacific — https://www.manilatimes.net/feed/
+
+Bangkok Post (Top) — Asia-Pacific — https://www.bangkokpost.com/rss/data/topstories.xml
+
+Taipei Times — Asia-Pacific — https://www.taipeitimes.com/xml/rss
+
+AI & Technology (more)
+
+Mozilla Blog — Global — https://blog.mozilla.org/en/feed/
+
+GitHub Blog — Global — https://github.blog/feed/
+
+Google Security Blog — US — https://security.googleblog.com/feeds/posts/default?alt=rss
+
+Apple Machine Learning Research — US — https://machinelearning.apple.com/rss.xml
+
+NVIDIA Blog (AI) — US — https://blogs.nvidia.com/blog/category/deep-learning/feed/
+
+Meta Engineering — US — https://engineering.fb.com/feed/
+
+InfoQ — Global — https://www.infoq.com/feed/
+
+Finance & Markets (more)
+
+Financial Times (Markets) — UK/Global — https://www.ft.com/markets?format=rss
+
+The Economist (Finance & economics) — UK/Global — https://www.economist.com/finance-and-economics/rss.xml
+
+Seeking Alpha (Market News) — Global — https://seekingalpha.com/market_currents.xml
+
+S&P Global (Press releases) — Global — https://www.spglobal.com/en/research-insights/rss
+
+African Markets (News) — Africa — https://www.african-markets.com/en/rss.xml
+
+CoinDesk — Global — https://www.coindesk.com/arc/outboundfeeds/rss/
+
+Crime & Justice (more)
+
+BleepingComputer (News) — Global — https://www.bleepingcomputer.com/feed/
+
+The Record (Recorded Future) — Global — https://therecord.media/feed/
+
+Dark Reading — Global — https://www.darkreading.com/rss.xml
+
+The Hacker News — Global — https://feeds.feedburner.com/TheHackersNews
+
+Europol – Press Releases — Europe — https://www.europol.europa.eu/rss.xml
+
+UK NCA (News) — UK — https://www.nationalcrimeagency.gov.uk/news?format=feed&type=rss
+
+Science & Health (more)
+
+The Lancet (Latest) — Global — https://www.thelancet.com/rss/current
+
+BMJ (Latest) — UK/Global — https://www.bmj.com/rss/current.xml
+
+NIH (News Releases) — US — https://www.nih.gov/news-events/news-releases/rss.xml
+
+NASA (Breaking News) — Global — https://www.nasa.gov/rss/dyn/breaking_news.rss
+
+ESA (European Space Agency) — Europe — https://www.esa.int/rssfeed/Our_Activities
+
+Medscape (Medical News) — Global — https://www.medscape.com/rss/public/health.xml
+
+Environment / Climate (more)
+
+NOAA (News) — US — https://www.noaa.gov/news/feed
+
+World Meteorological Organization — Global — https://wmo.int/rss.xml
+
+IPCC (News) — Global — https://www.ipcc.ch/feed/
+
+Reuters “Environment” (via RSSHub if you use it) — Global — (use aggregator if needed)
+
+Grist — US — https://grist.org/feed/
+
+Earth.org — Global — https://earth.org/feed/
+
+Celebrity & Entertainment (more)
+
+Entertainment Weekly — US — https://ew.com/feed/
+
+Deadline (Hollywood) — US — https://deadline.com/feed/
+
+Hollywood Reporter — US — https://www.hollywoodreporter.com/feed/
+
+TMZ — US — https://www.tmz.com/rss.xml
+
+Complex — US — https://www.complex.com/feed
+
+Other / Offbeat (more)
+
+Smithsonian Magazine (Smart News) — US/Global — https://www.smithsonianmag.com/rss/smart-news/
+
+Mental Floss — US — https://www.mentalfloss.com/rss.xml
+
+Atlas Obscura (Places + Stories) — Global — https://www.atlasobscura.com/feeds/latest
+
+New Scientist (News) — UK — https://www.newscientist.com/feed/home/
