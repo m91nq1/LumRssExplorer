@@ -71,6 +71,15 @@ export const insertFeedSourceSchema = createInsertSchema(feedSources).omit({
 export type InsertFeedSource = z.infer<typeof insertFeedSourceSchema>;
 export type FeedSource = typeof feedSources.$inferSelect;
 
+// Polarisation reason type for explainability
+export const polarisationReasonSchema = z.object({
+  type: z.enum(["topic", "controversy", "sensationalism", "entity", "framing", "sentiment", "diversity"]),
+  label: z.string(),
+  points: z.number(),
+});
+
+export type PolarisationReasonType = z.infer<typeof polarisationReasonSchema>;
+
 // Articles table
 export const articles = pgTable("articles", {
   id: varchar("id", { length: 64 }).primaryKey(),
@@ -85,6 +94,7 @@ export const articles = pgTable("articles", {
   aiSummary: text("ai_summary"),
   topics: text("topics").array(),
   polarisationScore: integer("polarisation_score").default(0),
+  polarisationReasons: jsonb("polarisation_reasons"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("articles_source_id_idx").on(table.sourceId),
@@ -312,6 +322,7 @@ export const articleWithStatusSchema = z.object({
   aiSummary: z.string().optional().nullable(),
   topics: z.array(z.string()).optional().nullable(),
   polarisationScore: z.number().optional().nullable(),
+  polarisationReasons: z.array(polarisationReasonSchema).optional().nullable(),
   isBookmarked: z.boolean().optional(),
   isRead: z.boolean().optional(),
 });

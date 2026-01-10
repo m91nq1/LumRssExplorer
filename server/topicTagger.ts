@@ -207,8 +207,14 @@ export function tagArticleTopics(title: string, summary?: string | null): string
   return bestTopics;
 }
 
-export function generatePolarisationScore(): number {
-  return Math.floor(Math.random() * 100);
+import { computeArticlePolarisation, PolarisationResult } from "./polarisationScorer";
+
+export function generatePolarisationScore(
+  title: string,
+  summary?: string | null,
+  topics?: string[]
+): PolarisationResult {
+  return computeArticlePolarisation(title, summary, topics || []);
 }
 
 export function mapCountryToRegion(country?: string | null): string {

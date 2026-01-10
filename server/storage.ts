@@ -24,6 +24,7 @@ import {
   type SourceWithCount,
   type ReadingProgress,
   type InsertReadingProgress,
+  type PolarisationReasonType,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, ilike, gte, and, or, sql, inArray, count, isNull } from "drizzle-orm";
@@ -399,6 +400,7 @@ export class DatabaseStorage implements IStorage {
       imageUrl: articles.imageUrl,
       topics: articles.topics,
       polarisationScore: articles.polarisationScore,
+      polarisationReasons: articles.polarisationReasons,
     };
 
     let articleRows;
@@ -466,6 +468,7 @@ export class DatabaseStorage implements IStorage {
         ...article,
         sourceRegion: article.sourceRegion || "Global",
         publishedAt: article.publishedAt.toISOString(),
+        polarisationReasons: article.polarisationReasons as PolarisationReasonType[] | null,
         isBookmarked: bookmarkedIds.has(article.id),
         isRead: readIds.has(article.id),
       }));
@@ -482,6 +485,7 @@ export class DatabaseStorage implements IStorage {
         ...article,
         sourceRegion: article.sourceRegion || "Global",
         publishedAt: article.publishedAt.toISOString(),
+        polarisationReasons: article.polarisationReasons as PolarisationReasonType[] | null,
         isBookmarked: false,
         isRead: false,
       }));
@@ -517,6 +521,7 @@ export class DatabaseStorage implements IStorage {
     return {
       ...article,
       publishedAt: article.publishedAt.toISOString(),
+      polarisationReasons: article.polarisationReasons as PolarisationReasonType[] | null,
       isBookmarked,
       isRead,
     };

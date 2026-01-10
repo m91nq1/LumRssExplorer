@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Bookmark, BookmarkCheck, ExternalLink, ImageIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useLocation } from "wouter";
+import { PolarisationBadge } from "./PolarisationBadge";
 
 interface ArticleCardProps {
   article: ArticleWithStatus;
@@ -137,11 +138,18 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
           </p>
         )}
 
-        <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-white/50">
-          <Clock className="w-3 h-3" />
-          <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
-            {formattedTime}
-          </time>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-white/50">
+            <Clock className="w-3 h-3" />
+            <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
+              {formattedTime}
+            </time>
+          </div>
+          <PolarisationBadge 
+            score={article.polarisationScore} 
+            reasons={article.polarisationReasons}
+            compact
+          />
         </div>
       </div>
     </Card>

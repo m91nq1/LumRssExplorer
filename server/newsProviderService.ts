@@ -584,7 +584,7 @@ class NewsProviderService {
           
           if (existing.length === 0) {
             const topics = tagArticleTopics(article.title, article.description);
-            const polarisationScore = generatePolarisationScore();
+            const polarisationResult = generatePolarisationScore(article.title, article.description, topics);
             
             await db.insert(articles).values({
               id: articleId,
@@ -596,7 +596,8 @@ class NewsProviderService {
               summary: article.description || null,
               imageUrl: article.imageUrl || null,
               topics: topics,
-              polarisationScore: polarisationScore,
+              polarisationScore: polarisationResult.score,
+              polarisationReasons: polarisationResult.reasons,
             });
             ingestedCount++;
           }

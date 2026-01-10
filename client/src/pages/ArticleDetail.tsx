@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
+import { PolarisationPanel } from "@/components/PolarisationBadge";
 
 function estimateReadTime(content?: string | null, summary?: string | null): number {
   const text = content || summary || "";
@@ -427,6 +428,15 @@ export default function ArticleDetail() {
               data-testid="text-article-summary"
             >
               <p className="text-lg leading-relaxed">{article.summary}</p>
+            </div>
+          )}
+
+          {article.polarisationScore && article.polarisationScore >= 25 && (
+            <div className="mb-8">
+              <PolarisationPanel 
+                score={article.polarisationScore} 
+                reasons={article.polarisationReasons}
+              />
             </div>
           )}
 

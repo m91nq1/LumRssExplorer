@@ -314,11 +314,16 @@ export class ArticleStore {
       }
 
       // Tag articles with topics and polarisation scores
-      const taggedArticles = allArticles.map(article => ({
-        ...article,
-        topics: article.topics || tagArticleTopics(article.title, article.summary),
-        polarisationScore: article.polarisationScore ?? generatePolarisationScore(),
-      }));
+      const taggedArticles = allArticles.map(article => {
+        const topics = article.topics || tagArticleTopics(article.title, article.summary);
+        const polarisationResult = generatePolarisationScore(article.title, article.summary, topics);
+        return {
+          ...article,
+          topics,
+          polarisationScore: article.polarisationScore ?? polarisationResult.score,
+          polarisationReasons: polarisationResult.reasons,
+        };
+      });
 
       // Upsert all articles to database
       const inserted = await storage.upsertArticles(taggedArticles);

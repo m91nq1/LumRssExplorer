@@ -1,0 +1,330 @@
+## Replit Prompt — Replace Random “Most Polarised” With a Real Controversy + Polarisation Topic Model (LUM News)
+
+In this existing **LUM News** project, replace the placeholder **random polarisation score** with a **meaningful, explainable polarisation algorithm** that better selects truly controversial topics and ranks “Most Polarised” stories accordingly.
+
+The current system:
+
+* Polarisation score = random 0–99 (placeholder)
+* Topic categorization = simple keyword matches
+* “Most Polarised” = sort by random score
+
+This must be upgraded so “Most Polarised” reliably surfaces **high-controversy, high-framing-difference stories** (politics, war, social issues, elections, geopolitical conflicts), not random noise.
+
+---
+
+# 1) New requirements: what “Most Polarised” should mean
+
+Define polarisation as a **composite score** that reflects:
+
+1. **Controversial topic likelihood**
+
+   * Some topics are inherently more polarising than others (e.g., elections vs weather).
+2. **Loaded / conflict language (“controversy signals”)**
+
+   * Language like “outrage,” “backlash,” “slams,” “scandal,” “accused,” “propaganda,” “illegal,” etc.
+3. **Framing divergence across sources (story-level)**
+
+   * Different sources using very different headlines / tones for the same event.
+4. **Sentiment spread (story-level)**
+
+   * High variance in sentiment across articles covering the same story is a polarisation signal.
+5. **Source diversity**
+
+   * A story covered by many sources and regions has more room for conflicting narratives.
+6. **Engagement bait / sensationalism signals** (optional)
+
+   * Excessive caps, exclamation points, “you won’t believe,” etc. should boost “controversy” slightly but not dominate.
+
+---
+
+# 2) Replace random scoring with an explainable scoring pipeline
+
+Implement a deterministic scoring system that assigns:
+
+* **Article Polarisation Score (0–100)**
+* **Story Polarisation Score (0–100)** aggregated from its articles
+* **“Reasons”** (explainability) stored with each article/story so UI can show “Why this is polarised”.
+
+Example reasons:
+
+* “Topic weight: US Politics (+20)”
+* “Controversy keywords detected: scandal, backlash (+12)”
+* “High sentiment variance across sources (+15)”
+* “Framing divergence high: headline similarity low (+18)”
+* “Covered by 10 sources (+10)”
+
+---
+
+# 3) Better controversial topic selection (Topic weights + controversy overrides)
+
+## 3.1 Topic taxonomy (expand beyond basic keywords)
+
+Maintain a structured taxonomy like:
+
+### High-polarisation baseline topics (base weight high)
+
+* Elections & Voting Integrity
+* US Politics / UK Politics / EU Politics / China Politics / Russia Politics
+* War & Conflict / Genocide / Terrorism
+* Immigration / Border policy
+* Race & Identity
+* Gender / LGBTQ+ policy
+* Abortion / reproductive rights
+* Religion & blasphemy disputes
+* Free speech / censorship / protest
+* Police violence / crime policy
+* Geopolitics / sanctions / espionage
+* Climate policy (NOT climate science) — policy is polarising, science is less so
+
+### Medium topics
+
+* Economy / inflation / taxes (polarisation depends on framing)
+* Energy policy
+* Big Tech regulation
+* AI safety policy (not “new model release”)
+* Public health mandates (context dependent)
+* Education curriculum disputes
+* Celebrity scandals (polarising but “lighter”)
+
+### Low topics
+
+* Pure science discoveries (unless politicised)
+* Sports results
+* Weather
+* General travel / lifestyle (unless political)
+
+## 3.2 Assign base topic weights
+
+Create a `topicWeights` table, e.g.:
+
+* Elections / War / Immigration / Identity policy: **0.75–1.0**
+* Economy / Tech regulation / Climate policy: **0.45–0.7**
+* Entertainment / Sports: **0.1–0.35**
+
+Convert this into score contribution:
+
+* `topicScore = topicWeight * 30` (max 30 points)
+
+## 3.3 Improve topic tagging from naive keywords to weighted keywords + entity triggers
+
+Enhance categorization with:
+
+1. **Weighted keyword lists** per topic
+
+   * “election fraud” > “election”
+2. **Entity-triggered topic boosts**
+
+   * Recognize entities like: governments, leaders, political parties, courts, agencies, “UN/NATO”, etc.
+3. **Policy-vs-neutral detection**
+
+   * “climate policy” vs “climate discovery”
+4. **Multi-topic output**
+
+   * Allow more than 1–2 topics if confidence is high. Store topic confidence.
+
+Store:
+
+* `topics: [{ name, confidence }]`
+
+---
+
+# 4) Controversy keyword detection (controversy lexicon)
+
+Create a controversy lexicon with weighted buckets. Example structure:
+
+### Very strong (weight 3)
+
+* “genocide”, “terrorist”, “war crime”, “coup”, “assassination”, “treason”, “ethnic cleansing”, “propaganda”, “fraud”
+
+### Strong (weight 2)
+
+* “outrage”, “backlash”, “scandal”, “accused”, “corruption”, “racist”, “hate”, “banned”, “slams”, “resigns”, “impeachment”, “boycott”, “sanctions”, “crackdown”
+
+### Moderate (weight 1)
+
+* “controversial”, “critics”, “sparks debate”, “heated”, “divides”, “polarizing”, “clash”, “dispute”, “pushback”
+
+Compute:
+
+* `controversyScore = min(25, sum(weightedMatches) * multiplier)`
+
+Where you search:
+
+* title
+* summary
+* extracted entities (optional)
+* tags
+
+Also include formatting signals (low impact):
+
+* ALL CAPS word count
+* exclamation count
+* “shocking”, “you won’t believe” style phrases
+  Cap this at **5 points** so it can’t dominate.
+
+---
+
+# 5) Story-level polarisation: framing divergence + sentiment variance
+
+This is where “Most Polarised” becomes real.
+
+## 5.1 Framing divergence (headline similarity)
+
+For articles in the same story cluster:
+
+* Compute pairwise similarity between headlines using one of:
+
+  * Simple Jaccard similarity on tokens, or
+  * Cosine similarity via TF-IDF (still doable locally), or
+  * Embedding similarity (if embeddings exist in your project)
+
+Then define:
+
+* `framingDivergence = 1 - averageSimilarity`
+
+Convert to points:
+
+* `framingScore = clamp(framingDivergence * 25, 0, 25)`
+
+Interpretation:
+
+* Similar headlines = low divergence (less polarised)
+* Very different headlines for same event = high divergence (more polarised)
+
+## 5.2 Sentiment variance across sources
+
+If you already compute sentiment per article, then per story:
+
+* Compute variance / spread of sentiment scores across articles.
+* High variance = higher polarisation.
+
+Convert to points:
+
+* `sentimentScore = clamp(sentimentVariance * scaleFactor, 0, 15)`
+
+If sentiment is missing, approximate with:
+
+* Positive/negative word lists (lightweight fallback)
+
+---
+
+# 6) Source diversity score (story-level)
+
+For a story cluster:
+
+* count distinct sources
+* count distinct countries/regions (if metadata exists)
+
+Convert to points:
+
+* `diversityScore = clamp(log2(1 + sourcesCount) * 4, 0, 15)`
+* optionally add region diversity bonus (max 5)
+
+This pushes up stories with:
+
+* multiple outlets covering the event
+* multiple regions framing it differently
+
+---
+
+# 7) Final scoring formula (0–100)
+
+Compute **ArticleScore** first:
+
+**Article Polarisation Score**
+
+* `topicScore` (0–30)
+* `controversyScore` (0–25)
+* `sensationalismScore` (0–5)
+* `baseNoise` (0–3 small deterministic hash so ties don’t look identical)
+
+Then compute **StoryScore**:
+
+**Story Polarisation Score**
+
+* average(articleScore) (0–60)
+* * `framingScore` (0–25)
+* * `sentimentScore` (0–15)
+* * `diversityScore` (0–15)
+
+Cap at 100.
+
+Store:
+
+* `story.polarisationScore`
+* `story.polarisationReasons[]`
+
+---
+
+# 8) Update “Most Polarised” sorting and UI explainability
+
+## 8.1 Sorting
+
+When “Most Polarised” is enabled:
+
+* Sort by `story.polarisationScore` (desc)
+* tie-breaker: publish date (desc)
+
+Optionally show:
+
+* “Polarisation Score: 82”
+* “Top reasons: High framing divergence, high controversy keywords, elections topic”
+
+## 8.2 Explainability panel (must-have)
+
+On story detail view, add a small “Why polarised?” expandable section with:
+
+* Topic detected + weight
+* Controversy keywords found (top 5)
+* Framing divergence score
+* Sentiment spread
+* Source count
+
+This makes the feature feel credible, not arbitrary.
+
+---
+
+# 9) Practical constraints (keep it implementable)
+
+* This must run without heavy external dependencies.
+* Use lightweight tokenization and caching.
+* Score should be recalculated:
+
+  * when an article is ingested, and
+  * when story clusters update (e.g., a new article joins an existing story)
+
+Cache:
+
+* tokenized headline
+* controversy keyword matches
+* computed similarity statistics per story (update incrementally if possible)
+
+---
+
+# 10) Acceptance criteria
+
+After implementation:
+
+1. “Most Polarised” no longer uses random numbers.
+2. Stories about elections/war/identity policy reliably float to the top.
+3. Entertainment or sports only appear if they contain **strong controversy signals** (e.g., “scandal,” “accused,” “boycott”), and still typically rank below major political crises.
+4. Each story includes:
+
+   * `polarisationScore`
+   * `polarisationReasons` (human-readable)
+5. The UI can display “Why polarised?” and the results feel consistent and believable.
+
+---
+
+## Optional extra (if time): “Controversy vs Polarisation” split
+
+If feasible, add two separate metrics:
+
+* **Controversy**: how heated the language/topic is
+* **Polarisation**: how divergent the framing is across sources
+
+Then “Most Polarised” sorts by Polarisation, not just controversy.
+
+---
+
+**Implement this end-to-end in my existing LUM News project so Most Polarised becomes meaningful, explainable, and consistently surfaces the most controversial narratives.**
