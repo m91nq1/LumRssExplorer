@@ -431,8 +431,8 @@ export default function FeedManagement() {
   const providers = providersData?.providers || [];
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
+    <div className="min-h-screen bg-gray-100 dark:bg-background">
+      <header className="h-16 border-b border-border bg-white dark:bg-background sticky top-0 z-10">
         <div className="h-full max-w-5xl mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/">
