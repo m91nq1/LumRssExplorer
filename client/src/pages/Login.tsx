@@ -133,6 +133,15 @@ export default function Login() {
                   </FormItem>
                 )}
               />
+              <div className="flex justify-end">
+                <Link 
+                  href="/forgot-password" 
+                  className="text-sm text-violet-400 hover:text-violet-300"
+                  data-testid="link-forgot-password"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <Button
                 type="submit"
                 className="w-full bg-violet-600 hover:bg-violet-700"
