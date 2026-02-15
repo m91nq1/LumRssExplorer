@@ -64,13 +64,13 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
 
   return (
     <Card
-      className={`p-5 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 dark:bg-[#1a1a1f] dark:border-[#3a3a3f] ${article.isRead ? 'opacity-60' : ''}`}
+      className={`p-3 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 bg-gray-50 dark:bg-[#1a1a1f] border-gray-200 dark:border-[#3a3a3f] ${article.isRead ? 'opacity-60' : ''}`}
       onClick={handleClick}
       data-testid={`card-article-${article.id}`}
     >
-      <div className="space-y-4">
+      <div className="flex gap-3">
         {article.imageUrl ? (
-          <div className="aspect-[16/9] rounded-md overflow-hidden bg-muted/30">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-md overflow-hidden bg-muted/30 shrink-0">
             <img 
               src={article.imageUrl} 
               alt="" 
@@ -79,77 +79,72 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
             />
           </div>
         ) : (
-          <div className="aspect-[16/9] rounded-md bg-muted/20 dark:bg-[#1a1a1a] flex items-center justify-center">
-            <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-md bg-gray-100 dark:bg-[#1a1a1a] flex items-center justify-center shrink-0">
+            <ImageIcon className="w-6 h-6 text-muted-foreground/30" />
           </div>
         )}
 
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="outline"
-              className="text-xs font-bold uppercase tracking-wider shrink-0 dark:border-white/40 dark:text-white"
-              data-testid={`badge-source-${article.id}`}
-            >
-              {article.sourceName}
-            </Badge>
-            {topicBadge && (
-              <Badge
-                variant="outline"
-                className="text-xs font-medium shrink-0 dark:border-white/30 dark:text-white/90"
-                data-testid={`badge-topic-${article.id}`}
-              >
-                {topicBadge}
-              </Badge>
-            )}
-          </div>
-          
-          {onBookmark && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 shrink-0"
-              onClick={handleBookmarkClick}
-              disabled={isBookmarking}
-              data-testid={`button-bookmark-${article.id}`}
-            >
-              {article.isBookmarked ? (
-                <BookmarkCheck className="w-4 h-4" />
-              ) : (
-                <Bookmark className="w-4 h-4" />
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          <div>
+            <div className="flex items-start justify-between gap-1 mb-1">
+              <div className="flex flex-wrap items-center gap-1">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] font-bold uppercase tracking-wider shrink-0 dark:border-white/40 dark:text-white"
+                  data-testid={`badge-source-${article.id}`}
+                >
+                  {article.sourceName}
+                </Badge>
+                {topicBadge && (
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-medium shrink-0 dark:border-white/30 dark:text-white/90"
+                    data-testid={`badge-topic-${article.id}`}
+                  >
+                    {topicBadge}
+                  </Badge>
+                )}
+              </div>
+              
+              {onBookmark && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 shrink-0"
+                  onClick={handleBookmarkClick}
+                  disabled={isBookmarking}
+                  data-testid={`button-bookmark-${article.id}`}
+                >
+                  {article.isBookmarked ? (
+                    <BookmarkCheck className="w-3.5 h-3.5" />
+                  ) : (
+                    <Bookmark className="w-3.5 h-3.5" />
+                  )}
+                </Button>
               )}
-            </Button>
-          )}
-        </div>
+            </div>
 
-        <h3
-          className={`text-base font-semibold leading-snug line-clamp-2 dark:text-white ${article.isRead ? 'dark:text-white/60' : ''}`}
-          data-testid={`text-title-${article.id}`}
-        >
-          {article.title}
-        </h3>
-
-        {article.summary && (
-          <p
-            className="text-sm text-muted-foreground leading-relaxed line-clamp-2 dark:text-white/60"
-            data-testid={`text-summary-${article.id}`}
-          >
-            {article.summary}
-          </p>
-        )}
-
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-white/50">
-            <Clock className="w-3 h-3" />
-            <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
-              {formattedTime}
-            </time>
+            <h3
+              className={`text-sm font-semibold leading-snug line-clamp-2 dark:text-white ${article.isRead ? 'dark:text-white/60' : ''}`}
+              data-testid={`text-title-${article.id}`}
+            >
+              {article.title}
+            </h3>
           </div>
-          <PolarisationBadge 
-            score={article.polarisationScore} 
-            reasons={article.polarisationReasons}
-            compact
-          />
+
+          <div className="flex items-center justify-between gap-2 mt-1">
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground dark:text-white/50">
+              <Clock className="w-3 h-3" />
+              <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
+                {formattedTime}
+              </time>
+            </div>
+            <PolarisationBadge 
+              score={article.polarisationScore} 
+              reasons={article.polarisationReasons}
+              compact
+            />
+          </div>
         </div>
       </div>
     </Card>
