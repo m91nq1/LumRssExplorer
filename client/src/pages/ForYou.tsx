@@ -108,22 +108,22 @@ export default function ForYou() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="h-14 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-6">
-        <div className="flex items-center gap-3">
+      <header className="h-14 sm:h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-3 sm:px-6">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/">
-            <h1 className="text-xl font-bold text-primary cursor-pointer" data-testid="logo">LUM</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-primary cursor-pointer" data-testid="logo">LUM</h1>
           </Link>
           <span className="text-muted-foreground">/</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Sparkles className="w-4 h-4 text-primary" />
-            <span className="font-medium">For You</span>
+            <span className="font-medium text-sm sm:text-base">For You</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/">
             <Button variant="ghost" size="sm" data-testid="button-back-home">
-              <BookOpen className="w-4 h-4 mr-2" />
-              All Articles
+              <BookOpen className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">All Articles</span>
             </Button>
           </Link>
         </div>
@@ -138,9 +138,9 @@ export default function ForYou() {
           backgroundAttachment: "fixed",
         }}
       >
-        <aside className="w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0" data-testid="sidebar-for-you">
+        <aside className="hidden md:block w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0" data-testid="sidebar-for-you">
           <ScrollArea className="h-full">
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />
                 <h2 className="text-lg font-semibold">For You</h2>
@@ -202,7 +202,7 @@ export default function ForYou() {
           </ScrollArea>
         </aside>
 
-        <main className="flex-1 overflow-auto p-6" data-testid="main-content">
+        <main className="flex-1 overflow-auto p-3 sm:p-6" data-testid="main-content">
           <section className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-amber-500" />
@@ -211,13 +211,13 @@ export default function ForYou() {
             </div>
             
             {isLoadingBreaking ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <Skeleton key={i} className="h-32 rounded-lg" />
                 ))}
               </div>
             ) : breakingNews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {breakingNews.slice(0, 3).map((article) => (
                   <Card key={article.id} className="hover-elevate transition-all" data-testid={`card-breaking-${article.id}`}>
                     <Link href={`/article/${article.id}`}>
@@ -264,12 +264,12 @@ export default function ForYou() {
                   <Card key={cluster.topic} className="overflow-hidden" data-testid={`cluster-${cluster.topic.toLowerCase().replace(/\s+/g, '-')}`}>
                     <CardHeader className="pb-2 bg-muted/30">
                       <div className="flex items-center justify-between gap-2">
-                        <CardTitle className="text-sm font-medium">{cluster.topic}</CardTitle>
+                        <CardTitle className="text-xs sm:text-sm font-medium">{cluster.topic}</CardTitle>
                         <Badge variant="outline">{cluster.articles.length} sources</Badge>
                       </div>
                     </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {cluster.articles.slice(0, 4).map((article) => (
                           <Link key={article.id} href={`/article/${article.id}`}>
                             <div className="p-2 rounded-md hover-elevate border border-transparent hover:border-border transition-all" data-testid={`cluster-article-${article.id}`}>
@@ -301,7 +301,7 @@ export default function ForYou() {
             </div>
 
             {isLoadingForYou ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <Skeleton key={i} className="h-48 rounded-lg" />
                 ))}

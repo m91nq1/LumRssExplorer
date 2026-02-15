@@ -257,8 +257,8 @@ export default function ArticleDetail() {
   if (isLoadingArticle) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
-          <div className="h-full max-w-4xl mx-auto px-6 flex items-center gap-4">
+        <header className="h-14 sm:h-16 border-b border-border bg-background sticky top-0 z-10">
+          <div className="h-full max-w-4xl mx-auto px-3 sm:px-6 flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon">
                 <ArrowLeft className="w-5 h-5" />
@@ -267,7 +267,7 @@ export default function ArticleDetail() {
             <Skeleton className="h-6 w-48" />
           </div>
         </header>
-        <main className="max-w-4xl mx-auto px-6 py-8">
+        <main className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
           <Skeleton className="h-8 w-3/4 mb-4" />
           <Skeleton className="h-4 w-48 mb-8" />
           <Skeleton className="h-40 w-full" />
@@ -279,17 +279,17 @@ export default function ArticleDetail() {
   if (!article) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
-          <div className="h-full max-w-4xl mx-auto px-6 flex items-center gap-4">
+        <header className="h-14 sm:h-16 border-b border-border bg-background sticky top-0 z-10">
+          <div className="h-full max-w-4xl mx-auto px-3 sm:px-6 flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <h1 className="text-xl font-semibold">Article Not Found</h1>
+            <h1 className="text-lg sm:text-xl font-semibold">Article Not Found</h1>
           </div>
         </header>
-        <main className="max-w-4xl mx-auto px-6 py-8 text-center">
+        <main className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8 text-center">
           <p className="text-muted-foreground">
             The article you're looking for doesn't exist or has been removed.
           </p>
@@ -313,20 +313,20 @@ export default function ArticleDetail() {
       <div className="fixed top-0 left-0 right-0 z-50">
         <Progress value={readProgress} className="h-1 rounded-none" />
       </div>
-      <header className="h-16 border-b border-border bg-background sticky top-0 z-10 mt-1">
-        <div className="h-full max-w-4xl mx-auto px-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+      <header className="h-14 sm:h-16 border-b border-border bg-background sticky top-0 z-10 mt-1">
+        <div className="h-full max-w-4xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <Link href="/">
               <Button variant="ghost" size="icon" data-testid="button-back">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <Badge variant="secondary" className="text-xs font-medium uppercase">
+            <Badge variant="secondary" className="text-xs font-medium uppercase truncate max-w-[120px] sm:max-w-none">
               {article.sourceName}
             </Badge>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {neighbors?.prev && (
               <Link href={`/article/${neighbors.prev}`}>
                 <Button
@@ -334,6 +334,7 @@ export default function ArticleDetail() {
                   size="icon"
                   title="Previous article (newer)"
                   data-testid="button-prev-article"
+                  className="hidden sm:inline-flex"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
@@ -346,6 +347,7 @@ export default function ArticleDetail() {
                   size="icon"
                   title="Next article (older)"
                   data-testid="button-next-article"
+                  className="hidden sm:inline-flex"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </Button>
@@ -372,18 +374,18 @@ export default function ArticleDetail() {
             >
               <Share2 className="w-5 h-5" />
             </Button>
-            <Button onClick={handleOpenArticle} data-testid="button-read-original">
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Read Original
+            <Button onClick={handleOpenArticle} size="sm" data-testid="button-read-original">
+              <ExternalLink className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Read Original</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main ref={mainRef} className="max-w-4xl mx-auto px-6 py-8">
+      <main ref={mainRef} className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <article>
           <h1
-            className="text-3xl font-bold leading-tight mb-4"
+            className="text-xl sm:text-3xl font-bold leading-tight mb-4"
             data-testid="text-article-title"
           >
             {article.title}

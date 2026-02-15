@@ -103,7 +103,7 @@ export default function History() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center gap-4">
+        <div className="container px-3 sm:px-6 flex h-14 sm:h-16 items-center gap-2 sm:gap-4">
           <Link href="/home">
             <Button variant="ghost" size="icon" data-testid="button-back">
               <ArrowLeft className="h-4 w-4" />
@@ -113,7 +113,7 @@ export default function History() {
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Newspaper className="w-4 h-4 text-white" />
             </div>
-            <h1 className="text-lg font-semibold">Reading History</h1>
+            <h1 className="text-base sm:text-lg font-semibold">Reading History</h1>
           </div>
           <div className="flex-1" />
           {history.length > 0 && (
@@ -121,7 +121,7 @@ export default function History() {
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="sm" className="gap-2" data-testid="button-clear-history">
                   <Trash2 className="h-4 w-4" />
-                  Clear History
+                  <span className="hidden sm:inline">Clear History</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -146,7 +146,7 @@ export default function History() {
         </div>
       </header>
 
-      <main className="container py-6 max-w-4xl">
+      <main className="container px-3 sm:px-6 py-4 sm:py-6 max-w-4xl">
         <p className="text-muted-foreground mb-6">
           A timeline of the stories you've opened on LUM News.
         </p>

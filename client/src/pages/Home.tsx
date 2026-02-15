@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ArticlesResponse, SourcesResponse, UserPreferences } from "@shared/schema";
 import { StatsHeader } from "@/components/StatsHeader";
-import { Sidebar } from "@/components/Sidebar";
+import { Sidebar, MobileSidebar } from "@/components/Sidebar";
 import { ArticleGrid } from "@/components/ArticleGrid";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,7 @@ export default function Home() {
   const [timeFilter, setTimeFilter] = useState<TimeFilterValue>("all");
   const [mostPolarised, setMostPolarised] = useState(false);
   const [page, setPage] = useState(1);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const preferencesAppliedRef = useRef(false);
 
   const { data: preferencesData } = useQuery<PreferencesResponse>({
@@ -280,6 +281,27 @@ export default function Home() {
   const sources = sourcesData?.sources || [];
   const lastRefreshTime = sourcesData?.lastRefreshTime || null;
 
+  const sidebarProps = {
+    sources,
+    selectedSources,
+    selectedTopics,
+    selectedRegions,
+    searchQuery,
+    timeFilter,
+    mostPolarised,
+    onSourceToggle: handleSourceToggle,
+    onTopicToggle: handleTopicToggle,
+    onRegionToggle: handleRegionToggle,
+    onSearchChange: handleSearchChange,
+    onTimeFilterChange: handleTimeFilterChange,
+    onMostPolarisedChange: handleMostPolarisedChange,
+    onClearFilters: handleClearFilters,
+    onSavePreferences: handleSavePreferences,
+    isLoadingSources,
+    hasActiveFilters,
+    isSavingPreferences: savePreferencesMutation.isPending,
+  };
+
   return (
     <div 
       className="flex h-screen w-full overflow-hidden"
@@ -291,25 +313,11 @@ export default function Home() {
         backgroundAttachment: 'fixed'
       }}
     >
-      <Sidebar
-        sources={sources}
-        selectedSources={selectedSources}
-        selectedTopics={selectedTopics}
-        selectedRegions={selectedRegions}
-        searchQuery={searchQuery}
-        timeFilter={timeFilter}
-        mostPolarised={mostPolarised}
-        onSourceToggle={handleSourceToggle}
-        onTopicToggle={handleTopicToggle}
-        onRegionToggle={handleRegionToggle}
-        onSearchChange={handleSearchChange}
-        onTimeFilterChange={handleTimeFilterChange}
-        onMostPolarisedChange={handleMostPolarisedChange}
-        onClearFilters={handleClearFilters}
-        onSavePreferences={handleSavePreferences}
-        isLoadingSources={isLoadingSources}
-        hasActiveFilters={hasActiveFilters}
-        isSavingPreferences={savePreferencesMutation.isPending}
+      <Sidebar {...sidebarProps} />
+      <MobileSidebar
+        open={mobileSidebarOpen}
+        onOpenChange={setMobileSidebarOpen}
+        {...sidebarProps}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -319,10 +327,11 @@ export default function Home() {
           lastRefreshTime={lastRefreshTime}
           onRefresh={() => refreshMutation.mutate()}
           isRefreshing={refreshMutation.isPending}
+          onMobileMenuToggle={() => setMobileSidebarOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
             <ArticleGrid 
               articles={articles} 
               isLoading={isLoadingArticles || isFetching}
@@ -332,7 +341,7 @@ export default function Home() {
             />
 
             {!isLoadingArticles && articles.length > 0 && totalPages > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-2" data-testid="pagination">
+              <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2" data-testid="pagination">
                 <Button
                   variant="outline"
                   size="sm"
@@ -341,9 +350,9 @@ export default function Home() {
                   data-testid="button-prev-page"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1" />
-                  Previous
+                  <span className="hidden sm:inline">Previous</span>
                 </Button>
-                <span className="text-sm text-muted-foreground px-4" data-testid="text-page-info">
+                <span className="text-sm text-muted-foreground px-2 sm:px-4" data-testid="text-page-info">
                   Page {page} of {totalPages}
                 </span>
                 <Button
@@ -353,7 +362,7 @@ export default function Home() {
                   disabled={page === totalPages}
                   data-testid="button-next-page"
                 >
-                  Next
+                  <span className="hidden sm:inline">Next</span>
                   <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>

@@ -14,9 +14,9 @@ interface ArticleGridProps {
 export function ArticleGrid({ articles, isLoading, onBookmark, onRead, isBookmarking }: ArticleGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="p-6 border border-card-border rounded-md space-y-4">
+          <div key={i} className="p-4 sm:p-6 border border-card-border rounded-md space-y-4">
             <Skeleton className="h-5 w-24" />
             <Skeleton className="h-6 w-full" />
             <Skeleton className="h-6 w-4/5" />
@@ -43,7 +43,7 @@ export function ArticleGrid({ articles, isLoading, onBookmark, onRead, isBookmar
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-testid="article-grid">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6" data-testid="article-grid">
       {articles.map((article) => (
         <ArticleCard 
           key={article.id} 

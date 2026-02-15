@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Save, ChevronDown, Zap, Globe, Tag, Newspaper, Settings, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
@@ -35,7 +36,7 @@ interface SidebarProps {
   isSavingPreferences?: boolean;
 }
 
-export function Sidebar({
+function SidebarContent({
   sources,
   selectedSources,
   selectedTopics,
@@ -60,12 +61,7 @@ export function Sidebar({
   const [sourcesOpen, setSourcesOpen] = useState(false);
 
   return (
-    <aside
-      className="w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0"
-      data-testid="sidebar"
-    >
-      <ScrollArea className="h-full">
-        <div className="p-6 space-y-5">
+    <div className="p-4 sm:p-6 space-y-5">
           <div className="space-y-2">
             <SearchBox value={searchQuery} onChange={onSearchChange} />
           </div>
@@ -265,8 +261,40 @@ export function Sidebar({
               Settings & Digests
             </Button>
           </Link>
-        </div>
+    </div>
+  );
+}
+
+export function Sidebar(props: SidebarProps) {
+  return (
+    <aside
+      className="hidden md:block w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0"
+      data-testid="sidebar"
+    >
+      <ScrollArea className="h-full">
+        <SidebarContent {...props} />
       </ScrollArea>
     </aside>
+  );
+}
+
+interface MobileSidebarProps extends SidebarProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function MobileSidebar({ open, onOpenChange, ...props }: MobileSidebarProps) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="left" className="w-[300px] p-0" data-testid="mobile-sidebar">
+        <SheetHeader className="sr-only">
+          <SheetTitle>Filters</SheetTitle>
+          <SheetDescription>Filter and search articles</SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-full">
+          <SidebarContent {...props} />
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 }

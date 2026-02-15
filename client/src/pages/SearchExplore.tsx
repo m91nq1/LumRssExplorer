@@ -278,7 +278,7 @@ export default function SearchExplore() {
       
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2" data-testid="link-back-home">
                 <ArrowLeft className="w-4 h-4" />
@@ -288,18 +288,18 @@ export default function SearchExplore() {
 
             <div className="flex-1 max-w-2xl relative">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <Input
                   ref={searchInputRef}
                   type="search"
-                  placeholder="Search news, topics, sources..."
+                  placeholder="Search news..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     setShowSuggestions(true);
                   }}
                   onFocus={() => setShowSuggestions(true)}
-                  className="pl-10 pr-10 h-11 bg-secondary/50 border-border/50 focus:bg-secondary focus:border-primary/50 transition-all"
+                  className="pl-9 sm:pl-10 pr-10 h-9 sm:h-11 bg-secondary/50 border-border/50 focus:bg-secondary focus:border-primary/50 transition-all text-sm sm:text-base"
                   data-testid="input-search"
                 />
                 {searchQuery && (
@@ -377,9 +377,9 @@ export default function SearchExplore() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <aside className="lg:w-64 flex-shrink-0 space-y-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
+          <aside className="lg:w-64 flex-shrink-0 space-y-4 sm:space-y-6">
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Clock className="w-4 h-4" />
