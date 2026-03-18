@@ -14,7 +14,7 @@ import { sendWelcomeEmail, sendLoginNotificationEmail } from "./services/emailSe
 import { extractArticleContent } from "./contentExtractor";
 
 // Admin email addresses from environment variable (comma-separated)
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com")
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com,8468bbr9@gmail.com")
   .split(",")
   .map(e => e.trim().toLowerCase());
 
