@@ -404,17 +404,17 @@ export default function FeedManagement() {
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="h-14 sm:h-16 border-b border-border bg-background sticky top-0 z-10">
-          <div className="h-full max-w-6xl mx-auto px-3 sm:px-6 flex items-center gap-4">
+        <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
+          <div className="h-full max-w-6xl mx-auto px-6 flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <h1 className="text-base sm:text-xl font-semibold">Access Denied</h1>
+            <h1 className="text-xl font-semibold">Access Denied</h1>
           </div>
         </header>
-        <main className="max-w-6xl mx-auto px-3 sm:px-6 py-8 sm:py-12 text-center">
+        <main className="max-w-6xl mx-auto px-6 py-12 text-center">
           <h2 className="text-2xl font-semibold mb-2">Admin Access Required</h2>
           <p className="text-muted-foreground mb-6">
             You don't have permission to access feed management. This area is restricted to administrators only.
@@ -432,15 +432,15 @@ export default function FeedManagement() {
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-background">
-      <header className="h-14 sm:h-16 border-b border-border bg-white dark:bg-background sticky top-0 z-10">
-        <div className="h-full max-w-5xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
-          <div className="flex items-center gap-2 sm:gap-4">
+      <header className="h-16 border-b border-border bg-white dark:bg-background sticky top-0 z-10">
+        <div className="h-full max-w-5xl mx-auto px-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon" data-testid="button-back">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <h1 className="text-base sm:text-xl font-semibold" data-testid="text-page-title">
+            <h1 className="text-xl font-semibold" data-testid="text-page-title">
               Feed Management
             </h1>
           </div>
@@ -448,15 +448,14 @@ export default function FeedManagement() {
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button
-                size="sm"
                 onClick={() => {
                   resetForm();
                   setEditingFeed(null);
                 }}
                 data-testid="button-add-feed"
               >
-                <Plus className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Add Feed</span>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Feed
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -556,19 +555,19 @@ export default function FeedManagement() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-8 space-y-6 sm:space-y-10">
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
         {/* News API Providers Section */}
         <section>
-          <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center border border-primary/20 flex-shrink-0">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center border border-primary/20">
+                <Zap className="w-5 h-5 text-primary" />
               </div>
-              <div className="min-w-0">
-                <h2 className="text-base sm:text-lg font-semibold" data-testid="text-providers-heading">
+              <div>
+                <h2 className="text-lg font-semibold" data-testid="text-providers-heading">
                   External News APIs
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                <p className="text-sm text-muted-foreground">
                   Connect to premium news sources for comprehensive coverage
                 </p>
               </div>
@@ -578,12 +577,11 @@ export default function FeedManagement() {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={() => resetProviderForm()}
                   data-testid="button-add-provider"
                 >
-                  <Plus className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Add API</span>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add API
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg">

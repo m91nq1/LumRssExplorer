@@ -88,27 +88,26 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container px-3 sm:px-6 flex h-14 sm:h-16 items-center gap-2 sm:gap-4">
+        <div className="container flex h-14 items-center gap-4">
           <Link href="/home">
             <Button variant="ghost" size="icon" data-testid="button-back">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-base sm:text-lg font-semibold">Settings</h1>
+          <h1 className="text-lg font-semibold">Settings</h1>
           <div className="flex-1" />
           <Button 
             onClick={handleSave} 
             disabled={saveMutation.isPending}
-            size="sm"
             data-testid="button-save-preferences"
           >
-            <Save className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">{saveMutation.isPending ? "Saving..." : "Save Changes"}</span>
+            <Save className="h-4 w-4 mr-2" />
+            {saveMutation.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </header>
 
-      <main className="container px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-4xl">
+      <main className="container py-6 space-y-6 max-w-4xl">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -165,7 +164,7 @@ export default function Settings() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {TOPICS.map((topic) => (
                 <div key={topic} className="flex items-center space-x-2">
                   <Checkbox
@@ -197,7 +196,7 @@ export default function Settings() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {REGIONS.map((region) => (
                 <div key={region} className="flex items-center space-x-2">
                   <Checkbox

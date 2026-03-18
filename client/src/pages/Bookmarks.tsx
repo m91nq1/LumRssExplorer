@@ -96,7 +96,7 @@ export default function Bookmarks() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container px-3 sm:px-6 flex h-14 sm:h-16 items-center gap-2 sm:gap-4">
+        <div className="container flex h-14 items-center gap-4">
           <Link href="/home">
             <Button variant="ghost" size="icon" data-testid="button-back">
               <ArrowLeft className="h-4 w-4" />
@@ -106,7 +106,7 @@ export default function Bookmarks() {
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Newspaper className="w-4 h-4 text-white" />
             </div>
-            <h1 className="text-base sm:text-lg font-semibold">Saved Stories</h1>
+            <h1 className="text-lg font-semibold">Saved Stories</h1>
           </div>
           <div className="flex-1" />
           <Badge variant="secondary" className="gap-1" data-testid="badge-bookmark-count">
@@ -116,7 +116,7 @@ export default function Bookmarks() {
         </div>
       </header>
 
-      <main className="container px-3 sm:px-6 py-4 sm:py-6 max-w-4xl">
+      <main className="container py-6 max-w-4xl">
         <p className="text-muted-foreground mb-6">
           Articles you've bookmarked to come back to later.
         </p>

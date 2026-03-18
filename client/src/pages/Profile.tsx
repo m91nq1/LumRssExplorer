@@ -105,7 +105,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container px-3 sm:px-6 flex h-14 sm:h-16 items-center gap-2 sm:gap-4">
+        <div className="container flex h-14 items-center gap-4">
           <Link href="/home">
             <Button variant="ghost" size="icon" data-testid="button-back">
               <ArrowLeft className="h-4 w-4" />
@@ -115,22 +115,21 @@ export default function Profile() {
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Newspaper className="w-4 h-4 text-white" />
             </div>
-            <h1 className="text-base sm:text-lg font-semibold">Your Profile</h1>
+            <h1 className="text-lg font-semibold">Your Profile</h1>
           </div>
           <div className="flex-1" />
           <Button 
             onClick={handleSave} 
             disabled={savePrefsMutation.isPending}
-            size="sm"
             data-testid="button-save-profile"
           >
-            <Save className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">{savePrefsMutation.isPending ? "Saving..." : "Save Changes"}</span>
+            <Save className="h-4 w-4 mr-2" />
+            {savePrefsMutation.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </header>
 
-      <main className="container px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl">
+      <main className="container py-6 space-y-6 max-w-3xl">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -142,14 +141,14 @@ export default function Profile() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-              <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
+            <div className="flex items-center gap-6">
+              <Avatar className="h-20 w-20">
                 <AvatarImage src={user?.profileImageUrl || undefined} alt={displayName} />
-                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-lg sm:text-xl">
+                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xl">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 w-full space-y-4">
+              <div className="flex-1 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Display Name</Label>
                   <Input
@@ -215,7 +214,7 @@ export default function Profile() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {TOPICS.map((topic) => (
                 <div key={topic} className="flex items-center space-x-2">
                   <Checkbox
@@ -247,7 +246,7 @@ export default function Profile() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {REGIONS.map((region) => (
                 <div key={region} className="flex items-center space-x-2">
                   <Checkbox

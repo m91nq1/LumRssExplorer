@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RefreshCw, Settings, Search, LogOut, User, Info, Menu } from "lucide-react";
+import { RefreshCw, Settings, Search, LogOut, User, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link, useLocation } from "wouter";
 import { useSupabaseAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,6 @@ interface StatsHeaderProps {
   lastRefreshTime: string | null;
   onRefresh: () => void;
   isRefreshing: boolean;
-  onMobileMenuToggle?: () => void;
 }
 
 export function StatsHeader({
@@ -30,7 +29,6 @@ export function StatsHeader({
   lastRefreshTime,
   onRefresh,
   isRefreshing,
-  onMobileMenuToggle,
 }: StatsHeaderProps) {
   const { user, isAuthenticated, signOut } = useSupabaseAuth();
   const { isAdmin } = useAdmin();
@@ -43,33 +41,22 @@ export function StatsHeader({
   const userName = user?.email || "User";
 
   return (
-    <header className="h-14 sm:h-16 border-b border-border bg-background sticky top-0 z-10">
-      <div className="h-full max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
-        <div className="flex items-center gap-2 sm:gap-3">
-          {onMobileMenuToggle && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={onMobileMenuToggle}
-              data-testid="button-mobile-menu"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-          )}
+    <header className="h-16 border-b border-border bg-background sticky top-0 z-10">
+      <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
           <Link href="/landing">
             <img 
               src={lumLogo} 
               alt="LUM News Logo" 
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+              className="w-9 h-9 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
               data-testid="button-landing-page"
               title="Home"
             />
           </Link>
-          <h1 className="text-lg sm:text-2xl font-semibold" data-testid="text-app-title">
+          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
             LUM News
           </h1>
-          <Link href="/about" className="hidden sm:block">
+          <Link href="/about">
             <Button
               variant="ghost"
               size="icon"
@@ -81,26 +68,26 @@ export function StatsHeader({
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-6 text-sm text-muted-foreground">
-          <div className="hidden lg:flex items-center gap-6" data-testid="stats-display">
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="hidden sm:flex items-center gap-6" data-testid="stats-display">
             <span data-testid="text-total-articles">
               <span className="font-medium text-foreground">
                 {totalArticles.toLocaleString()}
               </span>{" "}
               Articles
             </span>
-            <span className="text-border">&bull;</span>
+            <span className="text-border">•</span>
             <span data-testid="text-total-sources">
               <span className="font-medium text-foreground">{totalSources}</span>{" "}
               Sources
             </span>
-            <span className="text-border">&bull;</span>
+            <span className="text-border">•</span>
             <span data-testid="text-last-refresh">
               Updated {formattedRefreshTime}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-2">
             <ThemeToggle />
 
             <Link href="/search">
@@ -129,21 +116,9 @@ export function StatsHeader({
               onClick={onRefresh}
               disabled={isRefreshing}
               variant="outline"
-              size="icon"
-              data-testid="button-refresh"
-              className="sm:hidden"
-            >
-              <RefreshCw
-                className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-              />
-            </Button>
-            <Button
-              onClick={onRefresh}
-              disabled={isRefreshing}
-              variant="outline"
               size="sm"
-              data-testid="button-refresh-desktop"
-              className="gap-2 hidden sm:inline-flex"
+              data-testid="button-refresh"
+              className="gap-2"
             >
               <RefreshCw
                 className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
