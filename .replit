@@ -50,3 +50,7 @@ SMTP_USER = "Ljmginqi0.1@gmail.com"
 EMAIL_FROM = "LUM News <Ljmginqi0.1@gmail.com>"
 VITE_SUPABASE_URL = "https://qxgymimnfxkdcadpjwle.supabase.co"
 VITE_SUPABASE_ANON_KEY = "sb_publishable_MtOjm2tF1BjbwIeB1xvFUw_TvL_grxL"
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
