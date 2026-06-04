@@ -175,6 +175,25 @@ export default function FeedManagement() {
     return response;
   };
 
+  const retagArticlesMutation = useMutation({
+    mutationFn: () =>
+      adminFetch("/api/admin/retag-articles", { method: "POST" }).then((r) => r.json()),
+    onSuccess: (data: { success: boolean; message: string; articlesUpdated: number }) => {
+      refetchTopicStats();
+      toast({
+        title: "Re-tag complete",
+        description: `${data.articlesUpdated.toLocaleString()} articles updated with improved topic tags.`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Re-tag failed",
+        description: "Could not re-tag articles. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const toggleProviderMutation = useMutation({
     mutationFn: ({ id, isEnabled }: { id: string; isEnabled: boolean }) =>
       adminFetch(`/api/providers/${id}`, {
@@ -596,16 +615,28 @@ export default function FeedManagement() {
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="default"
-              onClick={() => refetchTopicStats()}
-              disabled={topicStatsFetching}
-              data-testid="button-refresh-topic-stats"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${topicStatsFetching ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => retagArticlesMutation.mutate()}
+                disabled={retagArticlesMutation.isPending || topicStatsFetching}
+                data-testid="button-retag-articles"
+              >
+                <Tag className={`w-4 h-4 mr-2 ${retagArticlesMutation.isPending ? "animate-pulse" : ""}`} />
+                {retagArticlesMutation.isPending ? "Re-tagging…" : "Fix All Tags"}
+              </Button>
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => refetchTopicStats()}
+                disabled={topicStatsFetching || retagArticlesMutation.isPending}
+                data-testid="button-refresh-topic-stats"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${topicStatsFetching ? "animate-spin" : ""}`} />
+                Refresh
+              </Button>
+            </div>
           </div>
 
           {topicStatsLoading ? (
