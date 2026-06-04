@@ -1,0 +1,2 @@
+- [upsertArticles dedup rule](upsert-dedup.md) — onConflictDoUpdate requires deduplicating by id within each batch before insert or Postgres throws "cannot affect row a second time".
+- [classifier fix pattern](classifier-sports-fix.md) — Sports misclassification root cause was onConflictDoNothing silently skipping existing articles; fix is onConflictDoUpdate + skip normalizeArticleCategory when rawSportsCount≥2.

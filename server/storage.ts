@@ -547,17 +547,36 @@ export class DatabaseStorage implements IStorage {
   async upsertArticles(articlesList: InsertArticle[]): Promise<number> {
     if (articlesList.length === 0) return 0;
 
-    // Batch insert with conflict handling
+    // Batch insert — always update topics/polarisation on conflict so classifier
+    // fixes apply to existing articles on every refresh cycle.
     let inserted = 0;
     const batchSize = 50;
     
     for (let i = 0; i < articlesList.length; i += batchSize) {
-      const batch = articlesList.slice(i, i + batchSize);
+      // Deduplicate by id within each batch — PostgreSQL rejects onConflictDoUpdate
+      // if the same row would be targeted twice in a single statement.
+      const seen = new Set<string>();
+      const batch = articlesList.slice(i, i + batchSize).filter(a => {
+        if (seen.has(a.id)) return false;
+        seen.add(a.id);
+        return true;
+      });
+      if (batch.length === 0) continue;
       try {
         await db
           .insert(articles)
           .values(batch)
-          .onConflictDoNothing();
+          .onConflictDoUpdate({
+            target: articles.id,
+            set: {
+              title: sql`excluded.title`,
+              summary: sql`excluded.summary`,
+              imageUrl: sql`excluded.image_url`,
+              topics: sql`excluded.topics`,
+              polarisationScore: sql`excluded.polarisation_score`,
+              polarisationReasons: sql`excluded.polarisation_reasons`,
+            },
+          });
         inserted += batch.length;
       } catch (error) {
         console.error(`Error inserting batch ${i}:`, error);

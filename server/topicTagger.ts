@@ -322,30 +322,37 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
   },
 ];
 
-// Topics that are "strong signals" — used in the normalise / override check
+// Topics that are "strong signals" — used in the normalise / override check.
+// IMPORTANT: only include terms that are highly specific and would almost
+// never appear in a genuine sports article. Removed: "campaign", "vote",
+// "ballot", "governor" (common in sports), "market", "economy", "budget"
+// (too generic), "research", "study", "discovery" (appear everywhere).
 const OVERRIDE_TOPIC_SIGNALS: Record<string, string[]> = {
   "Environment / Climate": [
-    "climate", "environment", "conservation", "wildfire", "emissions",
-    "co2", "carbon", "warming", "warmer", "temperature", "biodiversity",
-    "ecosystem", "wildlife", "forest", "deforestation", "ocean", "flood",
-    "drought", "heatwave", "heat wave", "pollution", "renewable", "solar",
-    "sustainability", "glacier", "sea level", "arctic", "habitat",
-    "endangered", "species", "nature", "ecological"
+    "climate", "climate change", "global warming", "conservation", "wildfire",
+    "emissions", "co2", "carbon", "warming", "warmer", "temperature",
+    "biodiversity", "ecosystem", "wildlife", "deforestation", "ocean", "flood",
+    "drought", "heatwave", "heat wave", "pollution", "renewable energy",
+    "sustainability", "glacier", "sea level", "arctic", "habitat loss",
+    "endangered species", "ecological", "greenhouse gas", "net zero"
   ],
   "Science & Health": [
-    "science", "scientific", "research", "study", "experiment", "discovery",
-    "laboratory", "scientist", "biology", "genetics", "dna", "physics",
-    "chemistry", "health", "medical", "vaccine", "virus", "bacteria",
-    "pandemic", "disease", "treatment", "clinical", "doctor", "hospital"
+    "science confirms", "scientific study", "experiment", "laboratory",
+    "scientist", "biology", "genetics", "dna", "physics", "chemistry",
+    "vaccine", "virus", "bacteria", "pandemic", "clinical trial",
+    "medical treatment", "hospital patient", "disease outbreak"
   ],
   "US Politics": [
-    "election", "congress", "senate", "president", "white house",
-    "republican", "democrat", "legislation", "vote", "ballot", "campaign",
-    "governor", "supreme court", "impeachment", "trump", "biden"
+    // Only highly specific political terms that never appear in sports.
+    "congress", "senate", "white house", "republican party", "democratic party",
+    "supreme court", "impeachment", "trump", "biden", "electoral college",
+    "filibuster", "gop primary", "midterm election", "executive order"
   ],
   "Finance & Markets": [
-    "stock", "market", "economy", "inflation", "interest rate", "recession",
-    "bank", "investment", "gdp", "earnings", "profit", "fiscal", "budget"
+    // Only specific financial terms that don't appear in sports reporting.
+    "stock market", "wall street", "nasdaq", "interest rate", "recession",
+    "federal reserve", "gdp growth", "earnings report", "fiscal policy",
+    "cryptocurrency market", "trade deficit", "central bank rate"
   ],
 };
 
@@ -439,9 +446,11 @@ export function tagArticleTopics(
 /**
  * Post-scoring correction layer.
  *
- * If the winning topic is "Sports" but the article text (or source profile)
- * contains strong signals for another topic (≥2 matches), override to that topic.
- * Logs the correction for debugging.
+ * If the winning topic is "Sports" but the article text contains strong signals
+ * for another topic (≥2 matches from the strict OVERRIDE_TOPIC_SIGNALS list),
+ * override to that topic — BUT only when the article has fewer than 2 genuine
+ * sports keywords. If an article legitimately earned Sports via ≥2 real sports
+ * keywords (e.g. "FIFA" + "World Cup"), we trust that and never override.
  */
 export function normalizeArticleCategory(
   topics: Topic[],
@@ -459,6 +468,22 @@ export function normalizeArticleCategory(
   if (sourceName) {
     const profile = getSourceProfileBonus(sourceName);
     if (profile && profile.topic === "Sports") {
+      return topics;
+    }
+  }
+
+  // Count raw Sports keyword matches (ignoring source bonus).
+  // If the article has ≥2 genuine sports keywords it legitimately belongs
+  // in Sports — don't override, regardless of competing signals.
+  const sportsEntry = TOPIC_KEYWORDS.find(t => t.topic === "Sports");
+  if (sportsEntry) {
+    const rawSportsCount = sportsEntry.keywords.filter(kw => {
+      if (kw.length <= 3) {
+        return new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(text);
+      }
+      return text.includes(kw.toLowerCase());
+    }).length;
+    if (rawSportsCount >= 2) {
       return topics;
     }
   }
@@ -484,8 +509,7 @@ export function normalizeArticleCategory(
     `  Original:  Sports\n` +
     `  Corrected: ${override.topic}\n` +
     `  Source:    ${sourceName || "unknown"}\n` +
-    `  Confidence: high\n` +
-    `  Reason:    ${override.matches} strong ${override.topic} signals in article text`
+    `  Reason:    ${override.matches} strong ${override.topic} signals, <2 genuine sports keywords`
   );
 
   // Build corrected list: insert override topic first, keep any non-Sports from original
