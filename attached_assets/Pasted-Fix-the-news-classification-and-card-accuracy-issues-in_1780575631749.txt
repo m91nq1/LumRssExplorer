@@ -1,0 +1,155 @@
+Fix the news classification and card accuracy issues in the LUM News app.
+
+Current problem:
+Some articles are being displayed with incorrect categories/tags. Example: an article from “Mongabay India” with the headline “Science confirms what Indians experience: nights are now warmer” is being tagged as “Sports”, even though it is clearly about climate, environment, science, and heat/weather. This damages trust because the card looks professional, but the metadata is wrong.
+
+Main objective:
+Improve article topic classification, source tagging, and region handling so every news card shows the most accurate category, source label, region, summary, and timestamp.
+
+Required fixes:
+
+1. Improve topic/category detection
+- Do not rely only on the RSS feed default category.
+- Classify the article using headline, description, source name, feed URL, and article content if available.
+- Use keyword-based classification as a fallback.
+- Use AI classification only if an AI API key exists, but the app must still work without AI.
+- Add a confidence score for classification.
+- If confidence is low, use a safe generic category such as “World”, “Science”, or “Environment”, not a random category.
+
+2. Fix wrong category mappings
+- Mongabay, Mongabay India, climate, heat, temperature, wildlife, forests, conservation, environment, biodiversity, carbon, emissions, weather, and global warming must map to:
+  environment_climate
+  or science_health when the article is more science-focused.
+- These must never map to Sports unless the article clearly discusses sport.
+- Add a rule that “Sports” should only be used when the article contains sports-related signals such as football, cricket, rugby, tennis, NBA, match, league, player, coach, tournament, fixture, score, club, team, etc.
+
+3. Add source-specific defaults
+Create a source profile system. Example:
+- Mongabay India → default topic: environment_climate, region: India / Asia-Pacific
+- Mongabay → default topic: environment_climate, region: Global
+- ESPN / BBC Sport / Sky Sports → default topic: sports
+- Reuters Climate / Guardian Environment / Carbon Brief → default topic: environment_climate
+- The Hacker News / Krebs / BleepingComputer → default topic: cybersecurity / crime_justice
+
+The app should use source defaults, then refine the category based on the article headline and summary.
+
+4. Prevent random or incorrect fallback categories
+Check the code for any logic that assigns categories randomly, rotates categories, uses placeholder data, or defaults incorrectly.
+Remove any fallback that can cause unrelated tags such as “Sports” on climate articles.
+Fallback logic should be:
+- source profile category
+- keyword classification
+- AI classification if available
+- generic category only if uncertain
+
+5. Improve article summaries
+The card description must be clean and accurate.
+Avoid awkward summaries like:
+“Indians are increasingly experiencing nights differently in summers.”
+Rewrite to sound natural:
+“New research shows that summer nights in India are becoming warmer, increasing heat stress and climate-related health risks.”
+
+Summaries should:
+- Be 1–2 sentences
+- Match the article topic
+- Avoid vague wording
+- Avoid repeating the title
+- Avoid hallucinated claims not supported by the article text
+
+6. Improve source and region labels
+The source label should remain accurate, for example:
+“MONGABAY INDIA”
+The topic label should be separate and accurate, for example:
+“Environment” or “Climate”
+Do not display “Sports” unless the article is genuinely sports-related.
+
+7. Add validation checks before rendering cards
+Before saving or rendering an article, validate:
+- source exists
+- title exists
+- URL exists
+- image URL exists or fallback image is used
+- category matches article content
+- region matches source/content
+- timestamp is valid
+- duplicate articles are removed
+
+8. Add a category correction layer
+Implement a function like:
+
+normalizeArticleCategory(article) {
+  // input: title, description, content, source, feedUrl, existingCategory
+  // output: correctedCategory, confidence, reason
+}
+
+The function should explain why a category was selected internally for debugging.
+
+Example expected result:
+Input:
+Source: Mongabay India
+Title: Science confirms what Indians experience: nights are now warmer
+Existing category: Sports
+
+Output:
+correctedCategory: environment_climate
+displayCategory: Climate
+confidence: high
+reason: Source is Mongabay India and title contains climate/heat-related terms: nights, warmer, summers.
+
+9. Add debugging logs
+When an article category is corrected, log:
+- original category
+- corrected category
+- source
+- title
+- confidence
+- reason
+
+Example:
+[Category Correction] "Science confirms what Indians experience: nights are now warmer"
+Original: Sports
+Corrected: environment_climate
+Confidence: high
+Reason: Mongabay India source + warmer nights/climate keywords.
+
+10. Update the frontend card display
+The article card should display:
+- Source badge: MONGABAY INDIA
+- Topic badge: Climate / Environment / Science, depending on classification
+- Title
+- Clean summary
+- Timestamp
+- Bookmark button
+
+Ensure the UI does not mix source labels and topic labels incorrectly.
+
+11. Add tests
+Create test cases for incorrect categories:
+- Mongabay India climate article must not become Sports
+- ESPN article must become Sports
+- The Hacker News article must become Cybersecurity
+- Reuters Climate article must become Environment / Climate
+- Finance article must become Finance / Markets
+- Political article must become Politics
+- Entertainment article must become Entertainment
+
+12. Make the fix production-safe
+Do not break the RSS import pipeline.
+Do not remove existing feeds.
+Do not hardcode only one article.
+Apply this fix globally to every imported article.
+Make sure existing articles can be reprocessed or corrected.
+
+Final expected behaviour:
+The example card should change from:
+Source: MONGABAY INDIA
+Topic: Sports
+
+To:
+Source: MONGABAY INDIA
+Topic: Climate
+or:
+Source: MONGABAY INDIA
+Topic: Environment
+
+The system must prioritize accuracy over speed. A wrong category is worse than a generic one.
