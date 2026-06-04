@@ -221,9 +221,11 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
   },
   {
     topic: "Sports",
-    // Only specific, unambiguous sports terms — no generic words like
-    // "game", "team", "win", "record", "final", "score", "injury" etc.
-    // This alone prevents false positives on climate/science articles.
+    // Requires at least 2 keyword matches before Sports is a candidate.
+    // This prevents a single passing mention of a sport name from overriding
+    // a clearly non-sports article. Source profile bonuses (+10) bypass this
+    // for known sports sources (ESPN, BBC Sport, Sky Sports, etc.).
+    minMatches: 2,
     keywords: [
       // Sport names (unambiguous)
       "football", "soccer", "basketball", "baseball",
@@ -430,7 +432,7 @@ export function tagArticleTopics(
     .map(([topic]) => topic as Topic);
 
   // Run the normalisation / correction pass
-  const corrected = normalizeArticleCategory(bestTopics, text, sourceName);
+  const corrected = normalizeArticleCategory(bestTopics, text, sourceName, title);
   return corrected;
 }
 
