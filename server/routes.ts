@@ -3,8 +3,8 @@ import { createServer, type Server } from "http";
 import { articleStore } from "./articleStore";
 import { storage } from "./storage";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
-import { articles, articleQuerySchema, insertFeedSourceSchema } from "@shared/schema";
+import { eq, sql } from "drizzle-orm";
+import { articles, articleQuerySchema, insertFeedSourceSchema, TOPICS } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
@@ -826,6 +826,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching from provider:", error);
       res.status(500).json({ error: "Failed to fetch from provider" });
+    }
+  });
+
+  // ==================== ADMIN: TOPIC STATS ====================
+  app.get("/api/admin/topic-stats", isAdmin, async (req, res) => {
+    try {
+      // Count articles per topic using unnest on the topics array
+      const rows = await db.execute(
+        sql`SELECT topic, COUNT(*) as count
+            FROM (
+              SELECT unnest(topics) AS topic FROM ${articles}
+            ) sub
+            WHERE topic IS NOT NULL AND topic != ''
+            GROUP BY topic
+            ORDER BY count DESC`
+      );
+
+      // Build a map from the query results
+      const countMap: Record<string, number> = {};
+      for (const row of rows.rows as Array<{ topic: string; count: string }>) {
+        countMap[row.topic] = parseInt(row.count, 10);
+      }
+
+      // Also count articles with no topics (untagged)
+      const untaggedRows = await db.execute(
+        sql`SELECT COUNT(*) as count FROM ${articles}
+            WHERE topics IS NULL OR array_length(topics, 1) IS NULL OR array_length(topics, 1) = 0`
+      );
+      const untaggedCount = parseInt((untaggedRows.rows[0] as any)?.count || "0", 10);
+
+      // Count total articles
+      const totalRows = await db.execute(sql`SELECT COUNT(*) as count FROM ${articles}`);
+      const totalCount = parseInt((totalRows.rows[0] as any)?.count || "0", 10);
+
+      // Build the ordered topic distribution using the canonical TOPICS list
+      const distribution = TOPICS.map((topic) => ({
+        topic,
+        count: countMap[topic] || 0,
+        percentage: totalCount > 0 ? Math.round(((countMap[topic] || 0) / totalCount) * 1000) / 10 : 0,
+      }));
+
+      res.json({
+        distribution,
+        untaggedCount,
+        totalArticles: totalCount,
+        generatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error fetching topic stats:", error);
+      res.status(500).json({ error: "Failed to fetch topic stats" });
     }
   });
 

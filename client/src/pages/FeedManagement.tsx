@@ -26,7 +26,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag, BarChart2, RefreshCw } from "lucide-react";
 import { Link } from "wouter";
 
 interface FeedsResponse {
@@ -51,6 +51,19 @@ interface SourceWithCount {
 interface SourcesResponse {
   sources: SourceWithCount[];
   lastRefreshTime: string | null;
+}
+
+interface TopicStat {
+  topic: string;
+  count: number;
+  percentage: number;
+}
+
+interface TopicStatsResponse {
+  distribution: TopicStat[];
+  untaggedCount: number;
+  totalArticles: number;
+  generatedAt: string;
 }
 
 const providerDescriptions: Record<string, string> = {
@@ -135,6 +148,17 @@ export default function FeedManagement() {
   const { data: sourcesData } = useQuery<SourcesResponse>({
     queryKey: ["/api/sources"],
     enabled: isAdmin,
+  });
+
+  const { data: topicStatsData, isLoading: topicStatsLoading, refetch: refetchTopicStats, isFetching: topicStatsFetching } = useQuery<TopicStatsResponse>({
+    queryKey: ["/api/admin/topic-stats", supabaseId],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/topic-stats?supabaseId=${supabaseId}`);
+      if (!response.ok) throw new Error("Failed to fetch topic stats");
+      return response.json();
+    },
+    enabled: isAdmin && !!supabaseId,
+    staleTime: 60 * 1000,
   });
 
   const adminFetch = async (url: string, options: RequestInit = {}) => {
@@ -556,6 +580,95 @@ export default function FeedManagement() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
+        {/* Topic Distribution Stats Section */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-violet-500/20 to-violet-600/10 rounded-xl flex items-center justify-center border border-violet-500/20">
+                <BarChart2 className="w-5 h-5 text-violet-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold" data-testid="text-topic-stats-heading">
+                  Topic Distribution
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Article counts per topic — spot classification anomalies at a glance
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="default"
+              onClick={() => refetchTopicStats()}
+              disabled={topicStatsFetching}
+              data-testid="button-refresh-topic-stats"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${topicStatsFetching ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+
+          {topicStatsLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Array.from({ length: 11 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-xl" />
+              ))}
+            </div>
+          ) : topicStatsData ? (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4" data-testid="topic-stats-grid">
+                {topicStatsData.distribution.map((stat) => {
+                  const maxCount = Math.max(...topicStatsData.distribution.map(s => s.count), 1);
+                  const barWidth = Math.round((stat.count / maxCount) * 100);
+                  return (
+                    <Card key={stat.topic} className="p-4" data-testid={`card-topic-${stat.topic.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`}>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <span className="text-sm font-medium leading-tight">{stat.topic}</span>
+                        <Badge variant="secondary" className="shrink-0 tabular-nums">
+                          {stat.count.toLocaleString()}
+                        </Badge>
+                      </div>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-violet-500/70 rounded-full transition-all duration-300"
+                          style={{ width: `${barWidth}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1.5">{stat.percentage}% of total</p>
+                    </Card>
+                  );
+                })}
+
+                {topicStatsData.untaggedCount > 0 && (
+                  <Card className="p-4 border-dashed" data-testid="card-topic-untagged">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <span className="text-sm font-medium leading-tight text-muted-foreground">Untagged</span>
+                      <Badge variant="outline" className="shrink-0 tabular-nums">
+                        {topicStatsData.untaggedCount.toLocaleString()}
+                      </Badge>
+                    </div>
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-muted-foreground/30 rounded-full"
+                        style={{ width: `${Math.round((topicStatsData.untaggedCount / topicStatsData.totalArticles) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1.5">no topic assigned</p>
+                  </Card>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground" data-testid="text-topic-stats-footer">
+                {topicStatsData.totalArticles.toLocaleString()} articles total &middot; last computed{" "}
+                {new Date(topicStatsData.generatedAt).toLocaleTimeString()}
+              </p>
+            </>
+          ) : (
+            <div className="text-sm text-muted-foreground py-6 text-center">
+              Could not load topic stats. Click Refresh to try again.
+            </div>
+          )}
+        </section>
+
         {/* News API Providers Section */}
         <section>
           <div className="flex items-center justify-between mb-6">
