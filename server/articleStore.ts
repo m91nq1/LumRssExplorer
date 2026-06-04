@@ -315,7 +315,7 @@ export class ArticleStore {
 
       // Tag articles with topics and polarisation scores
       const taggedArticles = allArticles.map(article => {
-        const topics = article.topics || tagArticleTopics(article.title, article.summary);
+        const topics = article.topics || tagArticleTopics(article.title, article.summary, article.sourceName);
         const polarisationResult = generatePolarisationScore(article.title, article.summary, topics);
         return {
           ...article,

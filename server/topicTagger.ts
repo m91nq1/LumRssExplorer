@@ -3,7 +3,131 @@ import { Topic, TOPICS } from "@shared/schema";
 interface TopicKeywords {
   topic: Topic;
   keywords: string[];
+  minMatches?: number;
 }
+
+// Source name fragments → forced topic boost
+// Keys are lowercase substrings of source names. When a source name contains one of these,
+// the mapped topic receives a large score bonus (+10) so it beats keyword-only matches.
+const SOURCE_TOPIC_PROFILES: Array<{ fragment: string; topic: Topic; region?: string }> = [
+  // Environment / Climate sources
+  { fragment: "mongabay", topic: "Environment / Climate" },
+  { fragment: "carbon brief", topic: "Environment / Climate" },
+  { fragment: "cleantechnica", topic: "Environment / Climate" },
+  { fragment: "inside climate", topic: "Environment / Climate" },
+  { fragment: "climate central", topic: "Environment / Climate" },
+  { fragment: "desmog", topic: "Environment / Climate" },
+  { fragment: "e360", topic: "Environment / Climate" },
+  { fragment: "yale environment", topic: "Environment / Climate" },
+  { fragment: "conservation news", topic: "Environment / Climate" },
+  { fragment: "rewilding", topic: "Environment / Climate" },
+  { fragment: "resilience.org", topic: "Environment / Climate" },
+  { fragment: "earth.org", topic: "Environment / Climate" },
+  { fragment: "treehugger", topic: "Environment / Climate" },
+  { fragment: "grist", topic: "Environment / Climate" },
+  { fragment: "climate home", topic: "Environment / Climate" },
+  { fragment: "guardian environment", topic: "Environment / Climate" },
+  { fragment: "reuters climate", topic: "Environment / Climate" },
+  { fragment: "bbc environment", topic: "Environment / Climate" },
+  // Sports sources
+  { fragment: "espn", topic: "Sports" },
+  { fragment: "sky sports", topic: "Sports" },
+  { fragment: "bbc sport", topic: "Sports" },
+  { fragment: "the athletic", topic: "Sports" },
+  { fragment: "bleacher report", topic: "Sports" },
+  { fragment: "goal.com", topic: "Sports" },
+  { fragment: "nba.com", topic: "Sports" },
+  { fragment: "nfl.com", topic: "Sports" },
+  { fragment: "mlb.com", topic: "Sports" },
+  { fragment: "cricket buzz", topic: "Sports" },
+  { fragment: "cricbuzz", topic: "Sports" },
+  { fragment: "cricket info", topic: "Sports" },
+  { fragment: "cricinfo", topic: "Sports" },
+  { fragment: "f1.com", topic: "Sports" },
+  { fragment: "formula 1", topic: "Sports" },
+  { fragment: "mma fighting", topic: "Sports" },
+  { fragment: "sports illustrated", topic: "Sports" },
+  { fragment: "eurosport", topic: "Sports" },
+  { fragment: "tennis world", topic: "Sports" },
+  { fragment: "boxing news", topic: "Sports" },
+  // Technology / AI sources
+  { fragment: "techcrunch", topic: "AI & Technology" },
+  { fragment: "the verge", topic: "AI & Technology" },
+  { fragment: "ars technica", topic: "AI & Technology" },
+  { fragment: "wired", topic: "AI & Technology" },
+  { fragment: "mit technology", topic: "AI & Technology" },
+  { fragment: "venturebeat", topic: "AI & Technology" },
+  { fragment: "engadget", topic: "AI & Technology" },
+  { fragment: "arstechnica", topic: "AI & Technology" },
+  { fragment: "techmeme", topic: "AI & Technology" },
+  { fragment: "thenextweb", topic: "AI & Technology" },
+  // Cybersecurity sources
+  { fragment: "krebs on security", topic: "Crime & Justice" },
+  { fragment: "krebsonsecurity", topic: "Crime & Justice" },
+  { fragment: "the hacker news", topic: "Crime & Justice" },
+  { fragment: "bleepingcomputer", topic: "Crime & Justice" },
+  { fragment: "threatpost", topic: "Crime & Justice" },
+  // Finance sources
+  { fragment: "marketwatch", topic: "Finance & Markets" },
+  { fragment: "wall street", topic: "Finance & Markets" },
+  { fragment: "financial times", topic: "Finance & Markets" },
+  { fragment: "bloomberg", topic: "Finance & Markets" },
+  { fragment: "the economist", topic: "Finance & Markets" },
+  { fragment: "investing.com", topic: "Finance & Markets" },
+  { fragment: "zero hedge", topic: "Finance & Markets" },
+  { fragment: "zerohedge", topic: "Finance & Markets" },
+  // Science & Health sources
+  { fragment: "science daily", topic: "Science & Health" },
+  { fragment: "sciencedaily", topic: "Science & Health" },
+  { fragment: "new scientist", topic: "Science & Health" },
+  { fragment: "scientific american", topic: "Science & Health" },
+  { fragment: "quanta", topic: "Science & Health" },
+  { fragment: "stat news", topic: "Science & Health" },
+  { fragment: "pubmed", topic: "Science & Health" },
+  { fragment: "nature.com", topic: "Science & Health" },
+  { fragment: "nasa", topic: "Science & Health" },
+  { fragment: "plos", topic: "Science & Health" },
+  { fragment: "mayo clinic", topic: "Science & Health" },
+  { fragment: "harvard health", topic: "Science & Health" },
+  { fragment: "webmd", topic: "Science & Health" },
+  // Celebrity / Entertainment sources
+  { fragment: "tmz", topic: "Celebrity & Entertainment" },
+  { fragment: "people.com", topic: "Celebrity & Entertainment" },
+  { fragment: "variety", topic: "Celebrity & Entertainment" },
+  { fragment: "hollywood reporter", topic: "Celebrity & Entertainment" },
+  { fragment: "deadline", topic: "Celebrity & Entertainment" },
+  { fragment: "page six", topic: "Celebrity & Entertainment" },
+  { fragment: "entertainment weekly", topic: "Celebrity & Entertainment" },
+  { fragment: "e! news", topic: "Celebrity & Entertainment" },
+  { fragment: "vulture", topic: "Celebrity & Entertainment" },
+  { fragment: "billboard", topic: "Celebrity & Entertainment" },
+  { fragment: "rolling stone", topic: "Celebrity & Entertainment" },
+  { fragment: "pitchfork", topic: "Celebrity & Entertainment" },
+  { fragment: "just jared", topic: "Celebrity & Entertainment" },
+  { fragment: "daily mail", topic: "Celebrity & Entertainment" },
+  { fragment: "ok magazine", topic: "Celebrity & Entertainment" },
+  // US Politics
+  { fragment: "politico", topic: "US Politics" },
+  { fragment: "the hill", topic: "US Politics" },
+  { fragment: "axios", topic: "US Politics" },
+  { fragment: "fivethirtyeight", topic: "US Politics" },
+  { fragment: "ballotpedia", topic: "US Politics" },
+  { fragment: "national review", topic: "US Politics" },
+  { fragment: "daily kos", topic: "US Politics" },
+  // Europe Politics
+  { fragment: "euractiv", topic: "Europe Politics" },
+  { fragment: "euobserver", topic: "Europe Politics" },
+  { fragment: "politico europe", topic: "Europe Politics" },
+  // War / Conflict
+  { fragment: "breaking defense", topic: "War / Conflict" },
+  { fragment: "defence one", topic: "War / Conflict" },
+  { fragment: "defenseone", topic: "War / Conflict" },
+  { fragment: "war on the rocks", topic: "War / Conflict" },
+  { fragment: "sofrep", topic: "War / Conflict" },
+  { fragment: "naval news", topic: "War / Conflict" },
+  { fragment: "kyiv independent", topic: "War / Conflict" },
+  { fragment: "ukraine", topic: "War / Conflict" },
+];
 
 const TOPIC_KEYWORDS: TopicKeywords[] = [
   {
@@ -97,19 +221,31 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
   },
   {
     topic: "Sports",
+    // Only specific, unambiguous sports terms — no generic words like
+    // "game", "team", "win", "record", "final", "score", "injury" etc.
+    // This alone prevents false positives on climate/science articles.
     keywords: [
-      "sport", "sports", "football", "soccer", "basketball", "baseball",
+      // Sport names (unambiguous)
+      "football", "soccer", "basketball", "baseball",
       "tennis", "golf", "cricket", "rugby", "hockey", "formula 1", "f1",
-      "nascar", "motorsport", "athletics", "track", "marathon", "sprint",
+      "nascar", "motorsport", "marathon", "sprint",
       "swimming", "diving", "gymnastics", "boxing", "mma", "ufc", "wrestling",
-      "olympics", "olympic", "world cup", "championship", "league", "match",
-      "game", "team", "player", "coach", "manager", "transfer", "contract",
-      "score", "goal", "win", "loss", "draw", "victory", "defeat",
-      "premier league", "la liga", "bundesliga", "serie a", "nfl", "nba",
-      "mlb", "nhl", "pga", "wta", "atp", "fifa", "uefa", "stadium",
-      "tournament", "knockout", "semifinal", "final", "medal", "trophy",
-      "champion", "runner-up", "record", "record-breaking", "injury",
-      "fitness", "training", "workout", "doping", "salary", "superstar"
+      // Competitions & organisations (unambiguous)
+      "olympics", "olympic", "world cup", "premier league", "la liga",
+      "bundesliga", "serie a", "nfl", "nba", "mlb", "nhl", "pga", "wta",
+      "atp", "fifa", "uefa", "wimbledon", "super bowl", "champions league",
+      "europa league", "copa america", "euro 2024", "euro 2025",
+      // Venues & roles
+      "stadium", "matchday", "halftime", "full-time", "kick-off",
+      "doping", "hat-trick", "offside", "penalty kick", "free kick",
+      "slam dunk", "touchdown", "home run", "par", "birdie", "bogey",
+      // Sports-specific terms
+      "sport", "sports",
+      // Athlete competitions
+      "triathlon", "decathlon", "velodrome", "rowing", "sailing", "surfing",
+      "skateboarding", "snowboarding", "skiing", "biathlon", "judo",
+      "taekwondo", "fencing", "archery", "weightlifting", "shot put",
+      "discus throw", "high jump", "pole vault", "steeplechase"
     ],
   },
   {
@@ -124,30 +260,25 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
       // Movies & TV
       "movie", "film", "director", "oscar", "grammy", "emmy", "award",
       "red carpet", "premiere", "box office", "streaming", "netflix",
-      "disney", "hbo", "hulu", "amazon prime", "tv show", "series", 
+      "disney", "hbo", "hulu", "amazon prime", "tv show", "series",
       "reality tv", "binge", "season finale", "trailer", "casting",
       "blockbuster", "sequel", "franchise", "superhero", "marvel", "dc",
       "animation", "pixar", "dreamworks", "studio", "screenplay",
       // Music
-      "billboard", "chart", "hit single", "number one", "platinum",
+      "billboard chart", "hit single", "number one", "platinum",
       "record deal", "music video", "lyrics", "rapper", "pop star",
       "rock band", "country music", "hip hop", "r&b", "edm", "festival",
       "coachella", "glastonbury", "mtv", "vma", "bts", "taylor swift",
       "beyonce", "drake", "kanye", "rihanna", "ariana grande",
       // Pop culture & influencers
-      "influencer", "social media star", "youtube", "youtuber", 
-      "tiktok star", "tiktoker", "instagram", "viral", "trending",
-      "fashion", "model", "vogue", "runway", "designer", "met gala",
-      // Sports celebrities
-      "sports star", "athlete", "football", "basketball", "soccer",
-      "tennis", "golf", "olympics", "world cup", "championship",
-      "nba", "nfl", "mlb", "fifa", "wimbledon", "super bowl",
+      "influencer", "social media star", "youtuber",
+      "tiktoker", "viral video", "trending online",
+      "fashion week", "model", "vogue", "runway", "designer", "met gala",
       // Royalty
-      "royalty", "prince", "princess", "queen", "king", "meghan",
-      "harry", "royal family", "palace", "windsor", "buckingham",
-      // Entertainment sources
-      "tmz", "e! news", "entertainment tonight", "people magazine",
-      "page six", "variety", "hollywood reporter", "just jared"
+      "royalty", "princess", "royal family", "palace", "windsor", "buckingham",
+      // Entertainment sources (keep as multi-word to avoid single-word false positives)
+      "tmz", "entertainment tonight", "people magazine",
+      "page six", "variety magazine", "hollywood reporter", "just jared"
     ],
   },
   {
@@ -155,20 +286,32 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
     keywords: [
       "climate", "climate change", "global warming", "carbon", "emissions",
       "greenhouse", "co2", "renewable", "solar", "wind energy", "clean energy",
-      "fossil fuel", "oil", "coal", "natural gas", "pollution", "air quality",
-      "water quality", "deforestation", "forest", "amazon", "wildlife",
+      "fossil fuel", "oil spill", "coal", "natural gas", "pollution", "air quality",
+      "water quality", "deforestation", "forest", "amazon rainforest", "wildlife",
       "endangered", "species", "conservation", "biodiversity", "ecosystem",
       "ocean", "marine", "coral reef", "plastic", "recycling", "waste",
-      "sustainability", "sustainable", "green", "eco-friendly", "esg",
+      "sustainability", "sustainable", "eco-friendly", "esg",
       "weather", "storm", "hurricane", "tornado", "flood", "drought",
-      "wildfire", "earthquake", "volcano", "disaster", "emergency"
+      "wildfire", "earthquake", "volcano", "disaster", "emergency",
+      // Heat & temperature keywords (covers Mongabay-style articles)
+      "warmer", "warming", "heat wave", "heatwave", "temperature rising",
+      "temperature increase", "temperatures", "degrees celsius", "degrees fahrenheit",
+      "nights warmer", "summer heat", "extreme heat", "heat stress",
+      "monsoon", "rainfall", "precipitation", "water scarcity",
+      "deforestation", "reforestation", "afforestation", "carbon offset",
+      "net zero", "carbon neutral", "paris agreement", "ipcc",
+      "habitat loss", "invasive species", "migratory", "poaching",
+      "protected area", "national park", "nature reserve",
+      "methane", "nitrous oxide", "ozone", "acid rain", "smog",
+      "water table", "groundwater", "aquifer", "desertification",
+      "permafrost", "ice cap", "glacier", "sea level", "arctic", "antarctic"
     ],
   },
   {
     topic: "Other / Offbeat",
     keywords: [
-      "weird", "strange", "unusual", "bizarre", "quirky", "fun", "viral",
-      "trending", "meme", "internet culture", "lifestyle", "travel",
+      "weird", "strange", "unusual", "bizarre", "quirky", "viral",
+      "internet culture", "lifestyle", "travel",
       "food", "recipe", "restaurant", "dining", "culture", "art",
       "museum", "exhibition", "book", "novel", "author", "literature",
       "history", "historical", "archaeology", "ancient", "hobby",
@@ -177,16 +320,75 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
   },
 ];
 
-export function tagArticleTopics(title: string, summary?: string | null): string[] {
+// Topics that are "strong signals" — used in the normalise / override check
+const OVERRIDE_TOPIC_SIGNALS: Record<string, string[]> = {
+  "Environment / Climate": [
+    "climate", "environment", "conservation", "wildfire", "emissions",
+    "co2", "carbon", "warming", "warmer", "temperature", "biodiversity",
+    "ecosystem", "wildlife", "forest", "deforestation", "ocean", "flood",
+    "drought", "heatwave", "heat wave", "pollution", "renewable", "solar",
+    "sustainability", "glacier", "sea level", "arctic", "habitat",
+    "endangered", "species", "nature", "ecological"
+  ],
+  "Science & Health": [
+    "science", "scientific", "research", "study", "experiment", "discovery",
+    "laboratory", "scientist", "biology", "genetics", "dna", "physics",
+    "chemistry", "health", "medical", "vaccine", "virus", "bacteria",
+    "pandemic", "disease", "treatment", "clinical", "doctor", "hospital"
+  ],
+  "US Politics": [
+    "election", "congress", "senate", "president", "white house",
+    "republican", "democrat", "legislation", "vote", "ballot", "campaign",
+    "governor", "supreme court", "impeachment", "trump", "biden"
+  ],
+  "Finance & Markets": [
+    "stock", "market", "economy", "inflation", "interest rate", "recession",
+    "bank", "investment", "gdp", "earnings", "profit", "fiscal", "budget"
+  ],
+};
+
+/**
+ * Look up source profile bonus for a given source name.
+ * Returns the topic and a bonus score of +10 if a profile matches, else null.
+ */
+function getSourceProfileBonus(sourceName: string): { topic: Topic; bonus: number } | null {
+  const lower = sourceName.toLowerCase();
+  for (const profile of SOURCE_TOPIC_PROFILES) {
+    if (lower.includes(profile.fragment)) {
+      return { topic: profile.topic, bonus: 10 };
+    }
+  }
+  return null;
+}
+
+/**
+ * Count how many keywords from a signal list appear in text.
+ */
+function countSignalMatches(text: string, signals: string[]): number {
+  return signals.filter(kw => text.includes(kw.toLowerCase())).length;
+}
+
+/**
+ * Tag an article's topics based on keyword scoring + source profile.
+ *
+ * @param title       Article title
+ * @param summary     Article summary / description
+ * @param sourceName  Source name (used for source-profile bonuses)
+ * @returns           Array of 1–2 topic strings
+ */
+export function tagArticleTopics(
+  title: string,
+  summary?: string | null,
+  sourceName?: string | null
+): string[] {
   const text = `${title} ${summary || ""}`.toLowerCase();
-  
+
   // Count keyword matches for each topic
   const topicScores: Map<string, number> = new Map();
-  
-  for (const { topic, keywords } of TOPIC_KEYWORDS) {
+
+  for (const { topic, keywords, minMatches = 1 } of TOPIC_KEYWORDS) {
     let matchCount = 0;
     for (const keyword of keywords) {
-      // Use word boundary matching for short keywords to avoid false positives
       if (keyword.length <= 3) {
         const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
         if (regex.test(text)) {
@@ -196,8 +398,18 @@ export function tagArticleTopics(title: string, summary?: string | null): string
         matchCount++;
       }
     }
-    if (matchCount > 0) {
+    // Apply per-topic minimum match threshold
+    if (matchCount >= minMatches) {
       topicScores.set(topic, matchCount);
+    }
+  }
+
+  // Apply source profile bonus (overrides weak keyword matches)
+  if (sourceName) {
+    const profileMatch = getSourceProfileBonus(sourceName);
+    if (profileMatch) {
+      const current = topicScores.get(profileMatch.topic) ?? 0;
+      topicScores.set(profileMatch.topic, current + profileMatch.bonus);
     }
   }
 
@@ -206,22 +418,78 @@ export function tagArticleTopics(title: string, summary?: string | null): string
     return ["Other / Offbeat"];
   }
 
-  // Sort by score and take only the top topic(s)
-  const sortedTopics = Array.from(topicScores.entries())
-    .sort((a, b) => b[1] - a[1]);
-  
+  // Sort by score descending
+  const sortedTopics = Array.from(topicScores.entries()).sort((a, b) => b[1] - a[1]);
   const topScore = sortedTopics[0][1];
-  
+
   // Only include topics that have at least 50% of the top score's matches
-  // This ensures we only get the most relevant topics
   const threshold = Math.max(topScore * 0.5, 1);
-  
   const bestTopics = sortedTopics
     .filter(([_, score]) => score >= threshold)
-    .slice(0, 2) // Maximum 2 topics per article
-    .map(([topic]) => topic);
+    .slice(0, 2)
+    .map(([topic]) => topic as Topic);
 
-  return bestTopics;
+  // Run the normalisation / correction pass
+  const corrected = normalizeArticleCategory(bestTopics, text, sourceName);
+  return corrected;
+}
+
+/**
+ * Post-scoring correction layer.
+ *
+ * If the winning topic is "Sports" but the article text (or source profile)
+ * contains strong signals for another topic (≥2 matches), override to that topic.
+ * Logs the correction for debugging.
+ */
+export function normalizeArticleCategory(
+  topics: Topic[],
+  text: string,
+  sourceName?: string | null,
+  title?: string
+): Topic[] {
+  const winningTopic = topics[0];
+  if (!winningTopic) return ["Other / Offbeat"] as Topic[];
+
+  // Only intervene if the apparent winner is Sports
+  if (winningTopic !== "Sports") return topics;
+
+  // Check source profile — if source is clearly sports-dedicated, keep Sports
+  if (sourceName) {
+    const profile = getSourceProfileBonus(sourceName);
+    if (profile && profile.topic === "Sports") {
+      return topics;
+    }
+  }
+
+  // Check for strong signals in other high-priority topics
+  const candidateTopics: Array<{ topic: Topic; matches: number }> = [];
+  for (const [candidateTopic, signals] of Object.entries(OVERRIDE_TOPIC_SIGNALS)) {
+    const matchCount = countSignalMatches(text, signals);
+    if (matchCount >= 2) {
+      candidateTopics.push({ topic: candidateTopic as Topic, matches: matchCount });
+    }
+  }
+
+  if (candidateTopics.length === 0) return topics;
+
+  // Pick the override topic with the most matches
+  candidateTopics.sort((a, b) => b.matches - a.matches);
+  const override = candidateTopics[0];
+
+  const debugTitle = title || text.slice(0, 80);
+  console.log(
+    `[Category Correction] "${debugTitle}"\n` +
+    `  Original:  Sports\n` +
+    `  Corrected: ${override.topic}\n` +
+    `  Source:    ${sourceName || "unknown"}\n` +
+    `  Confidence: high\n` +
+    `  Reason:    ${override.matches} strong ${override.topic} signals in article text`
+  );
+
+  // Build corrected list: insert override topic first, keep any non-Sports from original
+  const kept = topics.filter(t => t !== "Sports");
+  const result = [override.topic, ...kept.filter(t => t !== override.topic)].slice(0, 2) as Topic[];
+  return result;
 }
 
 import { computeArticlePolarisation, PolarisationResult } from "./polarisationScorer";
@@ -236,9 +504,9 @@ export function generatePolarisationScore(
 
 export function mapCountryToRegion(country?: string | null): string {
   if (!country) return "Global";
-  
+
   const countryLower = country.toLowerCase();
-  
+
   const regionMap: Record<string, string> = {
     "us": "US",
     "usa": "US",

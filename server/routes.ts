@@ -833,27 +833,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/retag-articles", isAuthenticated, isAdmin, async (req, res) => {
     try {
       console.log("[Admin] Re-tagging all articles with improved topic logic...");
-      const { tagArticleTopics } = await import("./topicTagger");
-      
-      // Get all articles
+      const { tagArticleTopics, generatePolarisationScore } = await import("./topicTagger");
+
+      // Get all articles including sourceName for source-profile matching
       const allArticles = await db.select({
         id: articles.id,
         title: articles.title,
         summary: articles.summary,
+        sourceName: articles.sourceName,
       }).from(articles);
-      
+
       let updated = 0;
-      for (const article of allArticles) {
-        const newTopics = tagArticleTopics(article.title, article.summary);
-        await db.update(articles)
-          .set({ topics: newTopics })
-          .where(eq(articles.id, article.id));
-        updated++;
+      const BATCH = 200;
+      for (let i = 0; i < allArticles.length; i += BATCH) {
+        const batch = allArticles.slice(i, i + BATCH);
+        await Promise.all(batch.map(async (article) => {
+          const newTopics = tagArticleTopics(article.title, article.summary, article.sourceName);
+          const polarisationResult = generatePolarisationScore(article.title, article.summary, newTopics);
+          await db.update(articles)
+            .set({
+              topics: newTopics,
+              polarisationScore: polarisationResult.score,
+              polarisationReasons: polarisationResult.reasons,
+            })
+            .where(eq(articles.id, article.id));
+        }));
+        updated += batch.length;
+        if (i % 1000 === 0 && i > 0) {
+          console.log(`[Admin] Re-tagged ${updated}/${allArticles.length} articles...`);
+        }
       }
-      
+
       console.log(`[Admin] Re-tagged ${updated} articles`);
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: `Re-tagged ${updated} articles with improved topic logic`,
         articlesUpdated: updated
       });
