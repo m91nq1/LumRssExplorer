@@ -86,6 +86,7 @@ export default function History() {
       "Finance & Markets": "bg-green-500/20 text-green-300 border-green-500/30",
       "Crime & Justice": "bg-orange-500/20 text-orange-300 border-orange-500/30",
       "Science & Health": "bg-purple-500/20 text-purple-300 border-purple-500/30",
+      "Sports": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
       "Celebrity & Entertainment": "bg-pink-500/20 text-pink-300 border-pink-500/30",
       "Environment/Climate": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
     };

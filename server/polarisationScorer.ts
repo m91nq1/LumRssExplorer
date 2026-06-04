@@ -26,6 +26,7 @@ const TOPIC_POLARISATION_WEIGHTS: Record<string, number> = {
   "AI & Technology": 0.50,
   "Environment / Climate": 0.60,
   "Science & Health": 0.40,
+  "Sports": 0.30,
   "Celebrity & Entertainment": 0.35,
   "Other / Offbeat": 0.15,
 };

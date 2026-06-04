@@ -42,6 +42,9 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
     if (article.topics?.includes("Celebrity & Entertainment")) {
       return "Entertainment";
     }
+    if (article.topics?.includes("Sports")) {
+      return "Sports";
+    }
     if (article.topics?.includes("Science & Health")) {
       return "Health";
     }

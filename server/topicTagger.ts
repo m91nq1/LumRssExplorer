@@ -96,6 +96,23 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
     ],
   },
   {
+    topic: "Sports",
+    keywords: [
+      "sport", "sports", "football", "soccer", "basketball", "baseball",
+      "tennis", "golf", "cricket", "rugby", "hockey", "formula 1", "f1",
+      "nascar", "motorsport", "athletics", "track", "marathon", "sprint",
+      "swimming", "diving", "gymnastics", "boxing", "mma", "ufc", "wrestling",
+      "olympics", "olympic", "world cup", "championship", "league", "match",
+      "game", "team", "player", "coach", "manager", "transfer", "contract",
+      "score", "goal", "win", "loss", "draw", "victory", "defeat",
+      "premier league", "la liga", "bundesliga", "serie a", "nfl", "nba",
+      "mlb", "nhl", "pga", "wta", "atp", "fifa", "uefa", "stadium",
+      "tournament", "knockout", "semifinal", "final", "medal", "trophy",
+      "champion", "runner-up", "record", "record-breaking", "injury",
+      "fitness", "training", "workout", "doping", "salary", "superstar"
+    ],
+  },
+  {
     topic: "Celebrity & Entertainment",
     keywords: [
       // Celebrity gossip

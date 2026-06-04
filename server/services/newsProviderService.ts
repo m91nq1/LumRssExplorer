@@ -8,6 +8,7 @@ const topicKeywords: Record<string, string[]> = {
   'Finance & Markets': ['stock', 'market', 'economy', 'finance', 'trading', 'investment', 'banking', 'inflation'],
   'Crime & Justice': ['crime', 'court', 'police', 'trial', 'arrest', 'verdict', 'prison', 'lawsuit'],
   'Science & Health': ['science', 'health', 'medical', 'research', 'study', 'vaccine', 'disease', 'discovery'],
+  'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'match', 'team', 'player', 'goal', 'championship', 'tournament', 'olympics'],
   'Celebrity & Entertainment': ['celebrity', 'movie', 'music', 'entertainment', 'actor', 'singer', 'hollywood'],
   'Environment / Climate': ['climate', 'environment', 'carbon', 'emissions', 'renewable', 'pollution', 'sustainability'],
   'Other / Offbeat': ['unusual', 'weird', 'quirky', 'odd', 'strange', 'bizarre'],

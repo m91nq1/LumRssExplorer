@@ -26,6 +26,7 @@ export const TOPICS = [
   "Finance & Markets",
   "Crime & Justice",
   "Science & Health",
+  "Sports",
   "Celebrity & Entertainment",
   "Environment / Climate",
   "Other / Offbeat",
