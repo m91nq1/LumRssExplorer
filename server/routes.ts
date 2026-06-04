@@ -9,6 +9,7 @@ import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
+import { mapCountryToRegion } from "./topicTagger";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import { sendWelcomeEmail, sendLoginNotificationEmail } from "./services/emailService";
 import { extractArticleContent } from "./contentExtractor";
@@ -335,7 +336,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/feeds", isAdmin, async (req, res) => {
     try {
-      const validationResult = insertFeedSourceSchema.safeParse(req.body);
+      const bodyWithRegion = {
+        ...req.body,
+        region: req.body.region || mapCountryToRegion(req.body.country),
+      };
+      const validationResult = insertFeedSourceSchema.safeParse(bodyWithRegion);
       
       if (!validationResult.success) {
         return res.status(400).json({
@@ -354,7 +359,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/feeds/:id", isAdmin, async (req, res) => {
     try {
-      const feed = await storage.updateFeedSource(req.params.id, req.body);
+      const updateData = req.body;
+      if (updateData.country !== undefined && !updateData.region) {
+        updateData.region = mapCountryToRegion(updateData.country);
+      }
+      const feed = await storage.updateFeedSource(req.params.id, updateData);
       
       if (!feed) {
         return res.status(404).json({ error: "Feed not found" });

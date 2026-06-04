@@ -1,4 +1,4 @@
-import { SourceWithCount, TOPICS, REGIONS } from "@shared/schema";
+import { SourceWithCount, TOPICS } from "@shared/schema";
 import { SearchBox } from "./SearchBox";
 import { TimeFilter } from "./TimeFilter";
 import { SourceFilter } from "./SourceFilter";
@@ -13,6 +13,55 @@ import { useState } from "react";
 import { Link } from "wouter";
 
 type TimeFilterValue = "24h" | "7d" | "all";
+
+const REGION_GROUPS: Array<{
+  label: string | null;
+  items: Array<{ value: string; isCountry: boolean }>;
+}> = [
+  {
+    label: null,
+    items: [{ value: "Global", isCountry: false }],
+  },
+  {
+    label: "Americas",
+    items: [
+      { value: "US", isCountry: false },
+      { value: "Canada", isCountry: true },
+      { value: "Brazil", isCountry: true },
+    ],
+  },
+  {
+    label: "Europe",
+    items: [
+      { value: "Europe", isCountry: false },
+      { value: "UK", isCountry: true },
+    ],
+  },
+  {
+    label: "Asia-Pacific",
+    items: [
+      { value: "Asia-Pacific", isCountry: false },
+      { value: "India", isCountry: true },
+      { value: "Japan", isCountry: true },
+      { value: "Australia", isCountry: true },
+    ],
+  },
+  {
+    label: "Africa",
+    items: [
+      { value: "Africa", isCountry: false },
+      { value: "South Africa", isCountry: true },
+    ],
+  },
+  {
+    label: null,
+    items: [
+      { value: "Middle East", isCountry: false },
+      { value: "Russia", isCountry: false },
+      { value: "China", isCountry: false },
+    ],
+  },
+];
 
 interface SidebarProps {
   sources: SourceWithCount[];
@@ -145,24 +194,35 @@ export function Sidebar({
               <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${regionsOpen ? 'rotate-180' : ''}`} />
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
-              <div className="space-y-2">
-                {REGIONS.map((region) => (
-                  <div
-                    key={region}
-                    className="flex items-center space-x-2"
-                    data-testid={`filter-region-${region.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
-                  >
-                    <Checkbox
-                      id={`region-${region}`}
-                      checked={selectedRegions.includes(region)}
-                      onCheckedChange={() => onRegionToggle(region)}
-                    />
-                    <label
-                      htmlFor={`region-${region}`}
-                      className="text-sm cursor-pointer flex-1"
-                    >
-                      {region}
-                    </label>
+              <div className="space-y-3">
+                {REGION_GROUPS.map((group, idx) => (
+                  <div key={group.label ?? `standalone-${idx}`}>
+                    {group.label && (
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">
+                        {group.label}
+                      </p>
+                    )}
+                    <div className="space-y-1.5">
+                      {group.items.map(({ value, isCountry }) => (
+                        <div
+                          key={value}
+                          className={`flex items-center space-x-2 ${isCountry ? "pl-3" : ""}`}
+                          data-testid={`filter-region-${value.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                        >
+                          <Checkbox
+                            id={`region-${value}`}
+                            checked={selectedRegions.includes(value)}
+                            onCheckedChange={() => onRegionToggle(value)}
+                          />
+                          <label
+                            htmlFor={`region-${value}`}
+                            className={`text-sm cursor-pointer flex-1 ${isCountry ? "text-muted-foreground" : ""}`}
+                          >
+                            {value}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

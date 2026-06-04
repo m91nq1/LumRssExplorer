@@ -1100,15 +1100,21 @@ export default function FeedManagement() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                       <h3 className="font-medium truncate">{feed.name}</h3>
                       <Badge variant="secondary" className="text-xs">
                         {feed.category}
                       </Badge>
                       {feed.country && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs" data-testid={`badge-country-${feed.id}`}>
                           <Globe className="w-3 h-3 mr-1" />
                           {feed.country}
+                        </Badge>
+                      )}
+                      {feed.region && feed.region !== "Global" && (
+                        <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-500/40 dark:text-emerald-400" data-testid={`badge-region-${feed.id}`}>
+                          <MapPin className="w-3 h-3 mr-1" />
+                          {feed.region}
                         </Badge>
                       )}
                     </div>

@@ -283,6 +283,29 @@ export class ArticleStore {
       console.log(`Updated ${feedsUpdated} feed sources with region metadata`);
     }
 
+    // Backfill: recompute region from country for any feed whose stored region
+    // does not match what mapCountryToRegion(country) now returns.
+    // This fixes feeds created before country-level regions were introduced
+    // (e.g. India feeds that were previously stored as "Asia-Pacific").
+    const allSources = await storage.getFeedSources();
+    let regionsBackfilled = 0;
+    for (const source of allSources) {
+      if (source.country) {
+        const correctRegion = mapCountryToRegion(source.country);
+        if (source.region !== correctRegion) {
+          try {
+            await storage.updateFeedSource(source.id, { region: correctRegion });
+            regionsBackfilled++;
+          } catch (error) {
+            console.error(`Error backfilling region for feed ${source.name}:`, error);
+          }
+        }
+      }
+    }
+    if (regionsBackfilled > 0) {
+      console.log(`Backfilled region for ${regionsBackfilled} feed sources from country data`);
+    }
+
     this.initialized = true;
     await this.refresh();
   }

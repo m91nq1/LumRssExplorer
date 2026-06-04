@@ -38,13 +38,19 @@ export type Topic = typeof TOPICS[number];
 export const REGIONS = [
   "Global",
   "US",
+  "Canada",
+  "Brazil",
   "Europe",
   "UK",
   "Russia",
   "China",
   "Africa",
+  "South Africa",
   "Middle East",
   "Asia-Pacific",
+  "India",
+  "Japan",
+  "Australia",
 ] as const;
 
 export type Region = typeof REGIONS[number];
