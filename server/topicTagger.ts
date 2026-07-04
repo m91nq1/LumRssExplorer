@@ -90,6 +90,20 @@ const SOURCE_TOPIC_PROFILES: Array<{ fragment: string; topic: Topic; region?: st
   { fragment: "mayo clinic", topic: "Science & Health" },
   { fragment: "harvard health", topic: "Science & Health" },
   { fragment: "webmd", topic: "Science & Health" },
+  // Art sources
+  { fragment: "artforum", topic: "Art" },
+  { fragment: "artnews", topic: "Art" },
+  { fragment: "artsy", topic: "Art" },
+  { fragment: "frieze", topic: "Art" },
+  { fragment: "hyperallergic", topic: "Art" },
+  { fragment: "the art newspaper", topic: "Art" },
+  { fragment: "art newspaper", topic: "Art" },
+  { fragment: "artnet", topic: "Art" },
+  { fragment: "apollo magazine", topic: "Art" },
+  { fragment: "art daily", topic: "Art" },
+  { fragment: "architectural digest", topic: "Art" },
+  { fragment: "dezeen", topic: "Art" },
+  { fragment: "wallpaper", topic: "Art" },
   // Celebrity / Entertainment sources
   { fragment: "tmz", topic: "Celebrity & Entertainment" },
   { fragment: "people.com", topic: "Celebrity & Entertainment" },
@@ -310,12 +324,46 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
     ],
   },
   {
+    topic: "Art",
+    keywords: [
+      // Visual art
+      "painting", "sculpture", "artwork", "artist", "gallery", "museum",
+      "exhibition", "curator", "contemporary art", "modern art", "fine art",
+      "abstract", "portrait", "landscape painting", "watercolor", "oil painting",
+      "fresco", "mosaic", "ceramics", "pottery", "printmaking", "lithograph",
+      "engraving", "installation art", "performance art", "conceptual art",
+      "street art", "graffiti", "mural", "public art", "art fair",
+      "art auction", "sotheby", "christie", "art market", "masterpiece",
+      "renaissance", "baroque", "impressionism", "surrealism", "cubism",
+      "expressionism", "dadaism", "pop art", "minimalism", "abstract expressionism",
+      // Photography
+      "photography", "photographer", "photo essay", "photojournalism",
+      // Architecture & design
+      "architecture", "architect", "design award", "interior design",
+      "landscape design", "urban design", "graphic design",
+      // Craft & applied arts
+      "artisan", "craft", "handmade", "weaving", "textile art", "tapestry",
+      // Literature & poetry (distinct from Celebrity news)
+      "poetry", "poem", "poet", "literary fiction", "short story collection",
+      "debut novel", "booker prize", "pulitzer prize literature", "man booker",
+      // Theatre & opera (distinct from pop music)
+      "theatre", "theater", "opera", "ballet", "dance performance",
+      "broadway", "west end", "choreography", "stage design",
+      // Film as art (distinct from celebrity blockbusters)
+      "arthouse", "art house", "film festival", "cannes", "sundance",
+      "venice film festival", "berlin film festival", "bafta", "documentary film",
+      "cinematography", "auteur",
+      // Art institutions
+      "louvre", "moma", "tate", "guggenheim", "metropolitan museum",
+      "national gallery", "hermitage", "uffizi", "prado"
+    ],
+  },
+  {
     topic: "Other / Offbeat",
     keywords: [
       "weird", "strange", "unusual", "bizarre", "quirky", "viral",
       "internet culture", "lifestyle", "travel",
-      "food", "recipe", "restaurant", "dining", "culture", "art",
-      "museum", "exhibition", "book", "novel", "author", "literature",
+      "food", "recipe", "restaurant", "dining", "culture",
       "history", "historical", "archaeology", "ancient", "hobby",
       "gaming", "video game", "esports", "puzzle", "mystery"
     ],

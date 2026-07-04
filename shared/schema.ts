@@ -29,6 +29,7 @@ export const TOPICS = [
   "Sports",
   "Celebrity & Entertainment",
   "Environment / Climate",
+  "Art",
   "Other / Offbeat",
 ] as const;
 
