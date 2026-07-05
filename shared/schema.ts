@@ -19,18 +19,18 @@ export const sessions = pgTable(
 
 // Topic definitions for article classification
 export const TOPICS = [
-  "War / Conflict",
-  "US Politics",
-  "Europe Politics",
   "AI & Technology",
-  "Finance & Markets",
+  "Art",
+  "Celebrity & Entertainment",
   "Crime & Justice",
+  "Environment / Climate",
+  "Europe Politics",
+  "Finance & Markets",
+  "Other / Offbeat",
   "Science & Health",
   "Sports",
-  "Celebrity & Entertainment",
-  "Environment / Climate",
-  "Art",
-  "Other / Offbeat",
+  "US Politics",
+  "War / Conflict",
 ] as const;
 
 export type Topic = typeof TOPICS[number];
