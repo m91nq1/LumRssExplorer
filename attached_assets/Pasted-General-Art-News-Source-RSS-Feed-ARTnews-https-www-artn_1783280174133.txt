@@ -1,0 +1,62 @@
+General Art News
+Source	RSS Feed
+ARTnews	https://www.artnews.com/c/art-news/feed/
+ARTnews Market	https://www.artnews.com/c/art-news/market/feed/
+Artnet News	https://news.artnet.com/feed
+The Art Newspaper	https://www.theartnewspaper.com/rss
+Hyperallergic	https://hyperallergic.com/feed/
+ArtDaily	https://artdaily.com/rss.xml
+Artsy Editorial	https://www.artsy.net/rss/news
+Apollo Magazine	https://www.apollo-magazine.com/feed/
+Museums
+Museum	RSS Feed
+Metropolitan Museum of Art	https://www.metmuseum.org/rss/news.xml
+Tate	https://www.tate.org.uk/rss.xml
+Getty Museum	https://blogs.getty.edu/iris/feed/
+Smithsonian American Art Museum	https://americanart.si.edu/blog/feed
+Museum of Modern Art (MoMA)	https://www.moma.org/calendar/rss
+Victoria & Albert Museum	https://www.vam.ac.uk/blog/feed
+Contemporary Art
+Source	RSS Feed
+e-flux	https://www.e-flux.com/rss.xml
+Frieze	https://www.frieze.com/rss.xml
+Juxtapoz	https://www.juxtapoz.com/rss
+Designboom Art	https://www.designboom.com/art/feed/
+Colossal	https://www.thisiscolossal.com/feed/
+Hi-Fructose Magazine	https://hifructose.com/feed/
+Street Art & Graffiti
+Source	RSS Feed
+StreetArtNews	https://streetartnews.net/feed
+BSA (Brooklyn Street Art)	https://www.brooklynstreetart.com/feed/
+Graffiti.org	https://graffiti.org/feed
+Photography
+Source	RSS Feed
+LensCulture	https://www.lensculture.com/feed
+PetaPixel	https://petapixel.com/feed/
+Fstoppers	https://fstoppers.com/rss.xml
+DPReview	https://www.dpreview.com/feeds/news.xml
+Digital Art & Concept Art
+Source	RSS Feed
+ArtStation Magazine	https://magazine.artstation.com/feed/
+Creative Bloq	https://www.creativebloq.com/feed
+CG Channel	https://www.cgchannel.com/feed/
+80 Level	https://80.lv/feed
+Illustration & Design
+Source	RSS Feed
+It's Nice That	https://www.itsnicethat.com/rss
+Creative Review	https://www.creativereview.co.uk/feed/
+AIGA Eye on Design	https://eyeondesign.aiga.org/feed/
+Auction Houses & Art Market
+Source	RSS Feed
+Christie's News	https://www.christies.com/rss/news.xml
+Sotheby's	https://www.sothebys.com/en/rss.xml
+Bonhams Magazine	https://www.bonhams.com/feed/
+Public Domain & Classical Art
+Source	RSS Feed
+Public Domain Review	https://publicdomainreview.org/feed/
+Google Arts & Culture Blog	https://blog.google/rss/
+South African Art
+Source	RSS Feed
+Artthrob	https://artthrob.co.za/feed/
+Creative Feel	https://creativefeel.co.za/feed/
+Latitudes Online	https://latitudes.co.za/feed/
