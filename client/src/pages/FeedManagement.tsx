@@ -26,7 +26,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag, BarChart2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag, BarChart2, RefreshCw, TrendingUp, TrendingDown, Minus, Camera } from "lucide-react";
 import { Link } from "wouter";
 
 interface FeedsResponse {
@@ -64,6 +64,19 @@ interface TopicStatsResponse {
   untaggedCount: number;
   totalArticles: number;
   generatedAt: string;
+}
+
+interface TopicSnapshot {
+  id: number;
+  snapshotDate: string;
+  distribution: TopicStat[];
+  untaggedCount: number;
+  totalArticles: number;
+  createdAt: string;
+}
+
+interface TopicSnapshotsResponse {
+  snapshots: TopicSnapshot[];
 }
 
 const providerDescriptions: Record<string, string> = {
@@ -161,6 +174,17 @@ export default function FeedManagement() {
     staleTime: 60 * 1000,
   });
 
+  const { data: snapshotsData, refetch: refetchSnapshots } = useQuery<TopicSnapshotsResponse>({
+    queryKey: ["/api/admin/topic-snapshots", supabaseId],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/topic-snapshots?supabaseId=${supabaseId}`);
+      if (!response.ok) throw new Error("Failed to fetch snapshots");
+      return response.json();
+    },
+    enabled: isAdmin && !!supabaseId,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const adminFetch = async (url: string, options: RequestInit = {}) => {
     const separator = url.includes('?') ? '&' : '?';
     const fullUrl = `${url}${separator}supabaseId=${supabaseId}`;
@@ -173,6 +197,35 @@ export default function FeedManagement() {
     });
     if (!response.ok) throw new Error('Request failed');
     return response;
+  };
+
+  const takeSnapshotMutation = useMutation({
+    mutationFn: () =>
+      adminFetch("/api/admin/topic-snapshots/take", { method: "POST" }).then((r) => r.json()),
+    onSuccess: () => {
+      refetchSnapshots();
+      toast({ title: "Snapshot taken", description: "Today's topic distribution has been saved." });
+    },
+    onError: () => {
+      toast({ title: "Snapshot failed", description: "Could not save snapshot. Please try again.", variant: "destructive" });
+    },
+  });
+
+  // Compute delta for a topic: current % minus the nearest snapshot >= 7 days ago
+  const getTopicDelta = (topic: string, currentPct: number): number | null => {
+    if (!snapshotsData?.snapshots?.length) return null;
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    // Find the snapshot closest to 7 days ago (but at least 7 days old)
+    const candidates = snapshotsData.snapshots
+      .filter(s => new Date(s.snapshotDate) <= sevenDaysAgo)
+      .sort((a, b) => b.snapshotDate.localeCompare(a.snapshotDate)); // newest-first among old ones
+    if (!candidates.length) return null;
+    const baseline = candidates[0];
+    const baselineStat = baseline.distribution.find(d => d.topic === topic);
+    if (!baselineStat) return null;
+    return Math.round((currentPct - baselineStat.percentage) * 10) / 10;
   };
 
   const retagArticlesMutation = useMutation({
@@ -629,6 +682,16 @@ export default function FeedManagement() {
               <Button
                 variant="outline"
                 size="default"
+                onClick={() => takeSnapshotMutation.mutate()}
+                disabled={takeSnapshotMutation.isPending}
+                data-testid="button-take-snapshot"
+              >
+                <Camera className={`w-4 h-4 mr-2 ${takeSnapshotMutation.isPending ? "animate-pulse" : ""}`} />
+                {takeSnapshotMutation.isPending ? "Saving…" : "Take Snapshot"}
+              </Button>
+              <Button
+                variant="outline"
+                size="default"
                 onClick={() => refetchTopicStats()}
                 disabled={topicStatsFetching || retagArticlesMutation.isPending}
                 data-testid="button-refresh-topic-stats"
@@ -651,6 +714,10 @@ export default function FeedManagement() {
                 {topicStatsData.distribution.map((stat) => {
                   const maxCount = Math.max(...topicStatsData.distribution.map(s => s.count), 1);
                   const barWidth = Math.round((stat.count / maxCount) * 100);
+                  const delta = getTopicDelta(stat.topic, stat.percentage);
+                  const hasDelta = delta !== null;
+                  const isUp = hasDelta && delta > 0.05;
+                  const isDown = hasDelta && delta < -0.05;
                   return (
                     <Card key={stat.topic} className="p-4" data-testid={`card-topic-${stat.topic.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`}>
                       <div className="flex items-start justify-between gap-2 mb-2">
@@ -665,7 +732,19 @@ export default function FeedManagement() {
                           style={{ width: `${barWidth}%` }}
                         />
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1.5">{stat.percentage}% of total</p>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <p className="text-xs text-muted-foreground">{stat.percentage}% of total</p>
+                        {hasDelta && (
+                          <span
+                            className={`flex items-center gap-0.5 text-xs font-medium tabular-nums ${isUp ? "text-red-400" : isDown ? "text-emerald-400" : "text-muted-foreground"}`}
+                            title="Change vs 7 days ago"
+                            data-testid={`delta-topic-${stat.topic.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`}
+                          >
+                            {isUp ? <TrendingUp className="w-3 h-3" /> : isDown ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                            {isUp ? "+" : ""}{delta}%
+                          </span>
+                        )}
+                      </div>
                     </Card>
                   );
                 })}
@@ -691,6 +770,9 @@ export default function FeedManagement() {
               <p className="text-xs text-muted-foreground" data-testid="text-topic-stats-footer">
                 {topicStatsData.totalArticles.toLocaleString()} articles total &middot; last computed{" "}
                 {new Date(topicStatsData.generatedAt).toLocaleTimeString()}
+                {snapshotsData?.snapshots?.length
+                  ? ` · ${snapshotsData.snapshots.length} snapshot${snapshotsData.snapshots.length === 1 ? "" : "s"} on record`
+                  : " · no trend data yet — click Take Snapshot to start"}
               </p>
             </>
           ) : (

@@ -303,6 +303,25 @@ export const insertNewsProviderSchema = createInsertSchema(newsProviders).omit({
 export type InsertNewsProvider = z.infer<typeof insertNewsProviderSchema>;
 export type NewsProvider = typeof newsProviders.$inferSelect;
 
+// Topic Snapshots table (daily distribution snapshots for trend tracking)
+export const topicSnapshots = pgTable("topic_snapshots", {
+  id: serial("id").primaryKey(),
+  snapshotDate: text("snapshot_date").notNull().unique(), // YYYY-MM-DD, one row per day
+  distribution: jsonb("distribution").notNull(), // Array of { topic, count, percentage }
+  untaggedCount: integer("untagged_count").notNull().default(0),
+  totalArticles: integer("total_articles").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  index("topic_snapshots_date_idx").on(table.snapshotDate),
+]);
+
+export const insertTopicSnapshotSchema = createInsertSchema(topicSnapshots).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertTopicSnapshot = z.infer<typeof insertTopicSnapshotSchema>;
+export type TopicSnapshot = typeof topicSnapshots.$inferSelect;
+
 // ==================== ZOD SCHEMAS FOR API ====================
 
 // Source with Article Count (API response)

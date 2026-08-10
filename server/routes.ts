@@ -4,15 +4,78 @@ import { articleStore } from "./articleStore";
 import { storage } from "./storage";
 import { db } from "./db";
 import { eq, sql } from "drizzle-orm";
-import { articles, articleQuerySchema, insertFeedSourceSchema, TOPICS } from "@shared/schema";
+import { articles, articleQuerySchema, insertFeedSourceSchema, TOPICS, topicSnapshots } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, validateApiKey } from "./summaryService";
 import { mapCountryToRegion } from "./topicTagger";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
+import cron from "node-cron";
 import { sendWelcomeEmail, sendLoginNotificationEmail } from "./services/emailService";
 import { extractArticleContent } from "./contentExtractor";
+
+// ==================== TOPIC SNAPSHOT HELPERS ====================
+
+async function computeTopicDistribution() {
+  const rows = await db.execute(
+    sql`SELECT topic, COUNT(*) as count
+        FROM (
+          SELECT unnest(topics) AS topic FROM ${articles}
+        ) sub
+        WHERE topic IS NOT NULL AND topic != ''
+        GROUP BY topic`
+  );
+  const countMap: Record<string, number> = {};
+  for (const row of rows.rows as Array<{ topic: string; count: string }>) {
+    countMap[row.topic] = parseInt(row.count, 10);
+  }
+  const untaggedRows = await db.execute(
+    sql`SELECT COUNT(*) as count FROM ${articles}
+        WHERE topics IS NULL OR array_length(topics, 1) IS NULL OR array_length(topics, 1) = 0`
+  );
+  const untaggedCount = parseInt((untaggedRows.rows[0] as any)?.count || "0", 10);
+  const totalRows = await db.execute(sql`SELECT COUNT(*) as count FROM ${articles}`);
+  const totalCount = parseInt((totalRows.rows[0] as any)?.count || "0", 10);
+  const distribution = TOPICS.map((topic) => ({
+    topic,
+    count: countMap[topic] || 0,
+    percentage: totalCount > 0 ? Math.round(((countMap[topic] || 0) / totalCount) * 1000) / 10 : 0,
+  }));
+  return { distribution, untaggedCount, totalArticles: totalCount };
+}
+
+async function takeTopicSnapshot() {
+  const today = new Date().toISOString().slice(0, 10);
+  const { distribution, untaggedCount, totalArticles } = await computeTopicDistribution();
+  // Upsert: one snapshot per day — overwrite if already taken today
+  await db.execute(
+    sql`INSERT INTO topic_snapshots (snapshot_date, distribution, untagged_count, total_articles)
+        VALUES (${today}, ${JSON.stringify(distribution)}::jsonb, ${untaggedCount}, ${totalArticles})
+        ON CONFLICT (snapshot_date) DO UPDATE
+          SET distribution   = EXCLUDED.distribution,
+              untagged_count = EXCLUDED.untagged_count,
+              total_articles = EXCLUDED.total_articles,
+              created_at     = NOW()`
+  );
+  console.log(`[TopicSnapshot] Snapshot taken for ${today} (${totalArticles} articles)`);
+}
+
+let snapshotSchedulerStarted = false;
+function startTopicSnapshotScheduler() {
+  if (snapshotSchedulerStarted) return;
+  // Run nightly at 00:05
+  cron.schedule("5 0 * * *", async () => {
+    console.log("[TopicSnapshot] Running nightly snapshot...");
+    try {
+      await takeTopicSnapshot();
+    } catch (err) {
+      console.error("[TopicSnapshot] Failed to take snapshot:", err);
+    }
+  });
+  snapshotSchedulerStarted = true;
+  console.log("[TopicSnapshot] Nightly snapshot scheduler started (00:05 daily)");
+}
 
 // Admin email addresses from environment variable (comma-separated)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com,8468bbr9@gmail.com")
@@ -83,6 +146,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Start the behavior-based digest scheduler (every 2 days)
   startDigestScheduler();
+
+  // ==================== TOPIC SNAPSHOT SCHEDULER ====================
+  // Guard against duplicate registration on hot-reload
+  startTopicSnapshotScheduler();
 
   await setupAuth(app);
 
@@ -885,6 +952,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching topic stats:", error);
       res.status(500).json({ error: "Failed to fetch topic stats" });
+    }
+  });
+
+  // ==================== ADMIN: TOPIC SNAPSHOTS ====================
+  // GET recent snapshots (last 30 days)
+  app.get("/api/admin/topic-snapshots", isAdmin, async (req, res) => {
+    try {
+      const rows = await db.execute(
+        sql`SELECT id, snapshot_date, distribution, untagged_count, total_articles, created_at
+            FROM topic_snapshots
+            ORDER BY snapshot_date DESC
+            LIMIT 30`
+      );
+      res.json({
+        snapshots: (rows.rows as any[]).map(r => ({
+          id: r.id,
+          snapshotDate: r.snapshot_date,
+          distribution: r.distribution,
+          untaggedCount: r.untagged_count,
+          totalArticles: r.total_articles,
+          createdAt: r.created_at,
+        })),
+      });
+    } catch (error) {
+      console.error("Error fetching topic snapshots:", error);
+      res.status(500).json({ error: "Failed to fetch topic snapshots" });
+    }
+  });
+
+  // POST: manually take a snapshot now
+  app.post("/api/admin/topic-snapshots/take", isAdmin, async (req, res) => {
+    try {
+      await takeTopicSnapshot();
+      res.json({ success: true, message: "Snapshot taken successfully" });
+    } catch (error) {
+      console.error("Error taking topic snapshot:", error);
+      res.status(500).json({ error: "Failed to take snapshot" });
     }
   });
 
