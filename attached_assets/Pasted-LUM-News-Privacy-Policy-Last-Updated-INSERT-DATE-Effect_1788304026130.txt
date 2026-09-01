@@ -1,0 +1,1426 @@
+LUM News Privacy Policy
+
+Last Updated: [INSERT DATE]
+Effective Date: [INSERT DATE]
+
+1. Introduction
+
+Welcome to LUM News ("LUM News", "LUM", "we", "us", or "our").
+
+LUM News is an AI-assisted global news aggregation, discovery, analysis, and personalization platform designed to help users discover and understand news from multiple publishers, regions, topics, and perspectives.
+
+LUM News may collect, organize, classify, summarize, analyze, and present information obtained from third-party news publishers, news APIs, RSS feeds, public sources, and other permitted data sources.
+
+We take privacy seriously. This Privacy Policy explains:
+
+what personal information we collect;
+how and why we collect and use it;
+how we use artificial intelligence and automated processing;
+how we use cookies and similar technologies;
+when we share information with third parties;
+how long we retain information;
+how we protect information;
+how international data transfers may occur;
+your privacy rights and choices;
+how you can contact us about privacy matters.
+
+This Privacy Policy applies to the LUM News website, applications, services, APIs, newsletters, email communications, and other services that link to or reference this Privacy Policy (collectively, the "Service").
+
+By using LUM News, you acknowledge that you have read this Privacy Policy.
+
+Where applicable, LUM News processes personal information in accordance with the Protection of Personal Information Act 4 of 2013 ("POPIA") and other applicable data protection and privacy laws.
+
+If you are located outside South Africa, additional privacy laws may apply to the processing of your personal information depending on your location, residency, and the nature of our activities.
+
+2. Who We Are
+
+The Service is operated by:
+
+Legal/Operating Entity: [INSERT LEGAL ENTITY NAME]
+Trading Name: LUM News
+Website: [INSERT PRODUCTION WEBSITE]
+Privacy Contact: privacy@lumnews.app
+Legal Contact: legal@lumnews.app
+Information Officer: [INSERT NAME/TITLE OR "TO BE DESIGNATED"]
+Business Address: [INSERT BUSINESS ADDRESS]
+Country: [INSERT COUNTRY]
+
+If LUM News is operated by an individual rather than a registered company, the operator information should be accurately identified here.
+
+Do not replace these fields with invented information.
+
+3. Scope of This Privacy Policy
+
+This Privacy Policy applies to information collected through:
+
+the LUM News website;
+LUM News user accounts;
+LUM News mobile or desktop applications, if applicable;
+newsletters and email digests;
+alerts and notifications;
+saved stories and bookmarks;
+personalization features;
+search and discovery features;
+customer support;
+analytics and error-reporting systems;
+other LUM News products or services that link to this Privacy Policy.
+
+This Privacy Policy does not govern websites, applications, publishers, advertisers, APIs, or other services operated independently by third parties.
+
+When you click an article or external link and leave LUM News, the privacy practices of the destination website or publisher may apply.
+
+4. What Information We Collect
+
+We collect information necessary to operate, secure, improve, and personalize LUM News.
+
+The information we collect depends on how you interact with the Service.
+
+4.1 Account Information
+
+If you create an account, we may collect:
+
+email address;
+display name;
+username, where applicable;
+password or authentication credentials;
+account creation date;
+account status;
+profile information that you voluntarily provide;
+account preferences;
+communication preferences.
+
+Passwords should be stored using appropriate one-way cryptographic password hashing and should not be stored in plaintext.
+
+LUM News personnel should not have access to users' plaintext passwords.
+
+5. Authentication Information
+
+Depending on the authentication methods offered by LUM News, we may process information associated with:
+
+email/password authentication;
+password-reset requests;
+email verification;
+authentication tokens;
+session identifiers;
+login timestamps;
+account-security events;
+OAuth or social-login identifiers, if supported.
+
+If third-party authentication providers are offered, the information received from those providers will depend on the permissions and information-sharing configuration associated with the authentication method.
+
+6. Usage and Technical Information
+
+When you use LUM News, we may automatically collect certain technical and usage information.
+
+This may include:
+
+IP address;
+approximate geographic location derived from IP address;
+browser type;
+operating system;
+device type;
+screen characteristics;
+language preferences;
+timezone;
+referring URL;
+pages visited;
+features used;
+buttons or links interacted with;
+search queries entered into LUM News;
+filters selected;
+articles viewed;
+articles clicked;
+articles bookmarked;
+stories saved;
+time and date of interactions;
+session information;
+error information;
+performance information;
+security-related events.
+
+We use this information primarily to operate, secure, troubleshoot, analyze, and improve the Service.
+
+7. Approximate Location Information
+
+LUM News may process approximate location information derived from an IP address.
+
+We may use approximate location information to:
+
+provide regional news;
+personalize regional content;
+determine relevant editions;
+improve localization;
+detect suspicious activity;
+understand aggregate usage patterns.
+
+LUM News does not intentionally collect precise GPS location information unless a feature explicitly requests it and you provide permission.
+
+We do not represent IP-derived location as precise physical location.
+
+8. News and Content Preferences
+
+LUM News may process information about your preferences and interactions, including:
+
+preferred topics;
+selected categories;
+preferred countries or regions;
+language preferences;
+followed topics;
+followed sources, if supported;
+bookmarked stories;
+saved articles;
+dismissed stories;
+reading history;
+alert preferences;
+email-digest preferences;
+personalization settings.
+
+We may use these preferences to customize your LUM News experience.
+
+9. Search Queries and Interactions
+
+When you use search, filtering, discovery, or similar features, LUM News may process the information necessary to provide those features.
+
+This may include:
+
+search terms;
+selected filters;
+selected dates;
+selected categories;
+selected regions;
+clicked search results;
+interaction history.
+
+Search queries may be retained for a limited period for security, diagnostics, analytics, personalization, or service improvement, subject to applicable law and our retention practices.
+
+Where practical, we may aggregate or anonymize analytics information rather than retaining identifiable search histories indefinitely.
+
+10. Saved Stories and Bookmarks
+
+If LUM News allows you to save or bookmark stories, we may store:
+
+the relevant story identifier;
+the publisher/source;
+the article URL;
+the date saved;
+folders or categories you create;
+notes or labels you voluntarily add, if supported.
+
+Bookmarks are associated with your account so that they can be synchronized across supported devices.
+
+You may delete bookmarks through the Service where that functionality is available.
+
+11. Email and Communications
+
+If you provide your email address, we may use it to:
+
+create and maintain your account;
+verify your account;
+send password-reset messages;
+provide important service notices;
+send security notifications;
+respond to support requests;
+send newsletters;
+send news digests;
+send alerts that you have requested;
+communicate changes to the Service or legal documents;
+communicate other information where permitted by applicable law.
+
+You may unsubscribe from promotional or optional communications using the unsubscribe mechanism included in the relevant communication or through your account settings where available.
+
+Certain operational or transactional emails may still be sent when necessary to operate your account or provide requested services.
+
+12. Information You Provide to Customer Support
+
+If you contact LUM News, we may collect:
+
+your name;
+email address;
+account information;
+the contents of your communication;
+attachments you voluntarily provide;
+technical information necessary to investigate the issue;
+information about the problem you reported.
+
+We use this information to respond to your request, troubleshoot problems, improve the Service, and maintain security.
+
+Please do not send passwords, authentication tokens, payment-card numbers, or other unnecessary sensitive information through customer-support channels.
+
+13. News Content and Third-Party Sources
+
+LUM News aggregates and organizes news information from third-party sources, which may include:
+
+RSS feeds;
+news APIs;
+licensed feeds;
+publisher-provided information;
+public sources;
+permitted third-party data providers;
+other sources that LUM News is authorized to access.
+
+Examples of news-data providers that may be used by LUM News include:
+
+NewsAPI;
+NewsData;
+Mediastack;
+other news APIs or RSS providers that may be added in the future.
+
+The exact providers used by the Service may change.
+
+Third-party publishers generally retain ownership of their original articles, photographs, videos, trademarks, logos, and other copyrighted materials.
+
+LUM News does not claim ownership of third-party publisher content merely because that content is displayed, indexed, linked, classified, or summarized through the Service.
+
+Where appropriate, LUM News attempts to identify the original publisher and provide a link to the original source.
+
+14. Information Obtained From News Sources
+
+News content displayed through LUM News may contain information such as:
+
+article titles;
+descriptions;
+publication dates;
+authors;
+publisher names;
+article URLs;
+categories;
+tags;
+images;
+thumbnails;
+RSS metadata;
+source identifiers;
+article content, where permitted;
+other metadata provided by the source.
+
+This information may be processed to:
+
+identify individual stories;
+remove duplicates;
+group related stories;
+classify topics;
+identify locations;
+identify entities;
+generate summaries;
+analyze sentiment;
+generate search indexes;
+personalize news recommendations;
+display source attribution.
+
+LUM News does not represent third-party news content as original LUM News reporting unless explicitly identified as such.
+
+15. Copyright and Publisher Rights
+
+LUM News respects the intellectual-property rights of publishers, journalists, photographers, creators, and other rights holders.
+
+The presence of an article, image, headline, or other material on the Internet does not necessarily mean that it is free to reproduce, modify, or redistribute.
+
+Accordingly, LUM News seeks to use third-party content in accordance with:
+
+applicable copyright law;
+applicable database rights;
+applicable contractual restrictions;
+applicable API terms;
+applicable RSS-feed terms;
+publisher permissions;
+licensing agreements;
+other applicable restrictions.
+
+Where appropriate, LUM News will provide attribution and a link to the original source.
+
+If a rights holder believes that material displayed through LUM News infringes their rights, they may contact:
+
+Copyright/Content Contact: [INSERT EMAIL]
+
+with sufficient information to identify the relevant material and the nature of the concern.
+
+LUM News may investigate and, where appropriate, remove, modify, disable, or stop processing the relevant material.
+
+16. Artificial Intelligence and Automated Processing
+
+LUM News uses artificial intelligence ("AI") and automated systems to provide certain features.
+
+AI and automated processing may be used for:
+
+article summarization;
+story clustering;
+duplicate detection;
+topic classification;
+category assignment;
+entity extraction;
+location extraction;
+sentiment analysis;
+language detection;
+translation, where offered;
+personalized recommendations;
+search enhancement;
+trend detection;
+content organization;
+moderation and safety systems;
+quality-control checks;
+other automated newsroom and discovery functions.
+
+AI-generated information may be created from third-party news content and metadata.
+
+17. AI-Generated Summaries
+
+LUM News may generate summaries of articles or news events using automated AI systems.
+
+AI summaries are intended to help users understand the general subject of an article more quickly.
+
+They are not guaranteed to be perfectly accurate, complete, unbiased, current, or representative of every detail contained in the original article.
+
+AI systems can:
+
+misunderstand context;
+omit important details;
+incorrectly combine information;
+misinterpret statements;
+produce inaccurate summaries;
+incorrectly classify sentiment;
+make errors when identifying entities;
+misunderstand sarcasm or nuance;
+incorrectly interpret developing events.
+
+For important, sensitive, controversial, legal, medical, financial, or safety-related information, users should consult the original source and other reliable sources.
+
+LUM News should provide an accessible link to the original article or source where available.
+
+18. AI Does Not Replace the Original Source
+
+An AI-generated LUM News summary should not be treated as the original publisher's article.
+
+Where an AI summary is presented, LUM News should distinguish between:
+
+Original source information
+and
+AI-generated or AI-assisted information.
+
+Where technically feasible, the interface may display labels such as:
+
+"AI Summary";
+"AI-generated summary";
+"AI-assisted";
+"Generated by AI";
+"Source";
+"Original article."
+19. AI Training and User Data
+
+LUM News does not intentionally use users' private account information to train general-purpose AI models unless this is specifically disclosed and permitted under applicable law.
+
+Unless expressly stated otherwise, information such as:
+
+passwords;
+authentication credentials;
+private account information;
+private support communications;
+private saved content;
+private preferences;
+
+is not intended to be submitted to third-party AI providers for general model training.
+
+Where third-party AI providers are used to process information on behalf of LUM News, LUM News will seek to configure those services appropriately and in accordance with applicable contractual and privacy requirements.
+
+Important implementation requirement: LUM News must only publish this statement if its actual AI providers and configuration support it.
+
+20. AI Provider Processing
+
+LUM News may use third-party AI providers to perform automated processing.
+
+Depending on the implementation, information sent to AI providers may include:
+
+article titles;
+article descriptions;
+permitted article text;
+article metadata;
+source names;
+publication dates;
+URLs;
+language;
+topic information;
+other information necessary to generate the requested output.
+
+LUM News should minimize the amount of personal information included in AI requests.
+
+User account information should not be sent to an AI provider unless it is necessary for a specific feature and such processing is appropriately disclosed.
+
+The identity of AI providers may change as the Service evolves.
+
+Where appropriate, LUM News will maintain an up-to-date list of material third-party processors or service providers.
+
+21. AI Provenance and Audit Information
+
+To maintain the integrity of AI-assisted journalism and content processing, LUM News may retain technical provenance information associated with generated content.
+
+This may include:
+
+source/article identifier;
+original source URL;
+publisher;
+publication date;
+retrieval timestamp;
+processing timestamp;
+AI provider;
+AI model or model version, where available;
+prompt or processing-template version;
+generated-summary version;
+source-content hash or identifier;
+generated-output identifier;
+correction status;
+review status;
+processing pipeline version.
+
+This information may be used to:
+
+investigate incorrect summaries;
+reproduce or diagnose processing problems;
+identify affected stories;
+correct inaccurate AI output;
+maintain system integrity;
+detect abuse;
+investigate security incidents.
+22. AI Corrections
+
+LUM News may provide mechanisms for reporting inaccurate, misleading, incomplete, or incorrectly attributed AI-generated information.
+
+If you believe an AI-generated summary is materially inaccurate, you may report it through:
+
+AI/content corrections: [INSERT URL OR EMAIL]
+
+When appropriate, LUM News may:
+
+correct the summary;
+regenerate the summary;
+remove the summary;
+temporarily disable the story;
+update source information;
+add a correction notice;
+investigate the underlying processing issue.
+
+The existence of a correction mechanism does not guarantee that every report will result in a correction.
+
+23. Breaking News and Developing Events
+
+News events can change rapidly.
+
+LUM News may process information before all facts surrounding an event are known.
+
+A story may therefore:
+
+change after publication;
+contain preliminary information;
+be updated by its original publisher;
+be contradicted by later reporting;
+be summarized incorrectly by an automated system.
+
+LUM News may update or reprocess stories as new source information becomes available.
+
+Users should consult original publishers and multiple reliable sources when making decisions based on breaking or developing events.
+
+24. Personalization and Recommendations
+
+LUM News may use information about your interactions and preferences to personalize your experience.
+
+Personalization may consider:
+
+topics you select;
+regions you follow;
+categories you read;
+stories you save;
+stories you click;
+searches;
+alerts;
+reading patterns;
+content you dismiss;
+other interactions with the Service.
+
+The purpose of personalization is to make the Service more relevant and useful.
+
+Where available, users may control personalization through account settings.
+
+25. Profiling and Inferences
+
+LUM News may create limited inferences from your interactions with the Service.
+
+For example, the system may infer that a user is interested in:
+
+technology;
+sports;
+business;
+science;
+specific regions;
+particular topics.
+
+These inferences may be used for personalization and recommendation purposes.
+
+LUM News should avoid creating or using sensitive personal profiles unless there is a lawful basis and an appropriate necessity for doing so.
+
+LUM News does not intentionally use personalization systems to make decisions about a person's employment, creditworthiness, insurance eligibility, healthcare, education eligibility, or other similarly significant matters.
+
+26. Cookies and Similar Technologies
+
+LUM News may use cookies, local storage, session technologies, pixels, SDKs, and similar technologies.
+
+These technologies may be used for:
+
+Essential functionality
+authentication;
+account sessions;
+security;
+remembering settings;
+preventing abuse.
+Preferences
+language;
+region;
+interface preferences;
+selected topics;
+other settings.
+Analytics
+understanding how users interact with the Service;
+identifying errors;
+measuring performance;
+improving features.
+
+Where required by applicable law, LUM News will obtain appropriate consent before using non-essential cookies or similar technologies.
+
+27. Managing Cookies
+
+Most modern browsers allow users to:
+
+block cookies;
+delete cookies;
+restrict cookies;
+receive notifications when cookies are used.
+
+Disabling essential cookies may cause some parts of LUM News to stop functioning correctly.
+
+Where required, LUM News may provide an in-service cookie-preference mechanism.
+
+28. Analytics and Error Monitoring
+
+LUM News may use analytics and error-monitoring providers to understand:
+
+service performance;
+crashes;
+errors;
+page performance;
+feature usage;
+aggregated usage patterns;
+technical problems.
+
+Examples may include analytics or error-monitoring providers selected by LUM News from time to time.
+
+The actual providers used must be identified in LUM News's current vendor inventory where appropriate.
+
+LUM News should configure analytics systems to minimize unnecessary collection of personal information.
+
+29. Third-Party Service Providers
+
+LUM News relies on third-party service providers to operate certain parts of the Service.
+
+These may include providers for:
+
+database hosting;
+authentication;
+cloud hosting;
+email delivery;
+AI processing;
+analytics;
+error monitoring;
+news APIs;
+RSS processing;
+infrastructure;
+security;
+backups;
+customer support.
+
+Examples of services previously contemplated for LUM News include:
+
+Supabase for database/authentication-related infrastructure;
+Resend for transactional or newsletter email delivery;
+NewsAPI, NewsData, and Mediastack for news data;
+cloud/hosting providers;
+third-party AI providers;
+analytics and error-monitoring services.
+
+The actual production vendor list must match the systems deployed by LUM News.
+
+LUM News should not claim that a vendor is used if it is not actually used.
+
+30. Third-Party Service Provider Data Minimization
+
+Where LUM News uses third-party service providers, we seek to provide only the information reasonably necessary for the provider to perform the relevant service.
+
+For example:
+
+an email provider may receive your email address and email-delivery information;
+a database provider may store account and application data;
+an AI provider may receive article information required for summarization;
+an analytics provider may receive technical or interaction information;
+a news API provider may receive API requests from LUM News infrastructure.
+
+Where appropriate, LUM News may use contractual arrangements, technical controls, access controls, and configuration settings intended to protect personal information.
+
+31. News API and RSS Providers
+
+LUM News may access third-party news APIs and RSS feeds.
+
+These services may impose their own:
+
+terms of use;
+licensing restrictions;
+attribution requirements;
+rate limits;
+data-retention restrictions;
+caching restrictions;
+geographical restrictions;
+commercial-use restrictions.
+
+LUM News seeks to use these services consistently with their applicable terms and licensing requirements.
+
+If a provider changes its terms or access permissions, LUM News may modify or discontinue the relevant integration.
+
+32. Data Sharing
+
+LUM News does not sell personal information as a business model.
+
+We may disclose personal information to third parties where reasonably necessary for:
+
+operating the Service;
+providing requested functionality;
+processing emails;
+providing database services;
+providing hosting;
+AI processing;
+analytics;
+security;
+customer support;
+preventing fraud or abuse;
+complying with legal obligations;
+responding to lawful requests;
+protecting the rights, safety, or property of LUM News or others.
+33. Legal Disclosures
+
+LUM News may disclose information where reasonably necessary to:
+
+comply with applicable law;
+comply with a court order;
+comply with a valid legal process;
+respond to lawful government requests;
+investigate suspected fraud;
+investigate security incidents;
+enforce our Terms of Service;
+protect users;
+protect LUM News;
+protect third parties.
+
+Where legally permitted, LUM News may attempt to notify affected users about legal requests.
+
+We may not provide notice where prohibited by law or where doing so could compromise an investigation, security, or another legitimate purpose.
+
+34. Corporate Transactions
+
+If LUM News is involved in:
+
+a merger;
+acquisition;
+financing;
+restructuring;
+sale of assets;
+transfer of business operations;
+insolvency or similar proceeding,
+
+personal information may be transferred as part of that transaction, subject to applicable law.
+
+Where required, affected users will be notified of material changes to how their personal information is processed.
+
+35. Aggregated and Anonymized Information
+
+LUM News may create aggregated or anonymized information from data collected through the Service.
+
+Examples may include:
+
+number of active users;
+general topic popularity;
+aggregate geographic trends;
+aggregate feature usage;
+general performance statistics;
+anonymous product analytics.
+
+Where information has been properly anonymized so that it can no longer reasonably identify an individual, it may be used for legitimate business and analytical purposes.
+
+36. Data Retention
+
+LUM News retains personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy, unless a longer period is required or permitted by law.
+
+Retention periods may depend on the type of information.
+
+Account information
+
+Account information may generally be retained while your account remains active.
+
+After account deletion, certain information may remain temporarily in:
+
+backups;
+security logs;
+fraud-prevention systems;
+legal records;
+financial records;
+technical archives.
+Usage logs
+
+Certain technical and usage logs may be retained for approximately 90 days, after which they may be deleted, aggregated, or anonymized, subject to security and legal requirements.
+
+Bookmarks and preferences
+
+Bookmarks and preferences may generally be retained while your account remains active or until you delete them.
+
+Email records
+
+Email-delivery records may be retained for operational, security, legal, and compliance purposes for an appropriate period.
+
+Support communications
+
+Support communications may be retained for as long as reasonably necessary to resolve issues, maintain service records, investigate disputes, and satisfy legal obligations.
+
+AI processing records
+
+AI provenance and processing records may be retained where necessary to investigate errors, security issues, corrections, and system integrity.
+
+37. Account Deletion
+
+Where account deletion functionality is provided, you may request deletion of your account and associated personal information.
+
+You may also contact:
+
+privacy@lumnews.app
+
+to request account deletion.
+
+When an account is deleted, LUM News will take reasonable steps to delete or de-identify personal information that is no longer required.
+
+Certain information may be retained where necessary or legally required, including information needed for:
+
+fraud prevention;
+security;
+legal compliance;
+dispute resolution;
+enforcement of agreements;
+accounting;
+regulatory obligations;
+backup recovery.
+
+Deletion from active systems may not result in immediate deletion from every backup system.
+
+38. Your Privacy Rights
+
+Depending on your jurisdiction and applicable law, you may have rights relating to your personal information.
+
+These may include the right to:
+
+request access to personal information;
+request correction of inaccurate information;
+request deletion where legally applicable;
+request information about how your personal information is processed;
+object to certain processing;
+withdraw consent where processing is based on consent;
+request restriction of certain processing;
+request portability where applicable;
+unsubscribe from optional communications;
+complain to the relevant data-protection authority.
+
+Under POPIA, data subjects have rights relating to their personal information and may exercise applicable rights subject to legal conditions and limitations.
+
+39. Exercising Your Rights
+
+To submit a privacy request, contact:
+
+Privacy Team: privacy@lumnews.app
+
+Please include:
+
+your name;
+the email address associated with your account;
+the nature of your request;
+sufficient information for us to understand and process the request.
+
+We may need to verify your identity or account ownership before processing certain requests.
+
+We will not request passwords, authentication tokens, or unnecessary sensitive information as a means of verifying a routine privacy request.
+
+40. Identity Verification
+
+For certain requests involving sensitive account information, LUM News may need to verify that the requester is the account holder.
+
+Verification measures will be proportionate to the sensitivity and risk of the request.
+
+LUM News will not request unnecessary identity documents where reasonable alternative verification methods are available.
+
+41. South African Privacy Rights
+
+Where POPIA applies, LUM News seeks to process personal information in accordance with the conditions for lawful processing established by POPIA.
+
+POPIA includes requirements concerning matters such as:
+
+accountability;
+processing limitation;
+purpose specification;
+further processing limitation;
+information quality;
+openness;
+security safeguards;
+data-subject participation.
+
+Where applicable, LUM News will maintain appropriate internal processes for handling requests relating to personal information.
+
+42. Information Officer
+
+Where required by applicable South African law, LUM News will designate and register an Information Officer and maintain appropriate privacy and information-access processes.
+
+The South African Information Regulator states that Information Officers of private and public bodies must be registered before assuming their duties under section 55 of POPIA.
+
+Current Information Officer contact details:
+
+Information Officer: [INSERT NAME]
+Email: [INSERT EMAIL]
+Telephone: [INSERT TELEPHONE]
+Postal/Physical Address: [INSERT ADDRESS]
+
+43. PAIA
+
+Where applicable, LUM News will maintain a PAIA Manual and related information-access procedures.
+
+The South African Information Regulator provides PAIA manual requirements and templates for private bodies.
+
+This Privacy Policy does not replace the LUM News PAIA Manual.
+
+Requests for access to records under applicable access-to-information legislation should be directed to the appropriate Information Officer using the procedures specified in the LUM News PAIA Manual.
+
+44. International Data Transfers
+
+LUM News may use service providers located outside the country in which you live.
+
+As a result, personal information may be processed in jurisdictions other than your own.
+
+Where South African law applies, transfers of personal information outside South Africa will be handled in accordance with applicable requirements, including section 72 of POPIA where relevant. POPIA provides conditions under which personal information may be transferred to recipients in foreign countries.
+
+Depending on the circumstances, safeguards may include:
+
+contractual protections;
+appropriate data-processing agreements;
+recipient privacy protections;
+legally recognized transfer mechanisms;
+consent where legally appropriate;
+technical security measures;
+access controls;
+data minimization.
+
+Because LUM News may rely on international cloud, email, AI, analytics, database, and infrastructure providers, users should understand that information may be processed internationally.
+
+45. Security
+
+LUM News uses reasonable technical and organizational safeguards designed to protect personal information.
+
+These may include:
+
+HTTPS/TLS encryption;
+encrypted connections;
+password hashing;
+authentication controls;
+authorization controls;
+least-privilege access;
+environment-variable protection;
+restricted administrative access;
+database security controls;
+backups;
+logging;
+monitoring;
+vulnerability management;
+security reviews;
+abuse detection;
+rate limiting;
+infrastructure security controls.
+
+No internet-based system can be guaranteed to be completely secure.
+
+Accordingly, LUM News cannot guarantee that information will never be accessed, disclosed, altered, lost, or destroyed through circumstances beyond reasonable control.
+
+46. Security Incidents
+
+If LUM News becomes aware of a personal-information security compromise, we will assess the incident and take reasonable steps to:
+
+contain the incident;
+investigate its cause;
+identify affected systems and information;
+mitigate potential harm;
+restore affected services;
+preserve relevant evidence;
+comply with applicable legal obligations;
+notify affected users or regulators where required.
+
+The South African Information Regulator provides mechanisms for reporting security compromises and POPIA-related compliance matters.
+
+47. User Responsibility for Account Security
+
+Users are responsible for taking reasonable steps to protect their accounts.
+
+Users should:
+
+use a strong password;
+avoid sharing passwords;
+avoid reusing passwords across services;
+protect authentication devices;
+log out of shared devices;
+report suspected unauthorized access;
+keep account information accurate.
+
+LUM News will never intentionally request your password through an unsolicited email.
+
+48. Children's Privacy
+
+LUM News is not designed to knowingly collect unnecessary personal information from children.
+
+Unless otherwise stated for a specific product or jurisdiction, users must meet the minimum age requirements specified in the LUM News Terms of Service.
+
+If LUM News becomes aware that it has collected personal information from a child in circumstances where collection was not permitted, we may take reasonable steps to delete that information.
+
+Parents or guardians who believe that a child has provided personal information to LUM News may contact:
+
+privacy@lumnews.app
+
+49. Sensitive Personal Information
+
+LUM News does not intentionally require users to provide sensitive personal information merely to use the core news-aggregation service.
+
+Users should avoid submitting unnecessary sensitive information through:
+
+support messages;
+profile fields;
+comments;
+feedback;
+search queries;
+other free-text fields.
+
+If a future feature requires processing of sensitive personal information, LUM News will assess the applicable legal requirements before introducing that feature.
+
+50. User-Generated Content
+
+If LUM News introduces features that allow users to submit:
+
+comments;
+reviews;
+posts;
+notes;
+profile information;
+images;
+documents;
+other content,
+
+the information contained in that content may be processed as necessary to provide the feature.
+
+Users should not submit personal information belonging to another person without an appropriate reason or authorization.
+
+Publicly submitted content may be visible to other users where the relevant feature is designed to make it public.
+
+51. Public Content
+
+Some information submitted to LUM News may be intentionally made public by the user.
+
+For example, if LUM News introduces a public profile or public comments feature, information intentionally published by a user may be accessible to other users or the public.
+
+Users should carefully consider whether they want information to become publicly available before submitting it to a public feature.
+
+52. Third-Party Links
+
+LUM News frequently links to external websites, including original news publishers.
+
+External websites may have their own:
+
+privacy policies;
+cookies;
+tracking systems;
+advertising systems;
+data practices;
+terms of service.
+
+LUM News does not control the privacy practices of external websites.
+
+We encourage users to review the privacy policies of websites they visit through LUM News.
+
+53. Advertisements
+
+If advertising is introduced to LUM News, the applicable advertising technology and data-processing practices will be disclosed through an updated Privacy Policy and, where required, appropriate consent mechanisms.
+
+LUM News should not represent that it does not use advertising-related tracking if such technologies are actually deployed.
+
+54. Future Paid Services
+
+LUM News may introduce paid subscriptions, premium features, memberships, or other commercial services in the future.
+
+If payment functionality is introduced, payment information may be processed by third-party payment processors.
+
+LUM News should avoid storing full payment-card information unless there is a specific legal, security, and operational reason to do so.
+
+Where possible, payment information should be processed directly by reputable payment providers using appropriate security standards.
+
+The Privacy Policy will be updated if payment-related processing materially changes the types of personal information collected.
+
+55. Data Minimization
+
+LUM News follows a data-minimization approach.
+
+We seek to collect and process information that is reasonably necessary for legitimate purposes, including:
+
+providing the Service;
+maintaining accounts;
+personalization;
+security;
+analytics;
+customer support;
+legal compliance;
+improving the Service.
+
+LUM News should not collect personal information merely because it is technically possible to do so.
+
+56. Accuracy of Personal Information
+
+LUM News seeks to maintain accurate personal information.
+
+Users may update certain account information through their account settings.
+
+If you believe information associated with your account is inaccurate, you may contact:
+
+privacy@lumnews.app
+
+We may retain historical information where necessary for legitimate operational, security, legal, or audit purposes.
+
+57. Automated Decisions
+
+LUM News may use automated systems for:
+
+recommendation;
+content ranking;
+classification;
+clustering;
+summarization;
+sentiment analysis;
+spam detection;
+security;
+abuse prevention.
+
+These systems are intended primarily to organize and personalize news content.
+
+LUM News does not intend for automated news recommendations to constitute decisions about a person's legal rights, employment, credit, healthcare, insurance, or other similarly significant matters.
+
+58. News Personalization Does Not Guarantee Neutrality
+
+Personalization may affect which stories, topics, publishers, or perspectives appear more prominently in your feed.
+
+As a result, a personalized LUM News feed may not represent every available story or viewpoint.
+
+LUM News may provide controls allowing users to modify personalization preferences.
+
+Where appropriate, users may also access broader or non-personalized news views.
+
+59. Multiple Perspectives
+
+LUM News may attempt to identify and present coverage from multiple publishers and perspectives.
+
+However, LUM News does not guarantee that:
+
+every viewpoint will be represented;
+every publisher will be included;
+coverage will be politically or ideologically balanced;
+all available information will be displayed;
+AI classifications will always be correct.
+
+Publisher availability, API restrictions, geographic availability, licensing, algorithms, and other technical factors may affect what appears on the platform.
+
+60. News Accuracy
+
+LUM News aggregates information from third-party sources.
+
+We do not guarantee that third-party news content is:
+
+accurate;
+complete;
+current;
+unbiased;
+free from errors;
+free from omissions;
+suitable for a particular purpose.
+
+AI-generated summaries and classifications may introduce additional errors.
+
+Where important decisions are involved, users should consult original sources and appropriate qualified professionals.
+
+61. Corrections and Content Complaints
+
+Users may report:
+
+incorrect AI summaries;
+incorrect source attribution;
+broken links;
+duplicate stories;
+outdated information;
+misleading classifications;
+inappropriate content;
+potential copyright concerns;
+other content issues.
+
+Reports may be sent to:
+
+Content Corrections: [INSERT EMAIL]
+Copyright: [INSERT EMAIL]
+Privacy: privacy@lumnews.app
+
+LUM News may investigate reports and take appropriate action.
+
+62. Data Processing Purposes
+
+For transparency, LUM News may process personal information for the following purposes:
+
+Purpose	Examples of Information
+Account management	Email, name, authentication information
+Authentication	Login identifiers, sessions, security events
+Personalization	Topics, clicks, bookmarks, preferences
+News discovery	Search queries, selected topics, filters
+Email delivery	Email address, subscription preferences
+Security	IP address, device information, logs
+Analytics	Usage and technical information
+Customer support	Contact details, support communications
+AI personalization	Preferences and permitted interaction data
+AI news processing	News content and metadata
+Error monitoring	Technical and diagnostic information
+Legal compliance	Information reasonably required by law
+Fraud prevention	Security and usage signals
+Service improvement	Aggregated usage and technical information
+63. Categories of Third Parties
+
+Depending on the Service configuration, LUM News may disclose or make information available to categories of third parties including:
+
+Third-party category	Purpose
+Cloud hosting providers	Hosting applications and infrastructure
+Database providers	Storing application data
+Authentication providers	Account authentication
+Email providers	Transactional emails and newsletters
+AI providers	AI-assisted processing
+News-data providers	Obtaining news metadata/content
+Analytics providers	Product analytics
+Error-monitoring providers	Detecting technical errors
+Security providers	Security and abuse prevention
+Legal/regulatory authorities	Compliance with lawful obligations
+Professional advisers	Legal, accounting, compliance or business advice
+
+The actual providers used by LUM News should be reflected in the production vendor inventory.
+
+64. Third-Party Provider Changes
+
+LUM News may add, remove, replace, or change service providers as the Service evolves.
+
+Where a provider change materially affects how personal information is processed, LUM News may update this Privacy Policy and provide any notice or obtain any consent required by applicable law.
+
+65. No Sale of Personal Information
+
+LUM News does not sell personal information as a commercial product.
+
+This statement does not prevent LUM News from using service providers to process information on its behalf where permitted by law.
+
+If LUM News's business model changes in a way that involves selling, sharing, or otherwise monetizing personal information in a manner requiring additional disclosure or consent, this Privacy Policy will be updated accordingly.
+
+66. Data Protection by Design
+
+LUM News seeks to incorporate privacy and security considerations into the design of new features.
+
+Before introducing features involving significant new categories of personal information, LUM News may assess:
+
+what information is required;
+why it is required;
+who will receive it;
+where it will be stored;
+how long it will be retained;
+security risks;
+privacy risks;
+applicable legal requirements;
+whether the feature can be designed with less personal information.
+
+Where appropriate, LUM News may perform a personal-information impact assessment or similar privacy assessment.
+
+67. Changes to This Privacy Policy
+
+We may update this Privacy Policy from time to time.
+
+Changes may be necessary because of:
+
+new features;
+new technologies;
+new service providers;
+changes in data-processing practices;
+changes in applicable law;
+security improvements;
+changes to our business;
+regulatory requirements.
+
+When we make changes, we will update the "Last Updated" date.
+
+Where legally required, we will provide additional notice or obtain consent for material changes.
+
+We will not rely solely on a statement that continued use automatically constitutes acceptance where applicable law requires a different process.
+
+68. Material Changes
+
+For material changes that significantly affect users' privacy rights or how personal information is processed, LUM News may provide additional notice through methods such as:
+
+email;
+website notification;
+in-app notification;
+account notification;
+consent mechanism where legally required.
+
+The method used will depend on the nature and legal significance of the change.
+
+69. Contact Us
+
+For privacy questions, requests, or concerns:
+
+LUM News Privacy Team
+
+Email: privacy@lumnews.app
+
+For legal matters:
+
+legal@lumnews.app
+
+For content corrections:
+
+[INSERT CONTENT/CORRECTIONS EMAIL]
+
+For copyright matters:
+
+[INSERT COPYRIGHT EMAIL]
+
+For Information Officer matters:
+
+[INSERT INFORMATION OFFICER EMAIL]
+
+Postal/Physical Address:
+
+[INSERT ADDRESS]
+
+70. Complaints
+
+If you believe LUM News has not handled your personal information appropriately, please contact us first so that we have an opportunity to investigate and address the issue.
+
+Where applicable, you may also have the right to lodge a complaint with the relevant data-protection or privacy regulator.
+
+For South African matters, the relevant regulator is the Information Regulator of South Africa.
+
+The Information Regulator provides mechanisms for POPIA complaints, security compromises, Information Officer registration, and related compliance matters.
+
+71. Governing Privacy Law
+
+This Privacy Policy is intended to operate alongside applicable privacy and data-protection laws.
+
+Where LUM News is subject to South African law, this includes POPIA and other applicable South African legislation.
+
+Where LUM News is subject to another jurisdiction's privacy legislation, applicable mandatory provisions of that legislation may also apply.
+
+Nothing in this Privacy Policy is intended to remove or limit a right that cannot lawfully be excluded.
+
+72. Important Limitation
+
+Nothing in this Privacy Policy should be interpreted as:
+
+guaranteeing absolute security;
+guaranteeing that every third-party provider will be error-free;
+guaranteeing that every AI-generated summary will be accurate;
+removing rights provided by applicable law;
+replacing a legally required PAIA Manual;
+replacing required contractual data-processing agreements;
+replacing a required privacy impact assessment;
+replacing legal advice.
+73. Privacy-by-Design Commitments
+
+LUM News intends to follow these principles when designing and operating its systems:
+
+Data minimization
+
+Collect only information reasonably necessary for a legitimate purpose.
+
+Purpose limitation
+
+Use information for defined and legitimate purposes.
+
+Transparency
+
+Tell users how their information is processed.
+
+Security
+
+Apply appropriate technical and organizational security controls.
+
+User control
+
+Provide appropriate tools for users to manage their information.
+
+Accountability
+
+Maintain appropriate records, policies, procedures, and controls.
+
+AI transparency
+
+Clearly distinguish AI-generated information from original publisher content.
+
+Source attribution
+
+Where appropriate, identify and link to the original news source.
+
+Correction
+
+Provide mechanisms for reporting materially inaccurate AI-generated content.
+
+Retention limitation
+
+Do not retain personal information indefinitely without a legitimate reason.
+
+74. LUM News AI and Data Processing Principles
+
+LUM News's AI-assisted newsroom architecture is intended to follow these principles:
+
+Source → Process → AI → Validate → Attribute → Publish → Correct
+
+Where technically feasible:
+
+News is obtained from an authorized or permitted source.
+Source metadata is recorded.
+Source information is processed.
+AI generates classifications, summaries, or other analysis.
+Automated quality checks are performed.
+The original source is identified.
+The AI-generated component is labeled.
+The story is presented to the user.
+Users can report material errors.
+Corrections can be applied where appropriate.
+75. Privacy Policy Version History
+
+LUM News may maintain a version history of this Privacy Policy.
+
+Version	Effective Date	Description
+1.0	[INSERT DATE]	Initial Privacy Policy
+[VERSION]	[DATE]	[DESCRIPTION]
+76. Final Statement
+
+LUM News is committed to building a news platform that combines modern information retrieval, artificial intelligence, personalization, and multiple-source news discovery while respecting users' privacy and the rights of publishers and other content creators.
+
+We aim to be transparent about:
+
+what information we collect;
+why we collect it;
+how we use it;
+which third parties process it;
+how AI is used;
+how long information is retained;
+how users can exercise their rights;
+how users can report errors;
+how we respond to privacy and security concerns.
+
+If you have questions about this Privacy Policy or how your information is processed, contact us at:
