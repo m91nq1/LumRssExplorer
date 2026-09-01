@@ -1,0 +1,1749 @@
+LUM NEWS — TERMS OF SERVICE
+
+Last Updated: [INSERT DATE]
+Effective Date: [INSERT DATE]
+Version: [INSERT VERSION]
+
+1. Introduction
+
+Welcome to LUM News ("LUM News", "LUM", "we", "us", or "our").
+
+These Terms of Service ("Terms", "Terms of Service", or "Agreement") govern your access to and use of the LUM News website, applications, APIs, software, news aggregation services, AI-assisted features, newsletters, alerts, personalization features, and related services (collectively, the "Service").
+
+LUM News is an AI-assisted global news discovery and analysis platform that aggregates information from multiple news publishers, RSS feeds, APIs, public sources, and other permitted sources and may use automated technologies to organize, classify, summarize, analyze, and personalize that information.
+
+By accessing or using the Service, you agree to these Terms.
+
+If you do not agree to these Terms, you should not use the Service.
+
+If you are using LUM News on behalf of an organization, you represent that you have authority to bind that organization to these Terms.
+
+2. About LUM News
+
+LUM News is intended to help users:
+
+discover news;
+search for news;
+compare coverage from different sources;
+discover stories by topic or region;
+receive personalized news;
+save and organize stories;
+receive news alerts and digests;
+view AI-generated summaries;
+discover trends;
+understand relationships between related stories;
+analyze news through automated tools.
+
+LUM News is not itself necessarily the original publisher of the news information presented through the Service.
+
+News articles and other third-party content generally remain the property of their respective publishers and rights holders.
+
+3. Eligibility
+
+You may use LUM News only if you are legally capable of entering into these Terms.
+
+Unless a specific LUM News product states otherwise, you must be at least 16 years old, or the minimum age required to legally use the Service in your jurisdiction if that age is higher.
+
+Where applicable law requires parental or guardian involvement for users below a particular age, LUM News may require appropriate authorization.
+
+You may not use LUM News if you are prohibited from doing so under applicable law.
+
+LUM News may restrict or terminate access where it reasonably believes an account has been created in violation of these eligibility requirements.
+
+4. Electronic Agreement
+
+You may accept these Terms electronically.
+
+Depending on the Service interface, acceptance may occur through:
+
+selecting an acceptance checkbox;
+clicking an "Accept" button;
+creating an account;
+accessing or using features where legally permitted to constitute acceptance;
+completing another electronic acceptance process.
+
+Electronic records may be maintained as evidence of acceptance where appropriate.
+
+Where applicable, electronic contracting and communications may be subject to the laws governing electronic transactions in the relevant jurisdiction. South Africa's Electronic Communications and Transactions Act provides a statutory framework for electronic communications and transactions.
+
+5. Relationship Between These Terms and the Privacy Policy
+
+Your use of LUM News is also governed by our Privacy Policy.
+
+The Privacy Policy explains:
+
+what personal information we collect;
+how we use it;
+how we share it;
+how we protect it;
+how AI processing works;
+how long information may be retained;
+how you can exercise applicable privacy rights.
+
+The Privacy Policy is incorporated into these Terms by reference.
+
+You can find the Privacy Policy at:
+
+[INSERT PRIVACY POLICY URL]
+
+6. Changes to These Terms
+
+We may update these Terms from time to time.
+
+Changes may be necessary because of:
+
+new features;
+changes to the Service;
+changes in law;
+changes in our business;
+new payment functionality;
+new AI functionality;
+security requirements;
+changes to third-party integrations;
+regulatory requirements.
+
+When we update the Terms, we will update the "Last Updated" date.
+
+For material changes, we may provide additional notice through:
+
+email;
+website notifications;
+in-app notifications;
+account notifications;
+another reasonable method.
+
+Where applicable law requires affirmative acceptance of updated terms, we will obtain such acceptance.
+
+We will not rely solely on continued use of the Service to impose a material contractual change where applicable law requires another form of notice or consent.
+
+7. The LUM News Service
+
+Subject to these Terms, LUM News provides you with a limited, non-exclusive, non-transferable, revocable right to access and use the Service for permitted purposes.
+
+The Service may include:
+
+news discovery;
+search;
+article metadata;
+publisher information;
+article links;
+RSS-based content;
+API-provided content;
+AI-generated summaries;
+AI-generated classifications;
+sentiment analysis;
+topic classification;
+story clustering;
+recommendations;
+personalized feeds;
+newsletters;
+alerts;
+bookmarks;
+saved stories;
+account functionality;
+other features introduced from time to time.
+
+We may add, remove, modify, suspend, or discontinue features.
+
+8. Service Availability
+
+We attempt to keep LUM News available and operational, but we do not guarantee that the Service will:
+
+always be available;
+be uninterrupted;
+be error-free;
+be secure at all times;
+operate without delays;
+contain every news story;
+contain every publisher;
+contain every geographic region;
+maintain every feature indefinitely.
+
+The Service may occasionally be unavailable because of:
+
+maintenance;
+upgrades;
+infrastructure failures;
+security incidents;
+third-party outages;
+API failures;
+RSS failures;
+network problems;
+events outside our reasonable control.
+9. Changes to News Sources
+
+LUM News depends partly on third-party news publishers, APIs, RSS feeds, licensing arrangements, and other external sources.
+
+A publisher or provider may:
+
+change its API;
+change its RSS feed;
+impose new restrictions;
+remove content;
+block access;
+change its licensing;
+change its pricing;
+change its terms;
+discontinue a service.
+
+LUM News may therefore add, remove, replace, or modify news sources without guaranteeing that a particular publisher will remain available.
+
+10. Accounts
+
+Some LUM News features may require an account.
+
+When creating an account, you agree to provide information that is reasonably accurate and current.
+
+You must not knowingly provide:
+
+false identity information;
+another person's email address without authorization;
+misleading account information;
+fraudulent information.
+
+You are responsible for maintaining the accuracy of your account information.
+
+11. Account Security
+
+You are responsible for protecting your account credentials.
+
+You should:
+
+use a strong password;
+avoid sharing your password;
+avoid reusing passwords;
+use available multi-factor authentication;
+protect your devices;
+log out from shared devices;
+promptly report suspected unauthorized access.
+
+You should notify LUM News if you believe your account has been compromised.
+
+LUM News may temporarily restrict an account where reasonably necessary to protect:
+
+the user;
+other users;
+the Service;
+third-party systems;
+security;
+legal interests.
+12. Account Activity
+
+You are responsible for activity performed through your account to the extent permitted by applicable law.
+
+You must not knowingly allow another person to use your account in a way that violates these Terms.
+
+LUM News may investigate suspicious account activity.
+
+13. Acceptable Use
+
+You may use LUM News only for lawful purposes and in accordance with these Terms.
+
+You agree not to use the Service to:
+
+violate applicable law;
+infringe intellectual-property rights;
+violate privacy rights;
+impersonate another person;
+distribute malicious software;
+attack or disrupt the Service;
+interfere with another user's access;
+circumvent security controls;
+conduct unauthorized automated activity;
+abuse APIs;
+scrape the Service beyond permitted functionality;
+reverse engineer protected portions of the Service;
+attempt unauthorized access;
+distribute spam;
+engage in fraud;
+manipulate the Service;
+create fake accounts for abusive purposes;
+evade account restrictions;
+upload unlawful content;
+distribute content that violates applicable law;
+use the Service to facilitate harmful or illegal activity.
+14. Prohibited Automated Access
+
+Unless LUM News explicitly provides an API or written permission, you may not use:
+
+bots;
+crawlers;
+scrapers;
+spiders;
+automated browsers;
+scripts;
+automated extraction systems;
+bulk-download tools;
+automated account creation;
+automated interaction systems;
+
+to access, copy, monitor, extract, or reproduce material from the Service beyond normal user functionality.
+
+This restriction does not prohibit ordinary browser functionality or accessibility tools that do not materially abuse the Service.
+
+15. API Access
+
+If LUM News provides an API, API access may be subject to additional:
+
+API documentation;
+rate limits;
+authentication requirements;
+usage restrictions;
+licensing requirements;
+commercial-use restrictions;
+technical requirements.
+
+API credentials must be kept confidential.
+
+You must not:
+
+share API keys publicly;
+expose private API keys in client-side code;
+circumvent rate limits;
+create excessive traffic;
+resell API access without permission;
+use the API to reproduce the Service;
+use the API to build a competing service where prohibited by applicable API terms or a separate agreement.
+16. News API and RSS Restrictions
+
+LUM News may itself depend on third-party APIs and RSS feeds.
+
+Users must not assume that content available through LUM News can be:
+
+copied in bulk;
+redistributed;
+commercially republished;
+scraped;
+stored indefinitely;
+repackaged as another news service.
+
+Third-party content may be subject to separate rights and restrictions.
+
+17. No Circumvention
+
+You must not attempt to circumvent:
+
+rate limits;
+authentication;
+access controls;
+paywalls;
+technical restrictions;
+robots or technical restrictions;
+content-access controls;
+geographic restrictions;
+subscription controls;
+security mechanisms.
+
+Nothing in these Terms grants permission to bypass technical or contractual restrictions imposed by third parties.
+
+18. Reverse Engineering
+
+To the extent permitted by applicable law, you may not:
+
+reverse engineer;
+decompile;
+disassemble;
+reconstruct;
+extract source code;
+extract proprietary algorithms;
+bypass technical protections;
+
+of LUM News except where such restriction is prohibited by applicable law.
+
+Where applicable law gives you a non-waivable right to perform a particular technical act, that right remains unaffected.
+
+19. LUM News Intellectual Property
+
+The LUM News Service and its original components may include:
+
+software;
+source code;
+object code;
+user interfaces;
+design systems;
+graphics;
+logos;
+trademarks;
+branding;
+databases;
+original text;
+original illustrations;
+animations;
+workflows;
+algorithms;
+proprietary systems;
+documentation.
+
+Except for rights expressly granted to you, LUM News and/or its licensors retain applicable intellectual-property rights in these materials.
+
+20. LUM News Trademark
+
+"LUM News", its logos, branding, names, and associated marks may constitute trademarks or other protected identifiers.
+
+You may not use LUM News branding in a way that:
+
+suggests endorsement;
+suggests partnership;
+creates confusion;
+misrepresents affiliation;
+implies authorization;
+damages the reputation of LUM News.
+
+No trademark license is granted by these Terms unless expressly stated.
+
+21. Third-Party News Content
+
+News content presented through LUM News may belong to third-party publishers.
+
+Examples include:
+
+articles;
+headlines;
+photographs;
+videos;
+logos;
+trademarks;
+article descriptions;
+quotations;
+metadata;
+publisher names.
+
+Such content remains subject to the rights of the applicable publisher or rights holder.
+
+LUM News does not transfer ownership of third-party content to users.
+
+22. Source Attribution
+
+Where third-party news content is displayed or summarized, LUM News may identify:
+
+the publisher;
+author;
+publication date;
+source;
+original URL;
+other available attribution information.
+
+Where appropriate, users should be directed to the original article.
+
+Users may not remove or obscure attribution or source information where doing so would violate applicable law, contractual requirements, or the rights of the publisher.
+
+23. AI-Generated Content
+
+LUM News uses artificial intelligence and automated systems.
+
+AI may be used for:
+
+summarization;
+story clustering;
+topic classification;
+entity extraction;
+sentiment analysis;
+recommendation;
+trend detection;
+translation;
+search enhancement;
+content organization;
+other automated processing.
+
+AI-generated material may not represent the exact language, emphasis, interpretation, or conclusions of the original publisher.
+
+24. AI Summaries Are Not Original Articles
+
+An AI-generated summary is a derived informational aid.
+
+It is not intended to replace the original article.
+
+LUM News may display AI-generated summaries alongside links to the original source.
+
+Users should consult the original source for:
+
+full context;
+exact quotations;
+complete reporting;
+detailed evidence;
+corrections;
+updates;
+source-specific editorial context.
+25. AI Accuracy Disclaimer
+
+AI systems can make mistakes.
+
+AI-generated content may:
+
+omit important facts;
+misunderstand context;
+incorrectly combine stories;
+incorrectly classify information;
+misinterpret statements;
+produce inaccurate summaries;
+incorrectly identify people, organizations, places, or events;
+contain outdated information;
+fail to reflect later updates.
+
+LUM News does not guarantee that AI-generated information is always:
+
+accurate;
+complete;
+unbiased;
+current;
+authoritative.
+26. AI and Breaking News
+
+During rapidly developing events, information may change faster than automated systems can process it.
+
+As a result, LUM News may temporarily display:
+
+incomplete information;
+preliminary reports;
+conflicting reports;
+outdated summaries;
+information subsequently corrected by the original publisher.
+
+Users should exercise appropriate judgment when relying on developing news.
+
+27. No Professional Advice
+
+LUM News is an information and news-discovery service.
+
+Unless a feature is explicitly designed and legally authorized to provide professional services, information available through LUM News should not be treated as:
+
+medical advice;
+legal advice;
+financial advice;
+investment advice;
+tax advice;
+professional journalism advice;
+emergency advice;
+safety instructions.
+
+LUM News does not establish a professional-client relationship merely because you use the Service.
+
+28. Financial and Investment Information
+
+News and AI-generated analysis concerning:
+
+companies;
+markets;
+stocks;
+cryptocurrencies;
+investments;
+economic events;
+
+is provided for informational purposes.
+
+It should not be treated as personalized financial or investment advice.
+
+Users should independently verify important financial information and consult an appropriately qualified professional where necessary.
+
+29. Medical and Health Information
+
+News concerning health, medicine, diseases, treatments, research, or healthcare is provided for informational purposes.
+
+AI-generated summaries may contain errors.
+
+LUM News does not provide medical diagnosis or treatment through ordinary news features.
+
+Users should consult an appropriately qualified healthcare professional for medical decisions.
+
+30. Legal Information
+
+News concerning laws, courts, regulations, litigation, or legal disputes is informational.
+
+AI-generated summaries may simplify complicated legal matters or omit important context.
+
+Users should consult an appropriately qualified legal professional for legal advice.
+
+31. Political and Public-Affairs Content
+
+LUM News may display news involving:
+
+elections;
+governments;
+political parties;
+public officials;
+public policy;
+political disputes;
+international affairs.
+
+LUM News does not guarantee that every political viewpoint, publication, or perspective will be represented equally.
+
+Personalized feeds may further affect which stories users encounter.
+
+AI-generated classifications and summaries may contain errors or may not fully capture political context.
+
+32. No Guarantee of Neutrality
+
+LUM News may attempt to provide multiple sources and perspectives.
+
+However, LUM News does not guarantee:
+
+political neutrality;
+ideological neutrality;
+equal representation of every viewpoint;
+equal coverage of every publisher;
+equal coverage of every region;
+absence of editorial or algorithmic bias.
+
+The availability of particular sources may depend on licensing, APIs, geography, technical limitations, publisher decisions, and other factors.
+
+33. Story Clustering
+
+LUM News may automatically group articles that appear to concern the same event or subject.
+
+Automated clustering may incorrectly:
+
+combine unrelated stories;
+separate related stories;
+associate the wrong publisher;
+associate the wrong event;
+merge different people or organizations;
+fail to recognize an updated development.
+
+Clustering is provided as a convenience and should not be treated as an authoritative determination that two articles concern exactly the same event.
+
+34. Sentiment Analysis
+
+LUM News may use automated systems to classify the sentiment or tone of news articles.
+
+Sentiment analysis is inherently interpretive.
+
+A sentiment label does not necessarily represent:
+
+the author's actual intention;
+the publisher's editorial position;
+the factual nature of an event;
+the attitude of a person mentioned in an article.
+
+Sentiment classifications may be inaccurate.
+
+35. Recommendations
+
+LUM News may recommend stories based on:
+
+selected interests;
+reading activity;
+bookmarks;
+searches;
+topics;
+regions;
+popularity;
+recency;
+other signals.
+
+Recommendations are not guarantees that a story is:
+
+important;
+accurate;
+authoritative;
+relevant to every user.
+36. News Corrections
+
+LUM News may modify, regenerate, remove, or correct AI-generated summaries and classifications when errors are identified.
+
+Users may report errors through:
+
+[INSERT CORRECTIONS URL]
+
+or
+
+[INSERT CORRECTIONS EMAIL]
+
+Where appropriate, LUM News may:
+
+update the AI summary;
+remove the summary;
+add a correction notice;
+mark the story as disputed;
+update source information;
+investigate the underlying processing.
+37. Publisher Corrections
+
+If the original publisher changes or corrects an article, LUM News may attempt to update associated information.
+
+However, because LUM News may depend on third-party feeds and APIs, updates may not occur immediately.
+
+LUM News does not guarantee real-time synchronization with every publisher.
+
+38. User-Submitted Content
+
+If LUM News provides features allowing users to submit content, including:
+
+comments;
+posts;
+notes;
+reviews;
+profile information;
+images;
+links;
+feedback;
+other material,
+
+the user remains responsible for that content.
+
+39. User Content License
+
+Where necessary to operate a user-submission feature, you grant LUM News a limited, non-exclusive, worldwide, royalty-free license to host, store, reproduce, transmit, display, format, modify for technical purposes, and distribute your submitted content solely as reasonably necessary to provide, maintain, secure, and improve that feature.
+
+This license does not transfer ownership of your content to LUM News.
+
+You retain ownership of your content to the extent you own it.
+
+40. User Content Representations
+
+By submitting content, you represent that, to the extent required by law:
+
+you have the necessary rights to submit it;
+you are not knowingly infringing another person's rights;
+the submission does not violate applicable law;
+you have not intentionally submitted malicious software;
+the submission does not contain unauthorized confidential information.
+41. Prohibited User Content
+
+You must not submit content that:
+
+violates applicable law;
+infringes intellectual-property rights;
+impersonates another person;
+contains malicious code;
+unlawfully exposes private information;
+intentionally deceives users;
+facilitates fraud;
+violates applicable platform rules;
+creates unreasonable security risks;
+is otherwise prohibited by these Terms.
+
+LUM News may remove or restrict content that violates these Terms or applicable law.
+
+42. Content Moderation
+
+LUM News may use a combination of:
+
+automated systems;
+human review;
+user reports;
+security systems;
+administrative review;
+
+to identify potentially problematic content.
+
+Automated moderation may make mistakes.
+
+LUM News may review, restrict, remove, or disable content where reasonably necessary.
+
+43. No Obligation to Monitor Everything
+
+LUM News does not guarantee that all content submitted to or displayed through the Service will be reviewed before publication or display.
+
+We may use automated systems and other controls to detect problems, but some content may not be detected immediately.
+
+44. Copyright Complaints
+
+If you believe content presented through LUM News infringes your copyright or other intellectual-property rights, contact:
+
+Copyright Contact: [INSERT EMAIL]
+
+A useful complaint should include:
+
+identification of the relevant material;
+the relevant URL;
+an explanation of the claimed right;
+an explanation of the alleged infringement;
+contact information;
+any information reasonably necessary for us to investigate.
+
+LUM News may investigate and take appropriate action.
+
+45. Third-Party Websites
+
+LUM News links to third-party websites.
+
+These may include:
+
+news publishers;
+media organizations;
+government websites;
+research organizations;
+other external sources.
+
+LUM News does not control third-party websites.
+
+We do not guarantee that third-party websites will:
+
+remain available;
+be accurate;
+be secure;
+remain unchanged;
+comply with your expectations;
+maintain their own privacy practices.
+46. Third-Party Services
+
+Certain features may depend on third-party services.
+
+These may include:
+
+news APIs;
+RSS providers;
+AI providers;
+cloud hosting;
+database providers;
+authentication providers;
+email providers;
+analytics providers;
+payment providers;
+security providers.
+
+Third-party services may have their own:
+
+terms;
+privacy policies;
+limitations;
+outages;
+fees;
+restrictions.
+
+Your use of a third-party service may also be subject to that provider's terms.
+
+47. Third-Party AI Providers
+
+Where LUM News uses third-party AI services, the AI provider may process information according to the applicable agreement between LUM News and that provider.
+
+LUM News will seek to configure such systems appropriately and minimize unnecessary personal information.
+
+The AI provider does not become the publisher of LUM News solely because it provides infrastructure or processing services.
+
+48. External Links Are Not Endorsements
+
+A link to a third-party website does not necessarily mean that LUM News:
+
+endorses the publisher;
+endorses the article;
+agrees with the content;
+endorses the author;
+guarantees the information.
+
+Links are generally provided to help users access the underlying source.
+
+49. User Responsibilities When Following External Links
+
+Once you leave LUM News, you are responsible for reviewing the destination website's:
+
+terms;
+privacy policy;
+security information;
+content;
+subscription requirements;
+other applicable policies.
+50. Security Restrictions
+
+You must not use LUM News to:
+
+attempt unauthorized access;
+test vulnerabilities without authorization;
+bypass authentication;
+interfere with infrastructure;
+distribute malicious software;
+overload systems;
+exploit security vulnerabilities;
+access another user's account;
+access restricted administrative interfaces;
+interfere with third-party integrations.
+
+If you discover a security vulnerability, report it to:
+
+Security Contact: [INSERT SECURITY EMAIL]
+
+51. Responsible Security Disclosure
+
+If you identify a potential security vulnerability in LUM News, please provide sufficient information for us to reproduce and investigate the issue.
+
+Do not:
+
+access another person's private information;
+intentionally disrupt the Service;
+destroy data;
+publicly disclose sensitive vulnerability details before giving us a reasonable opportunity to investigate;
+use the vulnerability for personal gain.
+
+Nothing in this section grants authorization to conduct testing that would otherwise be unlawful.
+
+52. Accounts and Multiple Accounts
+
+Unless explicitly permitted, users should not create accounts for the purpose of:
+
+evading suspension;
+abusing free limits;
+manipulating rankings;
+manipulating recommendations;
+generating artificial traffic;
+circumventing rate limits;
+exploiting promotions.
+
+LUM News may restrict abusive account creation.
+
+53. Abuse and Manipulation
+
+You must not attempt to artificially manipulate:
+
+story rankings;
+recommendation systems;
+popularity metrics;
+view counts;
+engagement statistics;
+source rankings;
+search results.
+54. News Source Manipulation
+
+You must not intentionally use LUM News systems to manufacture false signals suggesting that:
+
+an article is more popular than it is;
+a publisher is more popular than it is;
+a story is trending when it is not;
+users support a particular position;
+an event has occurred when it has not.
+55. Fraud and Impersonation
+
+You may not use LUM News to impersonate:
+
+LUM News;
+LUM News employees;
+publishers;
+journalists;
+public officials;
+companies;
+organizations;
+other users.
+
+You may not create misleading accounts intended to deceive users about your identity or affiliation.
+
+56. Service Misuse
+
+You must not use LUM News in a way that:
+
+materially degrades performance;
+creates unreasonable infrastructure costs;
+interferes with other users;
+bypasses technical limits;
+abuses third-party integrations;
+creates security risks.
+57. Free Service
+
+LUM News may currently offer some or all features without charge.
+
+A free feature does not necessarily mean that it will remain free indefinitely.
+
+We may:
+
+introduce paid features;
+introduce subscription tiers;
+impose reasonable usage limits;
+change free features;
+discontinue free features.
+
+Where applicable, material changes will be communicated in accordance with applicable law and these Terms.
+
+58. Paid Services
+
+If LUM News introduces paid services, additional terms may apply.
+
+These may include:
+
+subscription price;
+billing period;
+taxes;
+renewal terms;
+cancellation;
+refund rules;
+usage limits;
+feature restrictions.
+
+The applicable pricing and commercial terms will be presented before purchase.
+
+59. Subscription Renewals
+
+If LUM News offers automatically renewing subscriptions, the checkout process will clearly disclose:
+
+price;
+billing frequency;
+renewal terms;
+cancellation method;
+material restrictions.
+
+Where applicable law requires reminders, notices, or other consumer protections, LUM News will follow those requirements.
+
+60. Cancellation
+
+Users should be able to cancel paid subscriptions through the account interface where reasonably practicable.
+
+If cancellation functionality is unavailable, users may contact:
+
+Billing Support: [INSERT EMAIL]
+
+Cancellation may prevent future renewals but does not necessarily entitle a user to a refund for a period already paid for, except where required by applicable law or the applicable commercial terms.
+
+61. Refunds
+
+Refund eligibility will depend on:
+
+applicable law;
+the specific subscription;
+the purchase terms;
+whether a renewal has occurred;
+the circumstances of the request.
+
+Nothing in these Terms is intended to remove a consumer's non-waivable statutory rights.
+
+Where LUM News operates in a jurisdiction with mandatory consumer protections, those protections apply.
+
+South Africa's Consumer Protection Act contains mandatory consumer protections and restricts certain terms that attempt to defeat statutory rights or improperly exclude supplier obligations.
+
+62. Taxes
+
+Users may be responsible for applicable taxes associated with paid services where required by law.
+
+Where LUM News is legally required to collect taxes, the applicable amount may be added to the displayed price or otherwise disclosed during checkout.
+
+63. Price Changes
+
+LUM News may change subscription prices.
+
+For existing subscribers, we will provide notice of material price changes where required by law or the applicable agreement.
+
+Where applicable, users may cancel before the new price takes effect.
+
+64. Promotional Offers
+
+LUM News may occasionally provide:
+
+discounts;
+promotional periods;
+trial periods;
+promotional codes;
+other offers.
+
+Promotional offers may be subject to additional terms.
+
+Unless otherwise stated, promotional offers:
+
+may not be combined;
+may be limited to eligible users;
+may be withdrawn where permitted by law;
+may have expiration dates.
+65. Free Trials
+
+If LUM News introduces free trials, the trial terms will clearly state:
+
+duration;
+eligibility;
+whether payment details are required;
+what happens when the trial ends;
+whether the subscription automatically renews;
+how to cancel.
+66. Suspension
+
+LUM News may suspend access where reasonably necessary because of:
+
+violation of these Terms;
+suspected fraud;
+security concerns;
+abuse;
+unlawful activity;
+threats to the Service;
+threats to other users;
+legal requirements;
+third-party provider restrictions.
+
+Where appropriate and legally permitted, LUM News may provide notice and an opportunity to resolve the issue.
+
+67. Termination by LUM News
+
+LUM News may terminate an account where reasonably necessary due to:
+
+material violation of these Terms;
+repeated violations;
+fraudulent activity;
+abuse;
+serious security concerns;
+unlawful activity;
+legal requirements;
+discontinuation of the Service.
+
+Termination will not remove rights or obligations that by their nature should survive termination.
+
+68. Termination by the User
+
+You may stop using LUM News at any time.
+
+You may request account deletion in accordance with the Privacy Policy.
+
+If you have an active paid subscription, cancellation procedures may apply.
+
+69. Effect of Termination
+
+Following termination:
+
+your right to use the Service may end;
+access to certain account features may cease;
+saved content may become inaccessible;
+active subscriptions may be cancelled;
+certain information may be retained where required or permitted by law.
+
+The Privacy Policy governs retention and deletion of personal information.
+
+70. Survival
+
+The following provisions may survive termination where applicable:
+
+intellectual property;
+disclaimers;
+limitation of liability;
+dispute provisions;
+governing law;
+indemnification where applicable;
+payment obligations;
+provisions that by their nature should survive termination.
+71. Disclaimer of Warranties
+
+To the maximum extent permitted by applicable law, the Service is provided on an "AS IS" and "AS AVAILABLE" basis.
+
+LUM News does not guarantee that the Service will be:
+
+uninterrupted;
+error-free;
+secure at all times;
+complete;
+accurate;
+current;
+available in every jurisdiction;
+compatible with every device.
+
+Nothing in this section is intended to exclude or limit a warranty, guarantee, or statutory right that cannot lawfully be excluded.
+
+72. News Accuracy Disclaimer
+
+LUM News aggregates information from third-party sources.
+
+We do not guarantee that third-party content is:
+
+accurate;
+complete;
+unbiased;
+current;
+free of errors;
+free of omissions.
+
+LUM News may display information that is later corrected or withdrawn by its original publisher.
+
+73. AI Accuracy Disclaimer
+
+AI-generated content is produced using automated systems.
+
+We do not guarantee that AI-generated:
+
+summaries;
+classifications;
+sentiment labels;
+clusters;
+recommendations;
+translations;
+extracted information;
+
+are always accurate.
+
+AI output should not be treated as authoritative merely because it is presented through LUM News.
+
+74. No Guarantee of Availability of Particular Sources
+
+We do not guarantee that any specific publisher, news organization, feed, API, region, topic, or source will remain available.
+
+Sources may be removed or become unavailable because of:
+
+licensing;
+provider restrictions;
+technical issues;
+publisher decisions;
+commercial changes;
+legal requirements.
+75. Limitation of Liability
+
+To the maximum extent permitted by applicable law, LUM News and its operators, officers, employees, contractors, affiliates, and service providers will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages arising from your use of the Service.
+
+This may include losses associated with:
+
+loss of profits;
+loss of business opportunities;
+loss of data;
+loss of goodwill;
+service interruption;
+reliance on inaccurate information;
+third-party content;
+third-party websites;
+AI-generated information;
+inability to access the Service.
+
+However, nothing in these Terms excludes or limits liability to the extent such exclusion or limitation is prohibited by applicable law.
+
+In particular, LUM News does not intend to exclude liability that cannot legally be excluded.
+
+76. Liability Cap
+
+Where legally permissible, LUM News's aggregate liability arising from or relating to the Service may be limited to the amount you paid to LUM News for the applicable Service during the 12 months preceding the event giving rise to the claim, or another minimum amount required by applicable law.
+
+If you have not paid anything for the Service, the applicable legal minimum will govern.
+
+This limitation does not apply where applicable law prohibits such a limitation.
+
+77. Consumer Rights
+
+Nothing in these Terms is intended to deprive consumers of rights granted by mandatory consumer-protection legislation.
+
+Where LUM News provides services to consumers in South Africa, applicable provisions of the Consumer Protection Act may apply. The Act establishes consumer-protection standards and restricts certain contractual terms that undermine statutory consumer rights.
+
+If a provision of these Terms conflicts with a mandatory legal right, the mandatory legal right will prevail to the extent of the conflict.
+
+78. Force Majeure
+
+LUM News will not be responsible for delays or failures caused by circumstances beyond our reasonable control, including:
+
+natural disasters;
+major network failures;
+infrastructure failures;
+power failures;
+widespread cyber incidents;
+government actions;
+war;
+civil unrest;
+public-health emergencies;
+failures of third-party infrastructure;
+failures of news APIs;
+failures of cloud providers;
+failures of telecommunications providers.
+
+This section does not remove any rights that cannot legally be excluded.
+
+79. Indemnification
+
+To the maximum extent permitted by applicable law, you agree to indemnify and hold harmless LUM News and its operators, officers, employees, and contractors from claims, losses, liabilities, and reasonable expenses arising from:
+
+your material violation of these Terms;
+your unlawful use of the Service;
+your infringement of another person's intellectual-property rights;
+your intentional misuse of the Service;
+your submitted content where applicable.
+
+This provision does not apply to the extent that the claim results from LUM News's own unlawful conduct, gross negligence, or other circumstances where indemnification cannot lawfully be imposed.
+
+80. No Waiver
+
+If LUM News does not immediately enforce a provision of these Terms, that does not necessarily mean that we waive the right to enforce it later.
+
+81. Severability
+
+If any provision of these Terms is determined to be invalid, unlawful, or unenforceable, that provision will be interpreted or limited to the minimum extent necessary where legally permissible.
+
+The remaining provisions will continue to apply.
+
+82. Entire Agreement
+
+These Terms, together with:
+
+the Privacy Policy;
+applicable subscription terms;
+applicable additional product terms;
+other policies expressly incorporated into these Terms;
+
+constitute the agreement between you and LUM News regarding the Service, subject to mandatory rights under applicable law.
+
+83. Assignment
+
+You may not assign or transfer your rights or obligations under these Terms without our prior written consent, except where such restriction is prohibited by applicable law.
+
+LUM News may transfer its rights and obligations as part of:
+
+a merger;
+acquisition;
+restructuring;
+sale of assets;
+corporate reorganization;
+transfer of the Service;
+
+subject to applicable law.
+
+84. No Partnership
+
+These Terms do not create:
+
+an employment relationship;
+partnership;
+joint venture;
+agency relationship;
+franchise relationship;
+
+between you and LUM News.
+
+85. No Waiver of Legal Rights
+
+Nothing in these Terms prevents either party from exercising rights that cannot legally be waived.
+
+86. Governing Law
+
+These Terms are governed by the laws of:
+
+[INSERT GOVERNING COUNTRY]
+
+and, where applicable:
+
+[INSERT PROVINCE/STATE]
+
+without giving effect to conflict-of-law rules that would require application of another jurisdiction's law, subject always to mandatory consumer-protection and other applicable laws.
+
+Do not leave this section as "[Your Country/Region]" in production.
+
+87. South African Operation
+
+If LUM News is operated by a South African entity and South African law governs the relevant relationship, these Terms should be interpreted alongside applicable South African legislation, which may include:
+
+the Consumer Protection Act;
+the Electronic Communications and Transactions Act;
+the Protection of Personal Information Act;
+the Promotion of Access to Information Act;
+applicable intellectual-property legislation;
+other applicable laws and regulations.
+
+The exact laws applicable to a particular user may depend on the user's location, the nature of the transaction, and other legal factors.
+
+88. Dispute Resolution
+
+If you have a dispute with LUM News, please contact us first.
+
+Legal Contact:
+
+legal@lumnews.app
+
+Please provide:
+
+your name;
+account email;
+description of the dispute;
+relevant dates;
+relevant transaction or account information;
+requested resolution.
+
+We will attempt to resolve disputes through good-faith communication where appropriate.
+
+89. Alternative Dispute Resolution
+
+Where applicable law provides or requires an alternative dispute-resolution process, the parties may use that process before commencing litigation.
+
+Nothing in these Terms prevents a consumer from exercising a mandatory right to approach an applicable regulator, tribunal, ombud, or other competent authority.
+
+90. Court Proceedings
+
+Subject to mandatory consumer rights and applicable law, disputes that cannot be resolved through appropriate alternative mechanisms may be brought before a competent court in the applicable jurisdiction.
+
+Nothing in this section is intended to prevent a consumer from bringing proceedings in a jurisdiction where applicable law gives that consumer a mandatory right to do so.
+
+91. Notices
+
+Legal notices to LUM News should be sent to:
+
+legal@lumnews.app
+
+Privacy notices should be sent to:
+
+privacy@lumnews.app
+
+Security reports should be sent to:
+
+[INSERT SECURITY EMAIL]
+
+Copyright complaints should be sent to:
+
+[INSERT COPYRIGHT EMAIL]
+
+92. Contact Information
+
+LUM News
+
+Legal/Operating Entity: [INSERT LEGAL ENTITY]
+
+Trading Name: LUM News
+
+Website: [INSERT PRODUCTION WEBSITE]
+
+Legal:
+
+legal@lumnews.app
+
+Privacy:
+
+privacy@lumnews.app
+
+Security:
+
+[INSERT SECURITY EMAIL]
+
+Copyright:
+
+[INSERT COPYRIGHT EMAIL]
+
+Content Corrections:
+
+[INSERT CORRECTIONS EMAIL]
+
+Business Address:
+
+[INSERT ADDRESS]
+
+Country:
+
+[INSERT COUNTRY]
+
+93. Special Notice Regarding AI-Assisted News
+
+LUM News is designed to assist users in discovering and understanding news.
+
+It should not be assumed that:
+
+AI-generated = verified
+
+or:
+
+summarized = complete
+
+or:
+
+recommended = authoritative
+
+or:
+
+classified = objectively correct
+
+AI-generated information is an additional processing layer between the original source and the user.
+
+Whenever practical, LUM News provides access to the original source so users can inspect the underlying reporting.
+
+94. Original Source Takes Priority
+
+Where an AI-generated summary conflicts with the original article, users should treat the original publisher's article as the relevant source for what that publisher actually reported.
+
+LUM News may update or correct its AI-generated output after discovering an error.
+
+95. Source Attribution and Transparency
+
+LUM News aims to make the origin of news information understandable.
+
+Where technically and legally appropriate, LUM News may display:
+
+publisher name;
+source logo;
+article title;
+publication date;
+author;
+original URL;
+AI-generated label;
+summary-generation information.
+
+Publisher logos and trademarks remain the property of their respective owners.
+
+Displaying a publisher's name or logo for identification does not necessarily imply endorsement, partnership, sponsorship, or affiliation.
+
+96. No False Association With Publishers
+
+LUM News must not represent itself as an official publication of a third-party publisher unless a formal relationship exists.
+
+Likewise, users may not represent LUM News as being operated by or affiliated with another publisher without authorization.
+
+97. Third-Party Intellectual Property
+
+If LUM News displays third-party material, the relevant rights remain with the applicable rights holders.
+
+LUM News does not grant users rights to commercially reproduce third-party:
+
+photographs;
+videos;
+articles;
+illustrations;
+logos;
+trademarks;
+other copyrighted works.
+
+Users are responsible for obtaining any rights they require for uses outside the normal functionality of the Service.
+
+98. User Downloads
+
+If LUM News provides download functionality, downloading does not necessarily transfer ownership or broader rights in third-party content.
+
+Downloaded content may remain subject to:
+
+copyright;
+licensing;
+publisher terms;
+database rights;
+other restrictions.
+99. Screenshots and Sharing
+
+LUM News may provide functionality allowing users to share links or story information.
+
+Sharing a LUM News link does not necessarily grant permission to reproduce the underlying third-party article.
+
+Users are responsible for ensuring that their use of shared or copied content complies with applicable law.
+
+100. News Content Does Not Constitute LUM Editorial Reporting
+
+Unless specifically identified as original LUM News journalism, third-party news displayed through the Service should not be understood as reporting authored by LUM News.
+
+AI-generated summaries are generated from available source information and do not necessarily represent independent LUM News reporting.
+
+101. No Guarantee of Source Completeness
+
+LUM News may not receive information from every publisher.
+
+A story may therefore be absent from the Service even if it is available elsewhere.
+
+Similarly, a publisher may publish information that is not available through the feeds or APIs used by LUM News.
+
+102. Geographic Availability
+
+Certain LUM News features may not be available in every country.
+
+Availability may depend on:
+
+laws;
+licensing;
+publisher restrictions;
+third-party providers;
+technical infrastructure;
+payment availability;
+regulatory requirements.
+103. Language and Translation
+
+If LUM News provides automated translation, translations may contain errors.
+
+The translated version may not preserve every nuance of the original.
+
+Users should consult the original source where exact wording matters.
+
+104. Search Results
+
+Search results may be generated using automated algorithms.
+
+The ranking of results does not necessarily mean that LUM News considers a source:
+
+more accurate;
+more authoritative;
+more credible;
+more important.
+
+Ranking may depend on:
+
+relevance;
+recency;
+personalization;
+source availability;
+metadata;
+algorithmic processing.
+105. Trending Stories
+
+If LUM News identifies trending topics, those trends may be calculated automatically.
+
+A "trending" designation does not guarantee:
+
+factual importance;
+public consensus;
+credibility;
+political significance;
+journalistic importance.
+106. Automated Content Classification
+
+LUM News may classify stories using automated systems.
+
+Classifications may include:
+
+category;
+topic;
+location;
+language;
+sentiment;
+event type;
+entities;
+other metadata.
+
+Automated classifications may be incorrect.
+
+107. AI Provenance
+
+LUM News may maintain internal records relating to AI-generated content, including:
+
+source URL;
+publisher;
+retrieval timestamp;
+AI provider;
+model;
+processing version;
+summary version;
+correction status.
+
+These records may be used for:
+
+quality control;
+corrections;
+security;
+auditing;
+troubleshooting;
+system improvement.
+108. No Guarantee of AI Model Continuity
+
+LUM News may change:
+
+AI providers;
+AI models;
+model versions;
+prompts;
+processing pipelines;
+classification systems.
+
+A feature that uses AI today may use a different model or provider in the future.
+
+109. Experimental Features
+
+LUM News may introduce experimental or beta features.
+
+Experimental features may:
+
+contain bugs;
+change frequently;
+be removed;
+produce unexpected results;
+have limited availability.
+
+Where a feature is identified as beta or experimental, users acknowledge that it may not have the same reliability as a mature production feature.
+
+110. Feedback
+
+If you provide suggestions, ideas, feature requests, bug reports, or other feedback, you grant LUM News permission to use that feedback to improve the Service without creating an obligation to compensate you, subject to applicable law.
+
+Feedback does not transfer ownership of unrelated intellectual property that you already own.
+
+111. Beta Features and Testing
+
+If LUM News invites you to test a beta feature, you may be subject to additional confidentiality or testing requirements.
+
+LUM News may discontinue beta features at any time.
+
+112. Accessibility
+
+LUM News aims to make its Service reasonably accessible.
+
+However, we do not guarantee that every component will always be compatible with every:
+
+browser;
+operating system;
+assistive technology;
+device.
+
+If you encounter an accessibility problem, contact:
+
+[INSERT ACCESSIBILITY CONTACT]
+
+113. Language
+
+These Terms may be translated into other languages.
+
+If there is a conflict between translated versions and the legally controlling version, the controlling version will be determined according to applicable law.
+
+114. Privacy and Security Relationship
+
+The Privacy Policy governs personal-information processing.
+
+These Terms govern your use of the Service.
+
+Both documents should be read together.
+
+115. Data Deletion
+
+Account deletion and personal-information deletion are governed primarily by the Privacy Policy.
+
+Termination of an account does not necessarily mean that all information is immediately deleted from every system.
+
+Certain information may be retained where required or permitted by law.
+
+116. Service Improvements
+
+LUM News may modify the Service to:
+
+improve performance;
+improve security;
+add features;
+remove obsolete features;
+comply with law;
+improve AI processing;
+reduce costs;
+respond to publisher changes;
+respond to user feedback.
+117. Discontinuation of the Service
+
+LUM News may discontinue all or part of the Service.
+
+If LUM News permanently discontinues a material paid service, applicable refund or consumer rights will be handled in accordance with applicable law and the relevant commercial terms.
+
+118. No Guarantee of Permanent Features
+
+A feature currently available may not remain available indefinitely.
+
+Examples include:
+
+specific AI models;
+specific news sources;
+specific APIs;
+specific filters;
+specific personalization features;
+specific integrations.
+119. Legal Compliance
+
+You must comply with all laws applicable to your use of the Service.
+
+LUM News does not authorize you to use the Service for activities that are unlawful in your jurisdiction.
+
+120. Compliance With Third-Party Rights
+
+You must respect the rights of:
+
+publishers;
+journalists;
+photographers;
+creators;
+companies;
+organizations;
+individuals.
+
+Nothing in these Terms grants rights that LUM News does not possess.
+
+121. Interpretation
+
+Headings are included for convenience and do not affect interpretation.
+
+Words such as "including" mean "including without limitation" unless the context requires otherwise.
+
+122. Version History
+
+LUM News may maintain a version history of these Terms.
+
+Version	Effective Date	Description
+1.0	[INSERT DATE]	Initial Terms of Service
+[VERSION]	[DATE]	[DESCRIPTION]
+123. Final Agreement
+
+By using LUM News, you acknowledge that:
+
+LUM News aggregates information from third-party sources.
+Third-party publishers generally retain ownership of their content.
+AI may be used to summarize, classify, cluster, analyze, translate, and personalize news.
+AI-generated information can contain errors.
+AI summaries are not substitutes for original reporting.
+You should verify important information with original sources.
+LUM News does not guarantee that every story or publisher will be available.
+Third-party websites are governed by their own policies.
+You must use the Service lawfully.
+You must not abuse, scrape, disrupt, reverse engineer, or circumvent the Service except where applicable law expressly permits otherwise.
+Your personal information is handled according to the Privacy Policy.
+Mandatory rights under applicable law remain unaffected by these Terms.
