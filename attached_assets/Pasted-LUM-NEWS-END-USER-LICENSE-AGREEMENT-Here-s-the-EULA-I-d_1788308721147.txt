@@ -1,0 +1,323 @@
+LUM NEWS — END USER LICENSE AGREEMENT
+
+Here's the EULA I'd use as the foundation.
+
+Last Updated: [DATE]
+Effective Date: [DATE]
+Version: [VERSION]
+
+1. Agreement
+
+This End User License Agreement ("EULA") governs your use of LUM News software, applications, clients, and related software components provided by LUM News ("LUM News", "we", "us", or "our").
+
+By installing, accessing, copying, or using LUM News software, you agree to this EULA.
+
+If you do not agree with this EULA, do not install or use the software.
+
+This EULA supplements the LUM News Terms of Service and Privacy Policy.
+
+Where applicable, the Terms of Service govern matters that are not specifically addressed by this EULA.
+
+2. License Grant
+
+Subject to your compliance with this EULA, LUM News grants you a:
+
+limited;
+non-exclusive;
+non-transferable;
+non-sublicensable;
+revocable
+
+license to install and use the LUM News software for its intended purpose.
+
+This license does not transfer ownership of the software to you.
+
+3. Ownership
+
+The LUM News software and its components may include:
+
+source code;
+compiled code;
+user interfaces;
+databases;
+algorithms;
+AI processing systems;
+designs;
+graphics;
+logos;
+trademarks;
+documentation;
+software architecture;
+proprietary technologies.
+
+Except for third-party materials and rights that belong to other parties, these materials are owned by or licensed to LUM News.
+
+Nothing in this EULA transfers ownership of LUM News intellectual property to you.
+
+4. Third-Party News Content
+
+LUM News may display, reference, link to, summarize, classify, or otherwise process information originating from third-party publishers and news sources.
+
+LUM News does not claim ownership of third-party news content.
+
+Copyright and other intellectual-property rights in third-party content remain with their respective owners.
+
+Your use of third-party content may also be subject to the terms imposed by the relevant publisher, API provider, RSS provider, or other content provider.
+
+5. AI-Generated Content
+
+LUM News may use artificial intelligence and machine-learning systems to perform functions including:
+
+article summarization;
+story clustering;
+topic classification;
+sentiment analysis;
+translation;
+categorization;
+recommendations;
+extraction of information;
+detection of related stories.
+
+AI-generated or AI-assisted output may contain errors.
+
+The software must not be represented as producing guaranteed accurate, complete, unbiased, or authoritative information.
+
+Where appropriate, users should consult the original source.
+
+6. No Modification
+
+Unless expressly permitted by LUM News or applicable law, you may not modify the LUM News software.
+
+This includes attempting to:
+
+alter the software;
+remove technical protections;
+modify licensing mechanisms;
+circumvent authentication;
+disable security mechanisms;
+alter attribution mechanisms;
+interfere with AI-processing controls.
+7. Reverse Engineering
+
+To the maximum extent permitted by applicable law, you may not:
+
+reverse engineer;
+decompile;
+disassemble;
+extract source code;
+attempt to reconstruct proprietary algorithms;
+circumvent technical protections;
+create derivative versions of proprietary software.
+
+This restriction does not override rights that cannot legally be excluded in your jurisdiction.
+
+That last sentence is important.
+
+You don't want the EULA to claim rights that applicable law doesn't allow you to restrict.
+
+8. Redistribution
+
+You may not redistribute, sell, sublicense, rent, lease, publish, or commercially distribute the LUM News software unless LUM News has expressly authorized you to do so.
+
+This includes uploading unauthorized copies to:
+
+file-sharing services;
+software repositories;
+app stores;
+download websites;
+public servers;
+package registries.
+9. Security
+
+You must not use the software to:
+
+bypass authentication;
+attack LUM News infrastructure;
+interfere with availability;
+introduce malicious code;
+exploit vulnerabilities for unauthorized purposes;
+access another user's account;
+obtain unauthorized data;
+circumvent rate limits or access controls.
+
+Nothing in this section prevents legitimate security research conducted under an applicable LUM News security-disclosure program or with authorization.
+
+10. Updates
+
+LUM News may periodically provide:
+
+security updates;
+bug fixes;
+feature updates;
+compatibility updates;
+AI-model updates;
+dependency updates.
+
+Some updates may be necessary for continued operation or security.
+
+Software functionality may change over time.
+
+LUM News does not guarantee that a particular feature, AI model, news provider, API, or integration will remain available indefinitely.
+
+11. Third-Party Components
+
+The software may incorporate open-source software and third-party libraries.
+
+Those components may be governed by separate licenses.
+
+Where required, LUM News will provide applicable third-party license notices.
+
+A third-party license may grant you rights that are separate from or broader than those granted under this EULA.
+
+12. Third-Party Services
+
+LUM News may depend upon external services, including:
+
+news APIs;
+RSS feeds;
+cloud infrastructure;
+authentication providers;
+analytics services;
+email providers;
+AI providers;
+databases;
+content-delivery networks.
+
+LUM News does not control every third-party service.
+
+A third-party service may change its:
+
+availability;
+pricing;
+API;
+terms;
+rate limits;
+licensing;
+content;
+functionality.
+
+Such changes may affect LUM News functionality.
+
+13. Internet Connection
+
+Certain LUM News functionality requires an internet connection.
+
+You are responsible for obtaining and maintaining:
+
+internet access;
+compatible hardware;
+compatible operating systems;
+required software dependencies.
+
+LUM News is not responsible for connectivity problems outside its reasonable control.
+
+14. User Accounts
+
+Some versions of LUM News may require an account.
+
+You are responsible for maintaining the confidentiality of your credentials and for activity occurring through your account, subject to applicable law.
+
+Account requirements are also governed by the LUM News Terms of Service.
+
+15. User Content
+
+If the software allows you to submit:
+
+comments;
+feedback;
+reports;
+uploads;
+bookmarks;
+other content,
+
+your rights and responsibilities regarding that material are governed by the LUM News Terms of Service and Privacy Policy.
+
+16. Feedback
+
+If you provide suggestions, bug reports, recommendations, or other feedback regarding LUM News, you grant LUM News permission to use that feedback to improve the service without creating an obligation to compensate you, subject to applicable law.
+
+17. Privacy
+
+Your use of LUM News is also governed by the LUM News Privacy Policy.
+
+The Privacy Policy explains how LUM News collects, uses, stores, and protects personal information.
+
+The EULA should not attempt to replace the Privacy Policy.
+
+18. Termination
+
+This license automatically terminates if you materially violate this EULA and the violation is not remedied where applicable.
+
+Upon termination, you must stop using the software and, where applicable, remove it from your devices.
+
+Termination of the software license does not necessarily terminate other rights or obligations under the Terms of Service.
+
+19. Disclaimer
+
+To the maximum extent permitted by applicable law, the software is provided on an "AS IS" and "AS AVAILABLE" basis.
+
+LUM News does not guarantee that the software will:
+
+always be available;
+always operate without errors;
+remain compatible with every device;
+remain compatible with every operating system;
+produce accurate AI output;
+contain every available news source;
+remain unchanged.
+20. News and Information Disclaimer
+
+LUM News is an information and news aggregation platform.
+
+Information displayed through the software should not automatically be treated as:
+
+professional advice;
+verified fact;
+legal advice;
+medical advice;
+financial advice;
+investment advice.
+
+Where accuracy is important, consult the original source and appropriate qualified professionals.
+
+21. Limitation of Liability
+
+To the maximum extent permitted by applicable law, LUM News will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages arising from your use of the software.
+
+Nothing in this EULA excludes or limits liability that cannot legally be excluded or limited.
+
+22. Consumer Rights
+
+Nothing in this EULA is intended to remove, restrict, or waive mandatory rights you may have under applicable consumer-protection or other laws.
+
+Where applicable law provides you with rights that cannot legally be excluded, those rights remain unaffected.
+
+This is particularly important if you're operating LUM News commercially in South Africa or serving consumers in other jurisdictions.
+
+23. Export and Sanctions Compliance
+
+You may not use or distribute the software in violation of applicable export-control or sanctions laws.
+
+24. Governing Law
+
+This EULA is governed by the laws of:
+
+[INSERT JURISDICTION]
+
+without regard to conflict-of-law principles, except where applicable law requires otherwise.
+
+Don't launch with this placeholder still in the document.
+
+25. Changes to the EULA
+
+LUM News may update this EULA when necessary.
+
+For material changes, LUM News should provide notice through an appropriate method and, where required by applicable law, obtain renewed acceptance.
+
+The current version should always be available through a stable URL.
+
+26. Entire Agreement
+
+This EULA, together with the Terms of Service, Privacy Policy, and other applicable LUM News policies, constitutes the applicable agreement governing your use of the software.
+
+If there is a conflict between documents, the documents should specify which terms take precedence.

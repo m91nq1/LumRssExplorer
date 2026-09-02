@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { useSupabaseAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import PolicyAgreementNotice from '@/components/PolicyAgreementNotice';
 import lumLogo from '@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg';
 import heroBackground from '@assets/image_1766075796395.png';
 
@@ -183,6 +184,7 @@ export default function Signup() {
                   'Create account'
                 )}
               </Button>
+              <PolicyAgreementNotice action="creating an account" />
             </form>
           </Form>
           <div className="mt-6 text-center text-sm text-gray-300">

@@ -209,6 +209,24 @@ export default function Terms() {
               View Privacy Policy
             </Button>
           </Link>
+          <Link href="/eula">
+            <Button
+              variant="outline"
+              className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10"
+              data-testid="link-eula"
+            >
+              End User License Agreement
+            </Button>
+          </Link>
+          <Link href="/copyright">
+            <Button
+              variant="outline"
+              className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10"
+              data-testid="link-copyright"
+            >
+              Copyright Policy
+            </Button>
+          </Link>
           <Link href="/home">
             <Button
               variant="outline"

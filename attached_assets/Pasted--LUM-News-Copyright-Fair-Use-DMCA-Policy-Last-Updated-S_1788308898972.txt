@@ -1,0 +1,810 @@
+# LUM News Copyright, Fair Use & DMCA Policy
+
+**Last Updated:** September 2, 2026
+**Effective Date:** September 2, 2026
+
+LUM News ("LUM News," "LUM," "we," "us," or "our") respects the intellectual property rights of authors, journalists, publishers, photographers, artists, broadcasters, and other copyright owners.
+
+LUM News is a news discovery, aggregation, analysis, and information platform. Our service may display links, headlines, excerpts, metadata, summaries, classifications, analytical information, and other information relating to content published by third-party sources.
+
+This Copyright, Fair Use & DMCA Policy explains:
+
+* how copyright applies to LUM News;
+* the distinction between LUM-owned content and third-party content;
+* how LUM News obtains and presents information from third-party sources;
+* our approach to quotations, excerpts, summaries, commentary, research, and transformative use;
+* how copyright owners can report alleged infringement;
+* how LUM News handles DMCA notices;
+* how affected users or publishers may submit counter-notifications;
+* our approach to repeat infringement;
+* and how copyright owners can contact LUM News regarding intellectual-property concerns.
+
+This Policy forms part of the LUM News Terms of Service.
+
+> **Important:** This Policy is intended to describe LUM News's operational copyright practices. It is not legal advice and does not create rights beyond those provided by applicable law.
+
+---
+
+# 1. Scope of This Policy
+
+This Policy applies to the LUM News website, applications, services, APIs, feeds, and other products operated by LUM News that link to, reference, analyze, summarize, or otherwise interact with third-party content.
+
+It applies to:
+
+1. articles and news reports;
+2. photographs and other images;
+3. videos;
+4. audio;
+5. headlines;
+6. article excerpts;
+7. summaries and AI-generated summaries;
+8. metadata;
+9. links to external websites;
+10. user-submitted material;
+11. comments or other user-generated content, where applicable;
+12. LUM News's original editorial, technical, analytical, and visual content.
+
+Because LUM News may incorporate information obtained from numerous third-party sources, ownership of particular material may vary.
+
+---
+
+# 2. LUM News Does Not Claim Ownership of Third-Party Journalism
+
+LUM News does not claim ownership of articles, photographs, videos, audio recordings, illustrations, graphics, trademarks, logos, or other copyrighted material created and published by third parties.
+
+Unless explicitly stated otherwise, third-party content remains the property of its respective copyright owner.
+
+For example, if LUM News references an article originally published by a newspaper, magazine, broadcaster, journalist, wire service, blog, research organization, or other publisher, the underlying article remains the property of its respective rights holder.
+
+LUM News may identify or link to the original publisher where appropriate.
+
+Nothing on LUM News should be interpreted as transferring ownership of third-party intellectual property to LUM News.
+
+---
+
+# 3. Content Owned by LUM News
+
+LUM News owns, or has obtained appropriate rights to use, its own original content and technology.
+
+This may include:
+
+* original articles written by LUM News;
+* original editorial commentary;
+* original analysis;
+* original data visualizations;
+* original graphics;
+* original illustrations;
+* original software;
+* website and application interfaces;
+* page layouts;
+* databases;
+* branding;
+* logos;
+* LUM News trademarks;
+* original photographs or videos created by LUM News;
+* original AI-assisted editorial material where LUM News has appropriate rights;
+* summaries and analytical outputs created by LUM News to the extent permitted by applicable law;
+* and the overall design and structure of the LUM News platform.
+
+Except where otherwise stated, LUM News content may not be reproduced, distributed, modified, publicly displayed, commercially exploited, or republished without appropriate authorization.
+
+---
+
+# 4. Third-Party Content and External Publishers
+
+LUM News may use publicly available information, RSS feeds, APIs, publisher-provided feeds, public metadata, and other lawful sources of information.
+
+Where LUM News references third-party material, we may provide information such as:
+
+* publisher name;
+* article title;
+* publication date;
+* author name;
+* article category;
+* article URL;
+* headline;
+* short excerpt;
+* thumbnail or image;
+* summary;
+* topic classification;
+* sentiment or analytical classification;
+* and other metadata.
+
+The availability of a third-party article, image, video, or other material through LUM News does not necessarily mean that LUM News owns, licenses, or endorses that material.
+
+Users should consult the original publisher for the authoritative version of a third-party article.
+
+---
+
+# 5. Links to Original Sources
+
+LUM News is designed to help users discover news and information from publishers and other sources.
+
+Where practical, LUM News provides links or attribution directing users to the original source.
+
+Users may therefore be redirected from LUM News to an external website operated by a third party.
+
+External websites are governed by their own:
+
+* terms of service;
+* privacy policies;
+* copyright policies;
+* licensing arrangements;
+* advertising practices;
+* and other rules.
+
+LUM News is not responsible for the copyright practices or content of external websites.
+
+---
+
+# 6. News Aggregation
+
+News aggregation is a central function of LUM News.
+
+LUM News may collect and organize information about news stories from multiple sources in order to help users discover and understand current events.
+
+Aggregation may include:
+
+* identifying newly published stories;
+* grouping stories concerning the same event;
+* identifying related articles;
+* categorizing stories;
+* displaying headlines;
+* providing short excerpts;
+* generating summaries;
+* identifying trends;
+* comparing reporting from multiple sources;
+* and providing links to original publishers.
+
+The purpose of aggregation is to facilitate information discovery and navigation rather than to replace the original publisher.
+
+LUM News does not intend for its service to substitute for the full article, publication, subscription, or other product offered by the original publisher.
+
+---
+
+# 7. Headlines and Short Excerpts
+
+LUM News may display headlines and limited excerpts from third-party publications where permitted by applicable law, contractual arrangements, publisher permissions, feed licenses, or other applicable legal bases.
+
+The purpose of displaying limited excerpts may include:
+
+* identifying the subject of an article;
+* providing context;
+* helping users determine whether an article is relevant;
+* enabling news discovery;
+* and directing users to the original publication.
+
+LUM News does not intentionally reproduce complete third-party articles merely for the purpose of providing users with a substitute for the original publication.
+
+Where a publisher's feed or licensing terms restrict the use of excerpts, LUM News may reduce, remove, or modify the relevant content.
+
+---
+
+# 8. Summaries and AI-Generated Summaries
+
+LUM News may use automated systems, artificial intelligence, machine learning, natural-language processing, or human editorial review to generate summaries or analytical descriptions of news stories.
+
+A summary is intended to communicate information about the subject matter of an original source without reproducing the original work in its entirety.
+
+A LUM News summary:
+
+* does not constitute ownership of the underlying source article;
+* is not intended to replace the original article;
+* may contain errors or omissions;
+* may be generated automatically;
+* may be revised or removed;
+* and should be checked against the original source when accuracy is important.
+
+LUM News may provide a link to the original article so that users can access the publisher's complete reporting.
+
+---
+
+# 9. Transformative and Analytical Uses
+
+LUM News may create or display material that transforms, analyzes, comments upon, categorizes, or summarizes information obtained from third-party sources.
+
+Depending on the circumstances and applicable law, examples may include:
+
+* news summaries;
+* commentary;
+* criticism;
+* comparisons;
+* editorial analysis;
+* trend analysis;
+* topic classification;
+* sentiment analysis;
+* historical context;
+* statistical analysis;
+* visualizations;
+* research;
+* quotations;
+* and other forms of informational transformation.
+
+Whether a particular use qualifies as fair use, fair dealing, or another copyright exception depends on the facts and applicable law.
+
+LUM News does not assume that merely describing material as "fair use" automatically makes a use lawful.
+
+---
+
+# 10. Fair Use
+
+Where United States law applies, LUM News may rely on the doctrine of fair use where appropriate.
+
+Fair use is a fact-specific legal doctrine. Factors commonly considered include:
+
+1. the purpose and character of the use;
+2. the nature of the copyrighted work;
+3. the amount and substantiality of the portion used; and
+4. the effect of the use on the potential market for the copyrighted work.
+
+No single factor automatically determines whether a particular use qualifies as fair use.
+
+Accordingly, LUM News does not guarantee that every use of third-party material is protected by fair use.
+
+Where appropriate, LUM News may consider:
+
+* whether the use is informational, educational, analytical, critical, or transformative;
+* whether only the amount reasonably necessary for the purpose is used;
+* whether the source is identified;
+* whether the use substitutes for the original work;
+* and whether the use is otherwise authorized by the rights holder or applicable law.
+
+---
+
+# 11. Fair Dealing and Other Copyright Exceptions
+
+LUM News is based in South Africa and recognizes that copyright exceptions may differ between jurisdictions.
+
+South African copyright law contains provisions governing copyright and permitted uses of protected works.
+
+Depending on the circumstances, LUM News may rely on applicable exceptions, including permitted forms of dealing with copyrighted material.
+
+The availability and scope of a copyright exception may depend on:
+
+* the jurisdiction;
+* the type of work;
+* the purpose of the use;
+* the amount of material used;
+* the context;
+* whether the use competes with the original work;
+* and other circumstances established by applicable law.
+
+Accordingly, a use that may be permitted under one jurisdiction's copyright law may not necessarily be permitted under another jurisdiction's law.
+
+---
+
+# 12. Attribution
+
+Where appropriate and technically feasible, LUM News may identify the original source of third-party material.
+
+Attribution may include:
+
+* publisher name;
+* journalist or author name;
+* source name;
+* article title;
+* publication date;
+* source logo;
+* or a link to the original article.
+
+Attribution is intended to help users identify and access the original source.
+
+However, attribution alone does not create a license or automatically make an otherwise infringing use lawful.
+
+Similarly, the absence of attribution does not necessarily determine whether a particular use is legally permissible.
+
+---
+
+# 13. Images, Photographs, and Thumbnails
+
+Images are frequently subject to separate copyright protections.
+
+Where LUM News displays an image associated with a third-party story, the image may belong to:
+
+* the publisher;
+* a photographer;
+* a news agency;
+* a stock-image provider;
+* a government organization;
+* an image licensing service;
+* or another rights holder.
+
+LUM News does not claim ownership of third-party images merely because they appear on the platform.
+
+Where an image is used pursuant to a feed, API, license, permission, public-domain status, applicable copyright exception, or another lawful basis, that basis may determine the permitted scope of use.
+
+If you believe LUM News is displaying an image without appropriate authorization, you may submit a copyright complaint using the process described below.
+
+---
+
+# 14. Logos and Trademarks
+
+Third-party logos, names, publication titles, and trademarks may appear on LUM News for identification, attribution, linking, or informational purposes.
+
+Such use does not necessarily imply:
+
+* ownership by LUM News;
+* sponsorship;
+* endorsement;
+* partnership;
+* affiliation;
+* or authorization by the trademark owner.
+
+All third-party trademarks remain the property of their respective owners.
+
+"LUM News" and related LUM branding are property of LUM News or its respective rights holders.
+
+---
+
+# 15. User-Submitted Content
+
+If LUM News allows users to submit:
+
+* comments;
+* photographs;
+* links;
+* articles;
+* documents;
+* posts;
+* reviews;
+* or other material,
+
+the submitting user is responsible for ensuring that they have the necessary rights or permissions to submit that material.
+
+Users must not knowingly submit material that infringes another person's copyright.
+
+By submitting content to LUM News, the user represents that:
+
+1. they have the necessary rights or authorization to submit the material; and
+2. the submission does not knowingly violate another person's intellectual-property rights.
+
+LUM News may remove user-submitted content when we receive a credible complaint or otherwise determine that removal is appropriate.
+
+---
+
+# 16. Copyright Complaints
+
+If you are a copyright owner or an authorized representative of a copyright owner and believe that material available through LUM News infringes your copyright, you may notify us.
+
+Before submitting a complaint, we encourage copyright owners to consider whether the challenged use may be authorized by:
+
+* a license;
+* permission;
+* a publisher feed agreement;
+* public-domain status;
+* fair use;
+* fair dealing;
+* another copyright exception;
+* or another lawful basis.
+
+A copyright complaint should identify the specific material at issue and provide enough information for LUM News to investigate.
+
+---
+
+# 17. DMCA Notices
+
+For material to which the Digital Millennium Copyright Act ("DMCA") applies, LUM News may process valid notices under Section 512 of the U.S. Copyright Act.
+
+The DMCA provides a framework under which qualifying service providers may receive notifications of claimed copyright infringement.
+
+A DMCA notice should contain substantially the information required by applicable law, including:
+
+1. **Signature**
+   A physical or electronic signature of the copyright owner or a person authorized to act on the owner's behalf.
+
+2. **Identification of the copyrighted work**
+   Identification of the copyrighted work claimed to have been infringed. If multiple works are involved, a representative list may be provided where permitted.
+
+3. **Identification of the allegedly infringing material**
+   Identification of the material or activity claimed to be infringing and information reasonably sufficient to allow LUM News to locate it.
+
+4. **Contact information**
+   Information reasonably sufficient to permit LUM News to contact the complaining party, such as:
+
+   * full name;
+   * email address;
+   * physical address; and/or
+   * telephone number.
+
+5. **Good-faith statement**
+   A statement that the complaining party has a good-faith belief that the use of the material is not authorized by the copyright owner, the owner's agent, or the law.
+
+6. **Accuracy and authority statement**
+   A statement that the information in the notification is accurate and, under penalty of perjury where applicable, that the complaining party is authorized to act on behalf of the copyright owner.
+
+These elements reflect the requirements described by the U.S. Copyright Office for DMCA notifications.
+
+---
+
+# 18. Where to Send a Copyright Complaint
+
+Copyright complaints should be submitted to:
+
+**LUM News Copyright Agent**
+
+**Email:** [[copyright@lumnews.org](mailto:copyright@lumnews.org)]
+
+**Website:** [https://lumnews.org/copyright]
+
+**Physical Address:** [INSERT LEGAL BUSINESS ADDRESS]
+
+Please replace the bracketed information above with LUM News's actual designated copyright-agent information before publishing this Policy.
+
+If LUM News elects to maintain a formal DMCA designated agent, the relevant information should also be maintained with the U.S. Copyright Office as required for applicable DMCA safe-harbor procedures. The Copyright Office requires qualifying service providers to designate an agent and maintain current agent information.
+
+---
+
+# 19. Incomplete Copyright Notices
+
+A complaint that does not contain enough information to identify the allegedly infringing material may delay our ability to investigate the complaint.
+
+Where appropriate, LUM News may request additional information.
+
+LUM News does not have an obligation to act on notices that do not satisfy applicable legal requirements.
+
+However, nothing in this Policy prevents LUM News from voluntarily reviewing or removing content where we consider it appropriate.
+
+---
+
+# 20. Investigation of Copyright Complaints
+
+After receiving a copyright complaint, LUM News may:
+
+1. review the complaint;
+2. determine whether the notice contains sufficient information;
+3. identify the relevant content;
+4. determine whether the content is hosted by LUM News or merely linked to externally;
+5. review applicable licenses, permissions, feeds, APIs, or other rights;
+6. consider applicable copyright exceptions;
+7. contact the relevant publisher, contributor, or user;
+8. temporarily disable or remove material where appropriate;
+9. request additional information;
+10. take no action where the complaint is unsupported or does not establish infringement;
+11. or take other action permitted by law.
+
+LUM News does not guarantee that every complaint will result in removal.
+
+---
+
+# 21. Third-Party Links and Publisher-Hosted Content
+
+A significant portion of LUM News's functionality may consist of linking users to third-party websites.
+
+If the allegedly infringing material is hosted entirely on another website and LUM News merely provides a link to that material, LUM News may not have the technical ability or legal authority to remove the underlying material from the third-party website.
+
+In such cases, LUM News may:
+
+* remove or disable the relevant LUM News link;
+* remove associated metadata;
+* stop displaying the story;
+* contact the third-party publisher;
+* or direct the complainant to the relevant hosting provider or publisher.
+
+Removing a link from LUM News does not remove the underlying material from the Internet.
+
+Copyright owners may need to contact the website hosting the original material directly.
+
+---
+
+# 22. Publisher Feed and API Content
+
+Where LUM News obtains information through RSS feeds, APIs, syndication arrangements, publisher feeds, or similar systems, the relevant provider may impose terms governing:
+
+* permitted uses;
+* attribution;
+* caching;
+* image usage;
+* excerpts;
+* storage;
+* redistribution;
+* rate limits;
+* and removal procedures.
+
+Where LUM News becomes aware of applicable restrictions, it may modify its handling of that source accordingly.
+
+If a publisher wishes to discuss how its content is represented on LUM News, the publisher may contact us using the contact information provided at the end of this Policy.
+
+---
+
+# 23. Requests to Remove Content
+
+Copyright owners may request that LUM News stop displaying specific material.
+
+A request should identify:
+
+* the rights holder;
+* the material concerned;
+* the URL or location on LUM News;
+* the original copyrighted work;
+* the basis for the request;
+* and appropriate contact information.
+
+A removal request does not automatically establish infringement.
+
+LUM News may evaluate the request under applicable law, contractual obligations, licenses, copyright exceptions, and other relevant circumstances.
+
+---
+
+# 24. Counter-Notification
+
+If LUM News removes or disables material in response to a DMCA notice, the affected party may have the right to submit a DMCA counter-notification.
+
+A counter-notification generally needs to identify:
+
+1. the material that was removed or disabled;
+2. where the material appeared before removal;
+3. the individual's name, address, and telephone number;
+4. a statement consenting to the jurisdiction of the applicable U.S. federal district court, where required;
+5. a statement accepting service of process from the complaining party;
+6. a statement made under penalty of perjury that the person has a good-faith belief that the material was removed or disabled because of mistake or misidentification; and
+7. a physical or electronic signature.
+
+The exact requirements may depend on the applicable law and circumstances.
+
+---
+
+# 25. Processing Counter-Notifications
+
+If LUM News receives a legally sufficient counter-notification, we may forward it to the original complaining party where required or permitted by applicable law.
+
+Where the applicable DMCA procedure requires restoration of material after a specified period unless the copyright owner initiates legal proceedings, LUM News may follow that statutory process.
+
+LUM News may also decline restoration where:
+
+* the counter-notification is incomplete;
+* the material violates another law or policy;
+* the material is otherwise unauthorized;
+* the material is no longer available;
+* or another lawful basis permits continued removal.
+
+---
+
+# 26. False or Abusive Copyright Claims
+
+Copyright complaints should be made in good faith.
+
+A person who knowingly submits materially false claims of copyright infringement may face legal consequences under applicable law.
+
+The DMCA includes consequences for material misrepresentations in copyright notifications and counter-notifications.
+
+LUM News may take appropriate action against individuals who repeatedly submit fraudulent, abusive, deceptive, or bad-faith copyright complaints.
+
+This may include:
+
+* rejecting the complaint;
+* restricting communications;
+* suspending accounts;
+* blocking automated submissions;
+* preserving relevant records;
+* or pursuing other remedies available under applicable law.
+
+---
+
+# 27. Repeat Infringers
+
+Where applicable law requires or permits it, LUM News may adopt and implement procedures for dealing with repeat copyright infringement.
+
+Depending on the circumstances, LUM News may:
+
+* issue warnings;
+* remove infringing material;
+* restrict content-submission privileges;
+* suspend accounts;
+* terminate accounts;
+* block repeat submissions;
+* or take other appropriate measures.
+
+LUM News may consider the circumstances of each case rather than automatically treating every complaint as proof of infringement.
+
+---
+
+# 28. Copyright Complaints Concerning LUM News's Own Content
+
+If you believe that LUM News itself has infringed your copyright, please contact us with:
+
+* your name;
+* contact information;
+* identification of the copyrighted work;
+* identification of the LUM News material;
+* the URL where the material appears;
+* an explanation of your rights;
+* an explanation of why you believe the use is unauthorized;
+* and any supporting information.
+
+We will review the complaint and respond as appropriate.
+
+---
+
+# 29. Copyright Complaints Concerning Third-Party Sources
+
+If the disputed material originated from another publisher, LUM News may distinguish between:
+
+**A. Material hosted by LUM News**
+
+and
+
+**B. Material hosted by the original publisher or another third party.**
+
+Where the material is hosted externally, LUM News may not be the appropriate party to remove the underlying work.
+
+In those circumstances, contacting the original publisher or hosting provider may provide the fastest route to addressing the alleged infringement.
+
+LUM News may nevertheless review its own display of the material and may remove or modify its representation of the content where appropriate.
+
+---
+
+# 30. Public-Domain Material
+
+Material that is genuinely in the public domain may generally be used without permission, subject to applicable law and jurisdiction.
+
+However, the fact that an underlying work is old does not necessarily mean that:
+
+* every version of the work is public domain;
+* every photograph of the work is public domain;
+* every translation is public domain;
+* every recording is public domain;
+* or every adaptation is public domain.
+
+LUM News may therefore evaluate public-domain claims based on the particular material involved.
+
+---
+
+# 31. Government and Public-Record Material
+
+Certain government documents, public records, datasets, reports, and other materials may be subject to special copyright rules.
+
+The fact that information is publicly accessible does not automatically mean that all associated material is free of copyright restrictions.
+
+LUM News may therefore distinguish between:
+
+* factual information;
+* government records;
+* government-created works;
+* third-party reports;
+* photographs;
+* charts;
+* graphics;
+* and other creative material.
+
+---
+
+# 32. Facts Are Not the Same as Copyrighted Expression
+
+LUM News may report factual information contained in third-party reporting.
+
+Copyright generally protects original expression rather than facts themselves.
+
+For example, the existence of an event, date, location, publicly reported statistic, or other factual information may be discussed by LUM News.
+
+However, the original wording, photographs, illustrations, videos, audio, graphics, and other creative expression may remain protected by copyright.
+
+LUM News therefore attempts to distinguish between reporting facts and reproducing another publisher's protected expression.
+
+---
+
+# 33. No Guarantee of Copyright Clearance
+
+Although LUM News attempts to respect copyright law and applicable licensing restrictions, we cannot guarantee that every piece of third-party information displayed, linked, summarized, or referenced by the platform is free from copyright disputes.
+
+Copyright ownership can be complex and may involve:
+
+* publishers;
+* authors;
+* photographers;
+* syndication agencies;
+* licensing companies;
+* employers;
+* estates;
+* collecting societies;
+* and other rights holders.
+
+If a legitimate rights conflict is brought to our attention, LUM News will evaluate it in accordance with applicable law and this Policy.
+
+---
+
+# 34. Automated Copyright Systems
+
+Because LUM News may process large volumes of information automatically, some material may be discovered, classified, summarized, or linked through automated systems.
+
+Automated processing can occasionally result in:
+
+* incorrect attribution;
+* duplicate stories;
+* incorrect source identification;
+* incorrect summaries;
+* outdated links;
+* inappropriate thumbnails;
+* or other errors.
+
+If you identify a copyright-related error, please notify LUM News so that it can be reviewed.
+
+---
+
+# 35. Content Removal Does Not Constitute an Admission
+
+The removal, modification, disabling, or delisting of material by LUM News does not necessarily constitute an admission that the material infringed copyright.
+
+LUM News may remove material as a precaution while investigating a complaint.
+
+Similarly, declining to remove material does not necessarily constitute a determination that the material is lawful in every jurisdiction.
+
+---
+
+# 36. Preservation of Rights
+
+Nothing in this Policy limits LUM News's rights, defenses, limitations, exemptions, or remedies available under applicable law.
+
+Nothing in this Policy should be interpreted as:
+
+* admitting infringement;
+* waiving a legal defense;
+* waiving a statutory exception;
+* granting a license to third parties;
+* or creating contractual rights beyond those expressly stated in the LUM News Terms of Service.
+
+---
+
+# 37. Changes to This Policy
+
+LUM News may update this Copyright, Fair Use & DMCA Policy from time to time.
+
+Changes may be made to reflect:
+
+* changes in copyright law;
+* changes in the LUM News platform;
+* changes in third-party content arrangements;
+* changes in technical systems;
+* regulatory developments;
+* or operational changes.
+
+When we update this Policy, we may update the "Last Updated" date at the beginning of the Policy.
+
+Your continued use of LUM News after an updated Policy becomes effective constitutes acknowledgment of the updated Policy to the extent permitted by law.
+
+---
+
+# 38. Contact LUM News
+
+For copyright, fair-use, licensing, attribution, or DMCA matters, contact:
+
+**LUM News Copyright Department**
+
+**Email:** [[copyright@lumnews.org](mailto:copyright@lumnews.org)]
+
+**Copyright Page:** [https://lumnews.org/copyright]
+
+**Website:** [https://lumnews.org]
+
+**Legal Entity:** [INSERT LEGAL ENTITY NAME]
+
+**Physical Address:** [INSERT BUSINESS ADDRESS]
+
+**Designated Copyright Agent:** [INSERT NAME OR DEPARTMENT]
+
+Please replace all bracketed placeholders with the actual legal and contact information before publishing this Policy.
+
+---
+
+# 39. Recommended Copyright Notice
+
+LUM News may use the following copyright notice on its website:
+
+**© 2026 LUM News. All rights reserved.**
+
+Third-party articles, photographs, videos, trademarks, logos, and other copyrighted materials remain the property of their respective owners. LUM News does not claim ownership of third-party material merely because it is referenced, linked, summarized, or displayed through the service.
+
+---
+
+# 40. Final Statement
+
+LUM News believes that copyright protection and access to information can coexist.
+
+Our goal is to help users discover reliable news, understand developing events, compare reporting, and access original journalism while respecting the rights of journalists, publishers, creators, photographers, artists, and other copyright owners.
+
+If you believe that LUM News has used your copyrighted material improperly, we encourage you to contact us directly so that we can investigate the matter.
+
+**Copyright complaints should be directed to:**
+**[[copyright@lumnews.org](mailto:copyright@lumnews.org)]**
+
+**LUM News**
+**© 2026 LUM News**

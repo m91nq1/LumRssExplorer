@@ -21,6 +21,8 @@ import Bookmarks from "@/pages/Bookmarks";
 import History from "@/pages/History";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Eula from "@/pages/Eula";
+import CopyrightPolicy from "@/pages/CopyrightPolicy";
 import ForYou from "@/pages/ForYou";
 import NotFound from "@/pages/not-found";
 
@@ -46,6 +48,8 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/eula" component={Eula} />
+      <Route path="/copyright" component={CopyrightPolicy} />
       {isAuthenticated ? (
         <>
           <Route path="/home" component={Home} />

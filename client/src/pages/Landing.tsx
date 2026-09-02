@@ -376,6 +376,8 @@ export default function Landing() {
               <div className="space-y-2">
                 <Link href="/privacy" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-privacy">Privacy Policy</Link>
                 <Link href="/terms" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-terms">Terms of Service</Link>
+                <Link href="/eula" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-eula">End User License Agreement</Link>
+                <Link href="/copyright" className="block text-sm text-gray-400 hover:text-white transition-colors" data-testid="link-copyright">Copyright Policy</Link>
               </div>
             </div>
           </div>
