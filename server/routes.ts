@@ -8,7 +8,7 @@ import { articles, articleQuerySchema, insertFeedSourceSchema, TOPICS, topicSnap
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
-import { generateAISummary, validateApiKey } from "./summaryService";
+import { generateAISummary } from "./summaryService";
 import { mapCountryToRegion } from "./topicTagger";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import cron from "node-cron";
@@ -315,7 +315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const articleId = req.params.id;
 
-      const serverApiKey = process.env.OPENROUTER_API_KEY;
+      const serverApiKey = process.env.GEMINI_API_KEY;
       if (!serverApiKey) {
         return res.status(503).json({ error: "AI summary service is not configured" });
       }

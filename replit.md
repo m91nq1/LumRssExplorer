@@ -164,13 +164,13 @@ Preferred communication style: Simple, everyday language.
 - **Related Articles**: Grid of related articles from same source with images, timestamps, and read status badges
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
-- **AI-Powered Summaries**: Generate intelligent article summaries using AI via OpenRouter
+- **AI-Powered Summaries**: Generate intelligent article summaries using Google AI Studio
 - **Reading Progress Tracking**: Visual progress bar at top, estimated read time, scroll position persistence
 - **Progress Restoration**: Automatically restores reading position when returning to an article
 
 ### AI Summary Feature
-- **OpenRouter Integration**: Uses OpenRouter API to access Grok 3.1 Mini model for generating summaries
-- **User-Provided API Keys**: Users provide their own OpenRouter API key (stored locally in browser)
+- **Google AI Studio Integration**: Uses the Gemini API to generate article summaries
+- **Server-Managed API Key**: Summaries use the `GEMINI_API_KEY` Replit Secret
 - **Caching**: Generated summaries are cached in the database to avoid redundant API calls
 - **Collapsible UI**: AI summary section is collapsible to save space when not in use
 - **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
