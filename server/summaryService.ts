@@ -19,6 +19,36 @@ interface GeminiResponse {
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent";
 
+function formatSummary(text: string): string {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  const cappedWords = normalized.split(/\s+/).slice(0, 200);
+  const cappedText = cappedWords.join(" ");
+  const sentences =
+    cappedText.match(/[^.!?]+(?:[.!?]+|$)/g)?.map((sentence) => sentence.trim()).filter(Boolean) ||
+    [];
+
+  if (sentences.length >= 2) {
+    const targetWords = Math.ceil(cappedWords.length / 2);
+    let firstParagraphWords = 0;
+    let splitIndex = 1;
+
+    for (let index = 0; index < sentences.length - 1; index += 1) {
+      firstParagraphWords += sentences[index].split(/\s+/).length;
+      splitIndex = index + 1;
+      if (firstParagraphWords >= targetWords) break;
+    }
+
+    return `${sentences.slice(0, splitIndex).join(" ")}\n\n${sentences
+      .slice(splitIndex)
+      .join(" ")}`;
+  }
+
+  const splitIndex = Math.max(1, Math.ceil(cappedWords.length / 2));
+  return `${cappedWords.slice(0, splitIndex).join(" ")}\n\n${cappedWords
+    .slice(splitIndex)
+    .join(" ")}`;
+}
+
 export async function generateAISummary(
   articleId: string,
   apiKey: string
@@ -34,7 +64,16 @@ export async function generateAISummary(
   }
 
   if (article.aiSummary) {
-    return { summary: article.aiSummary, cached: true };
+    const formattedSummary = formatSummary(article.aiSummary);
+
+    if (formattedSummary !== article.aiSummary) {
+      await db
+        .update(articles)
+        .set({ aiSummary: formattedSummary })
+        .where(eq(articles.id, articleId));
+    }
+
+    return { summary: formattedSummary, cached: true };
   }
 
   const articleContent = article.content || article.summary || article.title;
@@ -45,7 +84,7 @@ export async function generateAISummary(
 - Why it matters (significance/impact)
 - Keep it objective and neutral
 - Use simple, accessible language
-Format: Write 2-3 paragraphs (150-200 words total).`;
+Format: Write exactly 2 paragraphs, separated by a blank line. Do not exceed 200 words total.`;
 
   const userPrompt = `Please summarize this news article:
 
@@ -101,14 +140,16 @@ Source: ${article.sourceName || "Unknown"}`;
     throw new Error("No response from AI service");
   }
 
-  const summary = data.candidates[0].content?.parts
+  const generatedSummary = data.candidates[0].content?.parts
     ?.map((part) => part.text || "")
     .join("")
     .trim();
 
-  if (!summary) {
+  if (!generatedSummary) {
     throw new Error("No response from AI service");
   }
+
+  const summary = formatSummary(generatedSummary);
 
   await db
     .update(articles)
