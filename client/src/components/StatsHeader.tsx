@@ -13,7 +13,7 @@ import { Link, useLocation } from "wouter";
 import { useSupabaseAuth } from "@/contexts/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
+import lumLogo from "@/assets/lum-logo.png";
 
 interface StatsHeaderProps {
   totalArticles: number;

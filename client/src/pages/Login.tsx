@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useSupabaseAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import PolicyAgreementNotice from '@/components/PolicyAgreementNotice';
-import lumLogo from '@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg';
+import lumLogo from '@/assets/lum-logo.png';
 import heroBackground from '@assets/image_1766075796395.png';
 
 const loginSchema = z.object({
@@ -74,7 +74,7 @@ export default function Login() {
             <img 
               src={lumLogo} 
               alt="LUM News" 
-              className="h-12 mx-auto cursor-pointer hover:opacity-80 transition-opacity"
+              className="w-16 h-16 rounded-xl object-cover mx-auto cursor-pointer hover:opacity-80 transition-opacity"
               data-testid="img-logo"
             />
           </Link>

@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Layers, Bell, TrendingUp, Zap, Lock, Play, Volume2, VolumeX } from "lucide-react";
 import heroBackground from "@assets/image_1766075796395.png";
-import lumLogo from "@assets/360_F_353288125_kzIlwWOzscGH8RiDCpw0ARd9U5heKZKu_1766077020756.jpg";
+import lumLogo from "@/assets/lum-logo.png";
 import demoVideo from "@assets/LUMnew1221_1766340637581.mp4";
 
 export default function Landing() {
