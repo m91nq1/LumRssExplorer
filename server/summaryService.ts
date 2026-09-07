@@ -2,22 +2,20 @@ import { db } from "./db";
 import { articles } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
-interface GeminiResponse {
-  candidates?: Array<{
-    content?: {
-      parts?: Array<{
-        text?: string;
-      }>;
+interface OpenRouterResponse {
+  choices?: Array<{
+    message?: {
+      content?: string;
     };
-    finishReason?: string;
   }>;
-  promptFeedback?: {
-    blockReason?: string;
+  error?: {
+    message?: string;
+    code?: number | string;
   };
 }
 
-const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent";
+const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free";
 
 function formatSummary(text: string): string {
   const originalParagraphs = text
@@ -104,40 +102,37 @@ function meetsSummaryRequirements(summary: string): boolean {
   );
 }
 
-async function requestGeminiSummary(
+async function requestOpenRouterSummary(
   apiKey: string,
   systemPrompt: string,
   userPrompt: string
 ): Promise<string> {
-  const response = await fetch(GEMINI_API_URL, {
+  const response = await fetch(OPENROUTER_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-goog-api-key": apiKey,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      systemInstruction: {
-        parts: [{ text: systemPrompt }],
-      },
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: userPrompt }],
-        },
+      model: OPENROUTER_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
       ],
-      generationConfig: {
-        maxOutputTokens: 500,
-        temperature: 0.5,
-      },
+      max_tokens: 500,
+      temperature: 0.5,
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Google AI Studio API error:", response.status, errorText);
+    console.error("OpenRouter API error:", response.status, errorText);
 
-    if (response.status === 400 || response.status === 401 || response.status === 403) {
-      throw new Error("Google AI Studio rejected the request. Please check the Gemini API key and its permissions.");
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Invalid OpenRouter API key or insufficient permissions.");
+    }
+    if (response.status === 402) {
+      throw new Error("Insufficient OpenRouter credits.");
     }
     if (response.status === 429) {
       throw new Error("Rate limit exceeded. Please try again later.");
@@ -146,19 +141,13 @@ async function requestGeminiSummary(
     throw new Error(`AI service error: ${response.status}`);
   }
 
-  const data: GeminiResponse = await response.json();
+  const data: OpenRouterResponse = await response.json();
 
-  if (!data.candidates?.length) {
-    if (data.promptFeedback?.blockReason) {
-      throw new Error(`AI summary was blocked: ${data.promptFeedback.blockReason}`);
-    }
-    throw new Error("No response from AI service");
+  if (data.error?.message) {
+    throw new Error(`OpenRouter error: ${data.error.message}`);
   }
 
-  const generatedSummary = data.candidates[0].content?.parts
-    ?.map((part) => part.text || "")
-    .join("")
-    .trim();
+  const generatedSummary = data.choices?.[0]?.message?.content?.trim();
 
   if (!generatedSummary) {
     throw new Error("No response from AI service");
@@ -219,7 +208,7 @@ Content: ${articleContent}
 
 Source: ${article.sourceName || "Unknown"}`;
 
-  let generatedSummary = await requestGeminiSummary(apiKey, systemPrompt, userPrompt);
+  let generatedSummary = await requestOpenRouterSummary(apiKey, systemPrompt, userPrompt);
   let summary = formatSummary(generatedSummary);
 
   if (!meetsSummaryRequirements(summary)) {
@@ -237,7 +226,7 @@ Article content: ${articleContent}
 Draft to revise:
 ${generatedSummary}`;
 
-    generatedSummary = await requestGeminiSummary(apiKey, systemPrompt, revisionPrompt);
+    generatedSummary = await requestOpenRouterSummary(apiKey, systemPrompt, revisionPrompt);
     summary = formatSummary(generatedSummary);
   }
 

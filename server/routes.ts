@@ -315,7 +315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const articleId = req.params.id;
 
-      const serverApiKey = process.env.GEMINI_API_KEY;
+      const serverApiKey = process.env.OPENROUTER_API_KEY;
       if (!serverApiKey) {
         return res.status(503).json({ error: "AI summary service is not configured" });
       }

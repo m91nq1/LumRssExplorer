@@ -164,13 +164,13 @@ Preferred communication style: Simple, everyday language.
 - **Related Articles**: Grid of related articles from same source with images, timestamps, and read status badges
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
-- **AI-Powered Summaries**: Generate intelligent article summaries using Google AI Studio
+- **AI-Powered Summaries**: Generate intelligent article summaries using OpenRouter
 - **Reading Progress Tracking**: Visual progress bar at top, estimated read time, scroll position persistence
 - **Progress Restoration**: Automatically restores reading position when returning to an article
 
 ### AI Summary Feature
-- **Google AI Studio Integration**: Uses the Gemini API to generate article summaries
-- **Server-Managed API Key**: Summaries use the `GEMINI_API_KEY` Replit Secret
+- **OpenRouter Integration**: Uses NVIDIA Nemotron 3 Ultra through OpenRouter to generate article summaries
+- **Server-Managed API Key**: Summaries use the `OPENROUTER_API_KEY` Replit Secret
 - **Caching**: Generated summaries are cached in the database to avoid redundant API calls
 - **Collapsible UI**: AI summary section is collapsible to save space when not in use
 - **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
