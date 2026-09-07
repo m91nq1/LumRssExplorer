@@ -26,7 +26,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag, BarChart2, RefreshCw, TrendingUp, TrendingDown, Minus, Camera } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Rss, Globe, Key, CheckCircle, XCircle, Zap, Newspaper, ChevronDown, Clock, Database, MapPin, Tag, BarChart2, RefreshCw, TrendingUp, TrendingDown, Minus, Camera, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
 
 interface FeedsResponse {
@@ -121,6 +121,9 @@ export default function FeedManagement() {
   const [isAddProviderDialogOpen, setIsAddProviderDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<FeedSource | null>(null);
   const [expandedProviders, setExpandedProviders] = useState<Record<string, boolean>>({});
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [drillDownPage, setDrillDownPage] = useState(1);
+  const DRILL_DOWN_PAGE_SIZE = 20;
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -183,6 +186,23 @@ export default function FeedManagement() {
     },
     enabled: isAdmin && !!supabaseId,
     staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: drillDownData, isLoading: drillDownLoading } = useQuery({
+    queryKey: ["/api/articles", "drilldown", selectedTopic, drillDownPage],
+    queryFn: async () => {
+      if (!selectedTopic) return null;
+      const params = new URLSearchParams({
+        topics: selectedTopic,
+        page: String(drillDownPage),
+        pageSize: String(DRILL_DOWN_PAGE_SIZE),
+      });
+      const response = await fetch(`/api/articles?${params}`);
+      if (!response.ok) throw new Error("Failed to fetch articles");
+      return response.json() as Promise<{ articles: Array<{ id: string; title: string; sourceName: string; publishedAt: string; url: string }>; total: number; page: number; pageSize: number; totalPages: number }>;
+    },
+    enabled: !!selectedTopic,
+    staleTime: 30 * 1000,
   });
 
   const adminFetch = async (url: string, options: RequestInit = {}) => {
@@ -719,7 +739,12 @@ export default function FeedManagement() {
                   const isUp = hasDelta && delta > 0.05;
                   const isDown = hasDelta && delta < -0.05;
                   return (
-                    <Card key={stat.topic} className="p-4" data-testid={`card-topic-${stat.topic.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`}>
+                    <Card
+                      key={stat.topic}
+                      className="p-4 cursor-pointer hover:border-violet-500/50 hover:shadow-md transition-all duration-150"
+                      data-testid={`card-topic-${stat.topic.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`}
+                      onClick={() => { setSelectedTopic(stat.topic); setDrillDownPage(1); }}
+                    >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <span className="text-sm font-medium leading-tight">{stat.topic}</span>
                         <Badge variant="secondary" className="shrink-0 tabular-nums">
@@ -781,6 +806,94 @@ export default function FeedManagement() {
             </div>
           )}
         </section>
+
+        {/* Topic Drill-Down Dialog */}
+        <Dialog open={!!selectedTopic} onOpenChange={(open) => { if (!open) setSelectedTopic(null); }}>
+          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col" data-testid="dialog-topic-drilldown">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-violet-400" />
+                {selectedTopic}
+              </DialogTitle>
+              <DialogDescription>
+                Articles classified under this topic
+                {drillDownData?.total != null && ` — ${drillDownData.total.toLocaleString()} total`}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-y-auto min-h-0">
+              {drillDownLoading ? (
+                <div className="space-y-3 py-2">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <Skeleton key={i} className="h-14 rounded-lg" />
+                  ))}
+                </div>
+              ) : drillDownData?.articles?.length ? (
+                <div className="space-y-2 py-2" data-testid="drilldown-article-list">
+                  {drillDownData.articles.map((article) => (
+                    <a
+                      key={article.id}
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start justify-between gap-3 p-3 rounded-lg border border-border hover:border-violet-500/40 hover:bg-muted/40 transition-colors group"
+                      data-testid={`drilldown-article-${article.id}`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-violet-400 transition-colors">
+                          {article.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-muted-foreground">{article.sourceName}</span>
+                          <span className="text-xs text-muted-foreground">·</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(article.publishedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                          </span>
+                        </div>
+                      </div>
+                      <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-10 text-center text-sm text-muted-foreground">
+                  No articles found for this topic.
+                </div>
+              )}
+            </div>
+
+            {/* Pagination */}
+            {drillDownData && drillDownData.totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t border-border shrink-0">
+                <span className="text-xs text-muted-foreground">
+                  Page {drillDownData.page} of {drillDownData.totalPages}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDrillDownPage((p) => Math.max(1, p - 1))}
+                    disabled={drillDownPage <= 1 || drillDownLoading}
+                    data-testid="button-drilldown-prev"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Prev
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDrillDownPage((p) => p + 1)}
+                    disabled={drillDownPage >= drillDownData.totalPages || drillDownLoading}
+                    data-testid="button-drilldown-next"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* News API Providers Section */}
         <section>
