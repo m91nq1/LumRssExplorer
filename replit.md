@@ -169,7 +169,7 @@ Preferred communication style: Simple, everyday language.
 - **Progress Restoration**: Automatically restores reading position when returning to an article
 
 ### AI Summary Feature
-- **OpenRouter Integration**: Uses NVIDIA Nemotron 3 Ultra through OpenRouter to generate article summaries
+- **OpenRouter Integration**: Uses Poolside Laguna S 2.1 through OpenRouter to generate article summaries
 - **Server-Managed API Key**: Summaries use the `OPENROUTER_API_KEY` Replit Secret
 - **Caching**: Generated summaries are cached in the database to avoid redundant API calls
 - **Collapsible UI**: AI summary section is collapsible to save space when not in use

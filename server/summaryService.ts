@@ -15,7 +15,7 @@ interface OpenRouterResponse {
 }
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free";
+const OPENROUTER_MODEL = "poolside/laguna-s-2.1:free";
 
 function formatSummary(text: string): string {
   const originalParagraphs = text
@@ -28,15 +28,15 @@ function formatSummary(text: string): string {
     originalParagraphs.length === 2 &&
     originalParagraphs.every((paragraph) => {
       const paragraphWords = paragraph.split(/\s+/).length;
-      return paragraphWords >= 80 && paragraphWords <= 100;
+      return paragraphWords >= 60 && paragraphWords <= 90;
     }) &&
-    originalParagraphs.join(" ").split(/\s+/).length <= 200
+    originalParagraphs.join(" ").split(/\s+/).length <= 180
   ) {
     return originalParagraphs.join("\n\n");
   }
 
   const normalized = text.replace(/\s+/g, " ").trim();
-  const cappedWords = normalized.split(/\s+/).slice(0, 200);
+  const cappedWords = normalized.split(/\s+/).slice(0, 180);
   const cappedText = cappedWords.join(" ");
   const sentences =
     cappedText.match(/[^.!?]+(?:[.!?]+|$)/g)?.map((sentence) => sentence.trim()).filter(Boolean) ||
@@ -54,10 +54,10 @@ function formatSummary(text: string): string {
       const distance = Math.abs(runningWords - targetWords);
 
       if (
-        runningWords >= 80 &&
-        runningWords <= 100 &&
-        secondParagraphWords >= 80 &&
-        secondParagraphWords <= 100 &&
+        runningWords >= 60 &&
+        runningWords <= 90 &&
+        secondParagraphWords >= 60 &&
+        secondParagraphWords <= 90 &&
         distance < closestDistance
       ) {
         splitIndex = index + 1;
@@ -93,11 +93,11 @@ function meetsSummaryRequirements(summary: string): boolean {
 
   return (
     paragraphs.length === 2 &&
-    totalWords >= 160 &&
-    totalWords <= 200 &&
+    totalWords >= 120 &&
+    totalWords <= 180 &&
     paragraphs.every((paragraph) => {
       const paragraphWords = wordCount(paragraph);
-      return paragraphWords >= 80 && paragraphWords <= 100;
+      return paragraphWords >= 60 && paragraphWords <= 90;
     })
   );
 }
@@ -198,7 +198,7 @@ export async function generateAISummary(
 - Why it matters (significance/impact)
 - Keep it objective and neutral
 - Use simple, accessible language
-Format: Write exactly 2 paragraphs, separated by a blank line. Write 80-100 words in each paragraph, aiming for about 100 words per paragraph. The complete summary must contain 160-200 words—never fewer than 160 and never more than 200.`;
+Format: Write exactly 2 paragraphs, separated by a blank line. Write 60-90 words in each paragraph. The complete summary must contain 120-180 words—never fewer than 120 and never more than 180.`;
 
   const userPrompt = `Please summarize this news article:
 
@@ -215,8 +215,8 @@ Source: ${article.sourceName || "Unknown"}`;
     const revisionPrompt = `Rewrite the draft summary below so it follows every format rule exactly.
 
 - Return exactly two paragraphs separated by one blank line.
-- Each paragraph must contain 80-100 words.
-- The total must contain 160-200 words.
+- Each paragraph must contain 60-90 words.
+- The total must contain 120-180 words.
 - Preserve only facts supported by the supplied article.
 - Do not include a title, labels, bullet points, or commentary.
 
@@ -238,7 +238,7 @@ ${generatedSummary}`;
         .filter(Boolean)
         .map((paragraph) => wordCount(paragraph)),
     });
-    throw new Error("AI service returned a summary outside the required 160-200 word range. Please try again.");
+    throw new Error("AI service returned a summary outside the required 120-180 word range. Please try again.");
   }
 
   await db
