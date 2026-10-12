@@ -137,15 +137,6 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Initialize news providers first so they're available during article store refresh
-  console.log("Initializing news providers...");
-  await newsProviderService.initialize();
-  console.log("News providers initialized");
-
-  console.log("Initializing article store...");
-  await articleStore.initialize();
-  console.log("Article store initialized");
-
   // Start the behavior-based digest scheduler (every 2 days)
   startDigestScheduler();
 
@@ -1089,6 +1080,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  // Serve cached database articles immediately. External feeds must not delay
+  // the web server opening its port or leave the preview blank during startup.
+  httpServer.once("listening", () => {
+    void (async () => {
+      console.log("Initializing news providers in the background...");
+      await newsProviderService.initialize();
+      console.log("Initializing article store in the background...");
+      await articleStore.initialize();
+      console.log("Article store initialized");
+    })().catch(() => {
+      console.error("Initial feed refresh failed. The app remains available with saved articles.");
+    });
+  });
 
   return httpServer;
 }
