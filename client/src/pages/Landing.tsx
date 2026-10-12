@@ -17,7 +17,7 @@ export default function Landing() {
   const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -40,7 +40,7 @@ export default function Landing() {
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
 
-    const observer = new IntersectionObserver(
+    const observer = typeof IntersectionObserver === "function" ? new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
@@ -51,11 +51,11 @@ export default function Landing() {
         });
       },
       { threshold: 0.5 }
-    );
+    ) : null;
 
-    observer.observe(container);
+    observer?.observe(container);
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
     };
@@ -82,6 +82,7 @@ export default function Landing() {
     <div 
       className="min-h-screen text-white overflow-hidden"
       style={{
+        backgroundColor: '#020b0e',
         backgroundImage: `url(${heroBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center 30%',
@@ -402,27 +403,31 @@ export default function Landing() {
         }
         
         .animate-fadeIn {
-          animation: fadeIn 1s ease-out forwards;
+          animation: fadeIn 1s ease-out both;
         }
         
         .animation-delay-300 {
           animation-delay: 0.3s;
-          opacity: 0;
         }
         
         .animation-delay-500 {
           animation-delay: 0.5s;
-          opacity: 0;
         }
         
         .animation-delay-600 {
           animation-delay: 0.6s;
-          opacity: 0;
         }
         
         .animation-delay-700 {
           animation-delay: 0.7s;
-          opacity: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fadeIn {
+            animation: none;
+            opacity: 1;
+            transform: none;
+          }
         }
       `}</style>
     </div>

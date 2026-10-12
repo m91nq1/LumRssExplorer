@@ -48,7 +48,7 @@ const settingsSchema = z.object({
   apiKey: z.string().trim().min(20).max(512).regex(/^sk-[A-Za-z0-9_-]+$/).optional(),
 }).strict();
 
-async function testConfig(config: Awaited<ReturnType<typeof getAiConfig>>) {
+export async function testConfig(config: Awaited<ReturnType<typeof getAiConfig>>) {
   const key = resolveApiKey(config);
   if (!key) throw new AiServiceError("Save an OpenAI API key before testing or enabling summaries.", 400);
   await verifyModelAccess(key, config.model);

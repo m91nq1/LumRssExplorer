@@ -61,6 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       initialSessionLoaded.current = true;
+      // Restoring sign-in must not wait for the unrelated local profile request.
+      setIsLoading(false);
       
       // Fetch local user data without triggering login notification
       if (session?.user) {
@@ -75,13 +77,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
       
+    }).catch(() => {
+      initialSessionLoaded.current = true;
       setIsLoading(false);
+      console.warn('Sign-in restoration was unavailable. Public pages remain accessible.');
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setIsLoading(false);
         
         // Only sync on actual SIGNED_IN event (not session restore)
         // Also check we're not re-processing the same session
@@ -89,15 +95,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const sessionId = session.access_token.slice(-20); // Use last 20 chars as session identifier
           if (syncedSessionId.current !== sessionId) {
             syncedSessionId.current = sessionId;
-            const local = await syncUserWithBackend(session.user);
-            setLocalUser(local);
+            void syncUserWithBackend(session.user).then(local => {
+              if (syncedSessionId.current === sessionId) setLocalUser(local);
+            });
           }
         } else if (event === 'SIGNED_OUT') {
           setLocalUser(null);
           syncedSessionId.current = null;
         }
         
-        setIsLoading(false);
       }
     );
 

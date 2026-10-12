@@ -11,9 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
       (function() {
-        var theme = localStorage.getItem('lum-news-theme');
+        var theme;
+        try { theme = localStorage.getItem('lum-news-theme'); } catch (_) {}
         if (!theme) {
-          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          theme = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         }
         if (theme === 'dark') {
           document.documentElement.classList.add('dark');
@@ -24,7 +25,14 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main id="app-startup" style="box-sizing:border-box;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#020b0e;color:#fff;font-family:Arial,sans-serif;text-align:center">
+        <h1 style="font-size:40px;font-weight:400;margin:0 0 16px">LUM News</h1>
+        <p role="status">Loading your news…</p>
+        <a href="/" style="color:#79d9ff;margin-top:16px">Reload page</a>
+        <noscript><p>Enable JavaScript to use LUM News.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

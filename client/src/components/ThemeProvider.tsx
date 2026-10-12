@@ -14,11 +14,13 @@ const THEME_KEY = "lum-news-theme";
 
 function getInitialTheme(): Theme {
   if (typeof window !== "undefined") {
-    const stored = localStorage.getItem(THEME_KEY);
-    if (stored === "light" || stored === "dark") {
-      return stored;
+    try {
+      const stored = localStorage.getItem(THEME_KEY);
+      if (stored === "light" || stored === "dark") return stored;
+    } catch {
+      // Embedded and privacy-restricted browsers may disallow storage.
     }
-    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+    if (typeof window.matchMedia === "function" && window.matchMedia("(prefers-color-scheme: light)").matches) {
       return "light";
     }
   }
@@ -47,7 +49,11 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useLayoutEffect(() => {
     applyTheme(theme);
-    localStorage.setItem(THEME_KEY, theme);
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // Theme still works in memory when persistent storage is unavailable.
+    }
   }, [theme]);
 
   const toggleTheme = () => {
