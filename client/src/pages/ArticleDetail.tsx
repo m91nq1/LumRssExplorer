@@ -67,6 +67,7 @@ export default function ArticleDetail() {
 
   const [aiSummaryOpen, setAiSummaryOpen] = useState(false);
   const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
+  const [aiSummaryFailure, setAiSummaryFailure] = useState("");
   const [showFullContent, setShowFullContent] = useState(false);
   const [readProgress, setReadProgress] = useState(0);
   const mainRef = useRef<HTMLElement>(null);
@@ -85,6 +86,19 @@ export default function ArticleDetail() {
   const { data: neighbors } = useQuery<ArticleNeighbors>({
     queryKey: [`/api/articles/${articleId}/neighbors`],
     enabled: !!articleId,
+  });
+
+  const { data: aiSummaryStatus } = useQuery<{ enabled: boolean; model: string } | null>({
+    queryKey: ["/api/ai-summary/status"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/ai-summary/status", { credentials: "same-origin" });
+        if (!response.ok) return null;
+        return await response.json() as { enabled: boolean; model: string };
+      } catch {
+        return null;
+      }
+    },
   });
 
   const { data: extractedContent, isLoading: isExtractingContent, refetch: extractContent } = useQuery<ExtractedContent>({
@@ -137,6 +151,7 @@ export default function ArticleDetail() {
 
   const aiSummaryMutation = useMutation({
     mutationFn: async () => {
+      setAiSummaryFailure("");
       const response = await apiRequest("POST", `/api/articles/${articleId}/ai-summary`, {});
       return response.json();
     },
@@ -152,10 +167,11 @@ export default function ArticleDetail() {
           : "Summary generated using AI.",
       });
     },
-    onError: (error: Error) => {
+    onError: () => {
+      setAiSummaryFailure("AI summaries are temporarily unavailable. The original article link remains usable.");
       toast({
         title: "AI Summary Failed",
-        description: error.message || "Failed to generate AI summary.",
+        description: "AI summaries are temporarily unavailable. The original article remains available.",
         variant: "destructive",
       });
     },
@@ -307,6 +323,7 @@ export default function ArticleDetail() {
   const fullDate = format(new Date(article.publishedAt), "MMMM d, yyyy 'at' h:mm a");
   const relatedArticles = relatedData?.articles || [];
   const readTime = estimateReadTime(article.content, article.summary);
+  const aiSummariesEnabled = aiSummaryStatus?.enabled === true;
 
   return (
     <div className="min-h-screen bg-background">
@@ -473,7 +490,7 @@ export default function ArticleDetail() {
               <CollapsibleContent className="px-4 pb-4">
                 <Separator className="mb-4" />
 
-                {(article.aiSummary || generatedSummary) && (
+                {aiSummariesEnabled && (article.aiSummary || generatedSummary) && (
                   <div
                     className="prose prose-sm dark:prose-invert max-w-none mb-4 p-4 bg-primary/5 rounded-lg border border-primary/10"
                     data-testid="text-ai-summary"
@@ -493,7 +510,7 @@ export default function ArticleDetail() {
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     onClick={() => aiSummaryMutation.mutate()}
-                    disabled={aiSummaryMutation.isPending}
+                    disabled={aiSummaryMutation.isPending || !aiSummariesEnabled}
                     data-testid="button-generate-summary"
                   >
                     {aiSummaryMutation.isPending ? (
@@ -514,9 +531,19 @@ export default function ArticleDetail() {
                     )}
                   </Button>
                 </div>
+                {!aiSummariesEnabled && (
+                  <p className="mt-3 text-sm text-muted-foreground" role="status">
+                    AI summaries are currently turned off. You can still read the original article.
+                  </p>
+                )}
               </CollapsibleContent>
             </Card>
           </Collapsible>
+          {aiSummaryFailure && (
+            <p className="mb-8 rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive" role="alert">
+              {aiSummaryFailure}
+            </p>
+          )}
 
           <Collapsible
             open={showFullContent}

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { ArrowLeft, Save, Mail, Bell, Globe, Tag, Shield } from "lucide-react";
+import { ArrowLeft, Save, Mail, Bell, Globe, Tag, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,9 +10,16 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { TOPICS, REGIONS, type UserPreferences } from "@shared/schema";
+import AiSecretsSettings from "@/components/AiSecretsSettings";
 
 export default function Settings() {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<"preferences" | "secrets">("preferences");
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
+  const handleAdminAccessChange = useCallback((allowed: boolean) => {
+    setHasAdminAccess(allowed);
+    if (!allowed) setActiveTab("preferences");
+  }, []);
   const [favouriteTopics, setFavouriteTopics] = useState<string[]>([]);
   const [preferredRegions, setPreferredRegions] = useState<string[]>([]);
   const [emailDigestEnabled, setEmailDigestEnabled] = useState(true);
@@ -96,18 +103,45 @@ export default function Settings() {
           </Link>
           <h1 className="text-lg font-semibold">Settings</h1>
           <div className="flex-1" />
-          <Button 
-            onClick={handleSave} 
-            disabled={saveMutation.isPending}
-            data-testid="button-save-preferences"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            {saveMutation.isPending ? "Saving..." : "Save Changes"}
-          </Button>
+          {activeTab === "preferences" && (
+            <Button
+              onClick={handleSave}
+              disabled={saveMutation.isPending}
+              data-testid="button-save-preferences"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              {saveMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          )}
         </div>
       </header>
 
       <main className="container py-6 space-y-6 max-w-4xl">
+        <div className="flex flex-wrap gap-2 border-b pb-3" role="tablist" aria-label="Settings sections">
+          <Button
+            type="button"
+            variant={activeTab === "preferences" ? "secondary" : "ghost"}
+            role="tab"
+            aria-selected={activeTab === "preferences"}
+            onClick={() => setActiveTab("preferences")}
+          >
+            Preferences
+          </Button>
+          {hasAdminAccess && (
+            <Button
+              type="button"
+              variant={activeTab === "secrets" ? "secondary" : "ghost"}
+              role="tab"
+              aria-selected={activeTab === "secrets"}
+              onClick={() => setActiveTab("secrets")}
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              AI Secrets
+            </Button>
+          )}
+        </div>
+        <AiSecretsSettings active={activeTab === "secrets"} onAdminAccessChange={handleAdminAccessChange} />
+        {activeTab === "preferences" && <>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -235,6 +269,7 @@ export default function Settings() {
             </CardContent>
           </Card>
         )}
+        </>}
       </main>
     </div>
   );

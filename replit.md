@@ -164,14 +164,16 @@ Preferred communication style: Simple, everyday language.
 - **Related Articles**: Grid of related articles from same source with images, timestamps, and read status badges
 - **Navigation**: Previous/next article navigation (chronological order)
 - **Bookmark/Read Integration**: Bookmark and mark read from detail view
-- **AI-Powered Summaries**: Generate intelligent article summaries using OpenRouter
+- **AI-Powered Summaries**: Generate intelligent article summaries using OpenAI
 - **Reading Progress Tracking**: Visual progress bar at top, estimated read time, scroll position persistence
 - **Progress Restoration**: Automatically restores reading position when returning to an article
 
 ### AI Summary Feature
-- **OpenRouter Integration**: Uses Poolside Laguna S 2.1 through OpenRouter to generate article summaries
-- **Server-Managed API Key**: Summaries use the `OPENROUTER_API_KEY` Replit Secret
-- **Caching**: Generated summaries are cached in the database to avoid redundant API calls
+- **OpenAI Integration**: Uses the Responses API with `gpt-5-nano` by default; admin model selection also supports `gpt-5-mini` and `gpt-5`. Summaries start disabled and cannot be enabled without a successful model-access and inference test.
+- **Admin Secrets Tab**: Settings contains key save/update/remove, model selection, connection test, enable/disable, safe API errors and app-level token counters. Endpoints require a server-verified Supabase token or authenticated server session, never caller-supplied user IDs.
+- **Server-Managed API Key**: Admin-entered OpenAI keys are encrypted with AES-256-GCM in existing system settings. `AI_SECRET_ENCRYPTION_KEY` (preferred) or stable `SESSION_SECRET` must be at least 32 characters; do not rotate it without re-entering stored keys. Optional `OPENAI_API_KEY` supplies an environment-managed fallback. Removing a key disables that fallback in the app; it does not delete workspace environment secrets.
+- **Summary Guardrails**: Two complete prose paragraphs, 60–90 words each and 120–180 words total. Only source-supported facts; one corrective retry and an explicit original-article fallback on failure. No truncation or word padding.
+- **Caching**: Summaries and model/format provenance are cached atomically in the existing database; identical in-flight article requests share work. Legacy-provider summaries regenerate on demand.
 - **Collapsible UI**: AI summary section is collapsible to save space when not in use
 - **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
 

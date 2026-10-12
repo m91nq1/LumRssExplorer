@@ -8,7 +8,9 @@ import { articles, articleQuerySchema, insertFeedSourceSchema, TOPICS, topicSnap
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
-import { generateAISummary } from "./summaryService";
+import { generateAISummary, visibleAiSummary } from "./summaryService";
+import { registerAiSettingsRoutes } from "./services/aiSettingsRoutes";
+import { AiServiceError } from "./services/openaiClient";
 import { mapCountryToRegion } from "./topicTagger";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
 import cron from "node-cron";
@@ -282,7 +284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Article not found" });
       }
 
-      res.json(article);
+      res.json({ ...article, aiSummary: await visibleAiSummary(article) });
     } catch (error) {
       console.error("Error fetching article:", error);
       res.status(500).json({ error: "Failed to fetch article" });
@@ -311,19 +313,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== AI SUMMARY ====================
+  registerAiSettingsRoutes(app);
   app.post("/api/articles/:id/ai-summary", async (req, res) => {
     try {
       const articleId = req.params.id;
 
-      const serverApiKey = process.env.OPENROUTER_API_KEY;
-      if (!serverApiKey) {
-        return res.status(503).json({ error: "AI summary service is not configured" });
-      }
-
-      const result = await generateAISummary(articleId, serverApiKey);
+      const result = await generateAISummary(articleId);
       res.json(result);
     } catch (error: any) {
-      console.error("Error generating AI summary:", error);
+      if (error instanceof AiServiceError) {
+        return res.status(error.status).json({ error: error.message });
+      }
       
       if (error.message?.includes("Article not found")) {
         return res.status(404).json({ error: "Article not found" });
