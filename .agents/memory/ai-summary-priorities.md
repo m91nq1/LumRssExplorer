@@ -14,3 +14,9 @@ A successful one-off OpenAI connection test does not establish that the running 
 **Why:** After a secret replacement, a fresh shell process successfully authenticated while the already-running workflow still returned provider authentication errors. This was runtime credential freshness, not evidence that the newly saved key was invalid.
 
 **How to apply:** Check the application's actual HTTP summary endpoint after key changes, refreshing the workflow's environment when necessary. Verify real summary generation and a cache hit before declaring the end-user flow working; do not rely solely on an “OK” connection probe.
+
+Distinguish an article's unavailable source text from a failure of the AI provider or its credentials.
+
+**Why:** A publisher-blocked article with a short feed snippet led to another request to replace a key that OpenAI already accepted. A generic outage message obscured the article-specific cause.
+
+**How to apply:** Keep the factual-summary guardrails intact and explain content limitations clearly. Do not ask for another API key, pad the summary, invent facts, or bypass publisher access restrictions to resolve missing source text.

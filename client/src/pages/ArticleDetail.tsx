@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ArticleWithStatus } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { aiSummaryErrorMessage } from "@/lib/aiSummaryErrors";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -167,11 +168,12 @@ export default function ArticleDetail() {
           : "Summary generated using AI.",
       });
     },
-    onError: () => {
-      setAiSummaryFailure("AI summaries are temporarily unavailable. The original article link remains usable.");
+    onError: (error) => {
+      const message = aiSummaryErrorMessage(error);
+      setAiSummaryFailure(message);
       toast({
         title: "AI Summary Failed",
-        description: "AI summaries are temporarily unavailable. The original article remains available.",
+        description: message,
         variant: "destructive",
       });
     },

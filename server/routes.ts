@@ -313,7 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(result);
     } catch (error: any) {
       if (error instanceof AiServiceError) {
-        return res.status(error.status).json({ error: error.message });
+        return res.status(error.status).json({ error: error.message, code: error.code });
       }
       
       if (error.message?.includes("Article not found")) {

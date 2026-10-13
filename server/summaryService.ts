@@ -25,10 +25,10 @@ export async function visibleAiSummary(article: { id: string; aiSummary?: string
 async function generate(articleId: string): Promise<{ summary: string; cached: boolean }> {
   const config = await getAiConfig();
   if (!config.enabled || !config.verifiedAt) {
-    throw new AiServiceError("AI summaries are disabled. You can still read the original article.");
+    throw new AiServiceError("AI summaries are disabled. You can still read the original article.", 503, "summaries_disabled");
   }
   const apiKey = resolveApiKey(config);
-  if (!apiKey) throw new AiServiceError("AI summaries are not configured. You can still read the original article.");
+  if (!apiKey) throw new AiServiceError("AI summaries are not configured. You can still read the original article.", 503, "not_configured");
   const [article] = await db.select().from(articles).where(eq(articles.id, articleId)).limit(1);
   if (!article) throw new AiServiceError("Article not found", 404);
   const cacheKey = cacheKeyFor(articleId);
@@ -43,7 +43,7 @@ async function generate(articleId: string): Promise<{ summary: string; cached: b
   }
   content = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 20000);
   if (wordCount(content) < 40) {
-    throw new AiServiceError("There is not enough article text to produce a reliable summary. Please read the original article.", 422);
+    throw new AiServiceError("There is not enough article text to produce a reliable summary. Please read the original article.", 422, "insufficient_article_text");
   }
   const instructions = `You summarise news accurately and neutrally in simple readable language.
 Use ONLY the supplied article as evidence. Preserve important facts, names, dates, statistics and context.
@@ -61,7 +61,7 @@ If the source lacks enough information, do not pad or fabricate to satisfy the w
     summary = normalizeSummary(response.text);
     if (response.complete && meetsSummaryRequirements(summary)) break;
     if (attempt === 1) {
-      throw new AiServiceError("A reliable summary in the required format could not be generated. Please read the original article.", 422);
+      throw new AiServiceError("A reliable summary in the required format could not be generated. Please read the original article.", 422, "summary_format_failed");
     }
   }
   const latest = await getAiConfig();

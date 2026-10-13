@@ -8,9 +8,34 @@ import { AiServiceError, requestOpenAiSummary } from "./openaiClient";
 import { meetsSummaryRequirements, normalizeSummary, wordCount } from "./summaryFormat";
 import { articles } from "@shared/schema";
 import { generateAISummary } from "../summaryService";
+import { ApiRequestError } from "../../client/src/lib/apiErrors";
+import { aiSummaryErrorMessage } from "../../client/src/lib/aiSummaryErrors";
 
 const paragraph = (count: number) => Array.from({ length: count }, (_, i) => `word${i}`).join(" ") + ".";
 const fakeKey = "sk-test-only-not-a-real-key-1234567890";
+
+test("article summary failures distinguish inaccessible text from key, model and quota errors safely", () => {
+  const cases = [
+    ["insufficient_article_text", /enough accessible text/],
+    ["summary_format_failed", /120–180-word/],
+    ["invalid_api_key", /working OpenAI API key/],
+    ["not_configured", /working OpenAI API key/],
+    ["model_unavailable", /model is unavailable/],
+    ["quota_exceeded", /usage limit/],
+    ["summaries_disabled", /switched off/],
+  ] as const;
+  for (const [code, expected] of cases) {
+    const error = new ApiRequestError(422, JSON.stringify({ code, error: fakeKey }));
+    const message = aiSummaryErrorMessage(error);
+    assert.match(message, expected);
+    assert.equal(message.includes(fakeKey), false, "raw error bodies must never be displayed");
+    assert.match(message, /original article link/);
+  }
+  const generic = aiSummaryErrorMessage(new Error(fakeKey));
+  assert.match(generic, /temporarily unavailable/);
+  assert.equal(aiSummaryErrorMessage(new ApiRequestError(502, "<html>proxy failure</html>")), generic);
+  assert.equal(aiSummaryErrorMessage(new ApiRequestError(500, JSON.stringify({ code: fakeKey }))), generic);
+});
 
 test("summary guardrails preserve paragraphs and reject short, long and malformed output", () => {
   for (const size of [60, 75, 90]) {

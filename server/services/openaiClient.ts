@@ -1,5 +1,5 @@
 export class AiServiceError extends Error {
-  constructor(message: string, public status = 503) {
+  constructor(message: string, public status = 503, public code?: string) {
     super(message);
   }
 }
@@ -11,9 +11,9 @@ export interface AiUsage {
 }
 
 function providerError(status: number): AiServiceError {
-  if (status === 401) return new AiServiceError("OpenAI rejected the API key. Update it in admin Secrets settings.", 401);
-  if (status === 403 || status === 404) return new AiServiceError("The selected OpenAI model is not available to this account.", 403);
-  if (status === 429) return new AiServiceError("OpenAI quota or rate limit reached. Check account billing or try again later.", 429);
+  if (status === 401) return new AiServiceError("OpenAI rejected the API key. Update it in admin Secrets settings.", 401, "invalid_api_key");
+  if (status === 403 || status === 404) return new AiServiceError("The selected OpenAI model is not available to this account.", 403, "model_unavailable");
+  if (status === 429) return new AiServiceError("OpenAI quota or rate limit reached. Check account billing or try again later.", 429, "quota_exceeded");
   return new AiServiceError("OpenAI is temporarily unavailable. Please try again later.");
 }
 
