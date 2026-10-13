@@ -19,6 +19,10 @@ test("summary guardrails preserve paragraphs and reject short, long and malforme
     assert.equal(wordCount(summary), size * 2);
     assert.equal(normalizeSummary(`  ${summary}  `), summary);
   }
+  for (const [first, second] of [[54, 68], [95, 65], [55, 65], [100, 80]]) {
+    assert.equal(meetsSummaryRequirements(`${paragraph(first)}\n\n${paragraph(second)}`), true,
+      "The 120-180 word range applies to the complete summary, not each paragraph");
+  }
   for (const summary of [
     `${paragraph(59)}\n\n${paragraph(60)}`,
     `${paragraph(91)}\n\n${paragraph(90)}`,
@@ -106,7 +110,7 @@ test("admin-only Secrets lifecycle verifies model before enabling and never retu
     if (String(url).includes("/models/")) return new Response(JSON.stringify({ id: "gpt-5-nano" }));
     const isSummary = String(options?.body).includes("Headline:");
     if (isSummary) summaryCalls++;
-    const text = isSummary ? invalidSummary ? paragraph(10) : `${paragraph(75)}\n\n${paragraph(75)}` : "OK";
+    const text = isSummary ? invalidSummary ? paragraph(10) : `${paragraph(54)}\n\n${paragraph(68)}` : "OK";
     return new Response(JSON.stringify({
       status: "completed", output: [{ type: "message", content: [{ type: "output_text", text }] }],
       usage: { input_tokens: 5, output_tokens: 1 },

@@ -11,6 +11,5 @@ export function normalizeSummary(text: string): string {
 export function meetsSummaryRequirements(text: string): boolean {
   const paragraphs = text.split(/\n\s*\n/).filter(paragraph => paragraph.trim());
   return paragraphs.length === 2 && wordCount(text) >= 120 && wordCount(text) <= 180 &&
-    paragraphs.every(paragraph => wordCount(paragraph) >= 60 && wordCount(paragraph) <= 90) &&
     paragraphs.every(paragraph => !/^(#|[-*] |paragraph \d|summary:)/i.test(paragraph.trim()));
 }
