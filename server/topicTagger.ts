@@ -1,4 +1,5 @@
 import { Topic, TOPICS } from "@shared/schema";
+import { CURATED_SOURCE_TOPICS } from "./curatedFeeds";
 
 interface TopicKeywords {
   topic: Topic;
@@ -410,6 +411,8 @@ const OVERRIDE_TOPIC_SIGNALS: Record<string, string[]> = {
  */
 function getSourceProfileBonus(sourceName: string): { topic: Topic; bonus: number } | null {
   const lower = sourceName.toLowerCase();
+  const curatedTopic = CURATED_SOURCE_TOPICS.get(lower);
+  if (curatedTopic) return { topic: curatedTopic, bonus: 10 };
   for (const profile of SOURCE_TOPIC_PROFILES) {
     if (lower.includes(profile.fragment)) {
       return { topic: profile.topic, bonus: 10 };

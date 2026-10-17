@@ -1,6 +1,7 @@
 import Parser from "rss-parser";
 import { InsertArticle, FeedSource } from "@shared/schema";
 import crypto from "crypto";
+import { curatedFeedTopic } from "./curatedFeeds";
 
 const parser = new Parser({
   timeout: 10000,
@@ -26,6 +27,7 @@ export async function ingestFeed(feed: FeedSource): Promise<InsertArticle[]> {
   try {
     const result = await parser.parseURL(feed.url);
     const articles: InsertArticle[] = [];
+    const topic = curatedFeedTopic(feed.url);
 
     for (const item of result.items as RSSItem[]) {
       if (!item.title || !item.link) {
@@ -58,6 +60,7 @@ export async function ingestFeed(feed: FeedSource): Promise<InsertArticle[]> {
         link: item.link,
         sourceName: feed.name,
         sourceId: feed.id,
+        ...(topic ? { topics: [topic] } : {}),
         publishedAt,
         summary: cleanSummary || null,
         content,

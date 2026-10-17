@@ -4,6 +4,7 @@ import { ingestFeed } from "./rssIngestor";
 import { tagArticleTopics, generatePolarisationScore, mapCountryToRegion } from "./topicTagger";
 import { newsProviderService } from "./newsProviderService";
 import cron from "node-cron";
+import { seedCuratedFeeds } from "./seedCuratedFeeds";
 
 // Default RSS feeds to seed on first run
 const DEFAULT_FEEDS: InsertFeedSource[] = [
@@ -282,6 +283,9 @@ export class ArticleStore {
     if (feedsUpdated > 0) {
       console.log(`Updated ${feedsUpdated} feed sources with region metadata`);
     }
+
+    const curated = await seedCuratedFeeds(storage);
+    console.log(`Art and football RSS feeds: ${curated.added} added, ${curated.existing} already present`);
 
     // Backfill: recompute region from country for any feed whose stored region
     // does not match what mapCountryToRegion(country) now returns.

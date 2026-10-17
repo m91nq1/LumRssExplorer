@@ -1,0 +1,57 @@
+1. Art news — 50 additional feeds
+Contemporary art, exhibitions and criticism
+#	Source	RSS feed URL
+1	Art Observed	https://artobserved.com/feed/
+2	Contemporary Art Daily	https://contemporaryartdaily.com/feed/
+3	We Make Money Not Art	https://we-make-money-not-art.com/feed/
+4	ArtReview	https://artreview.com/feed/
+5	ArtAsiaPacific	https://artasiapacific.com/feed/
+6	e-flux Announcements	https://www.e-flux.com/announcements/feed/
+7	Widewalls	https://www.widewalls.ch/rss
+8	ArtDependence	https://www.artdependence.com/rss/
+9	Ocula Magazine	https://ocula.com/magazine/rss/
+10	Apollo Magazine	https://www.apollo-magazine.com/feed/
+11	Frieze	https://www.frieze.com/rss.xml
+12	Art & Object	https://www.artandobject.com/rss.xml
+13	The Art Story	https://www.theartstory.org/feed/
+14	Art History News	https://arthistorynews.com/feed/
+15	DailyArt Magazine	https://www.dailyartmagazine.com/feed/
+16	The Jealous Curator	https://www.thejealouscurator.com/blog/feed/
+17	Art21	https://art21.org/feed/
+18	Sculpture Magazine	https://sculpture.org/feed/
+19	Fine Art Connoisseur	https://fineartconnoisseur.com/feed/
+20	Art Rabbit	https://www.artrabbit.com/
+Museums, galleries and art institutions
+#	Source	RSS feed URL
+21	Art Institute of Chicago	https://www.artic.edu/feed
+22	The Guggenheim	https://www.guggenheim.org/feed
+23	Cooper Hewitt Design Museum	https://www.cooperhewitt.org/feed/
+24	Rubin Museum of Himalayan Art	https://rubinmuseum.org/feed/
+25	Vero Beach Museum of Art	https://www.vbmuseum.org/feed/
+26	Getty — The Iris	https://blogs.getty.edu/iris/feed/
+27	National Gallery of Art	https://www.nga.gov/blog/feed.html
+28	The Phillips Collection	https://www.phillipscollection.org/feed
+29	The Metropolitan Museum of Art	https://www.metmuseum.org/blogs/rss
+30	Museum of Modern Art	https://www.moma.org/magazine/rss
+31	Tate	https://www.tate.org.uk/rss.xml
+32	Art Gallery of Ontario	https://ago.ca/rss.xml
+33	National Gallery Singapore	https://www.nationalgallery.sg/rss.xml
+34	Brooklyn Museum	https://www.brooklynmuseum.org/rss
+35	The Frick Collection	https://www.frick.org/rss.xml
+Design, photography, digital art and visual culture
+#	Source	RSS feed URL
+36	Design You Trust	https://designyoutrust.com/feed/
+37	Communication Arts	https://www.commarts.com/rss
+38	KALTBLUT Magazine	https://kaltblut-magazine.com/feed/
+39	My Modern Met	https://mymodernmet.com/feed/
+40	Yatzer	https://www.yatzer.com/rss
+41	Dezeen	https://www.dezeen.com/feed/
+42	ArchDaily	https://www.archdaily.com/rss
+43	Lenscratch	https://lenscratch.com/feed/
+44	Aperture	https://aperture.org/feed/
+45	British Journal of Photography	https://1854.photography/feed/
+46	The Eye of Photography	https://loeildelaphotographie.com/en/feed/
+47	Photoworks	https://photoworks.org.uk/feed/
+48	The Public Domain Review	https://publicdomainreview.org/rss.xml
+49	Booooooom's alternative: Creative photography and visual culture — PetaPixel	https://petapixel.com/feed/
+50	Wallpaper*	https://www.wallpaper.com/rss

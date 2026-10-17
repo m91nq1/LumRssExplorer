@@ -64,6 +64,8 @@ Preferred communication style: Simple, everyday language.
 - Custom RSS parser using the `rss-parser` library
 - Scheduled refresh every 10 minutes via node-cron
 - Normalizes articles from different feed formats into a unified schema
+- `server/curatedFeeds.ts` contains the requested 50 art and 20 football feeds. Startup registration matches canonical URLs, keeps existing source IDs and enabled settings, and only updates their Art/Sports category when needed. Incoming articles from these feeds retain their curated topic.
+- Validate this catalogue and its idempotent registration with `npx tsx --test server/curatedFeeds.test.ts`. A registered URL is not a guarantee that its publisher currently exposes readable RSS.
 - Generates stable IDs using SHA-256 hashing of article links
 
 **External News API Integration**:
