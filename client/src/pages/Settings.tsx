@@ -133,10 +133,11 @@ export default function Settings() {
               variant={activeTab === "secrets" ? "secondary" : "ghost"}
               role="tab"
               aria-selected={activeTab === "secrets"}
+              data-testid="tab-ai-summaries"
               onClick={() => setActiveTab("secrets")}
             >
               <Sparkles className="mr-2 h-4 w-4" />
-              AI Secrets
+              AI summaries &amp; Secrets
             </Button>
           )}
         </div>

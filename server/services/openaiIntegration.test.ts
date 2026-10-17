@@ -7,7 +7,7 @@ import { encryptApiKey, resolveApiKey } from "./aiSettings";
 import { AiServiceError, requestOpenAiSummary } from "./openaiClient";
 import { meetsSummaryRequirements, normalizeSummary, wordCount } from "./summaryFormat";
 import { articles } from "@shared/schema";
-import { generateAISummary } from "../summaryService";
+import { generateAISummary, visibleAiSummary } from "../summaryService";
 import { ApiRequestError } from "../../client/src/lib/apiErrors";
 import { aiSummaryErrorMessage } from "../../client/src/lib/aiSummaryErrors";
 
@@ -130,11 +130,15 @@ test("admin-only Secrets lifecycle verifies model before enabling and never retu
   let unavailable = false;
   let invalidSummary = false;
   let summaryCalls = 0;
+  const summaryModels: string[] = [];
   globalThis.fetch = async (url, options) => {
     if (unavailable) return new Response("provider error containing secret", { status: 403 });
     if (String(url).includes("/models/")) return new Response(JSON.stringify({ id: "gpt-5-nano" }));
     const isSummary = String(options?.body).includes("Headline:");
-    if (isSummary) summaryCalls++;
+    if (isSummary) {
+      summaryCalls++;
+      summaryModels.push(JSON.parse(String(options?.body)).model);
+    }
     const text = isSummary ? invalidSummary ? paragraph(10) : `${paragraph(54)}\n\n${paragraph(68)}` : "OK";
     return new Response(JSON.stringify({
       status: "completed", output: [{ type: "message", content: [{ type: "output_text", text }] }],
@@ -168,6 +172,7 @@ test("admin-only Secrets lifecycle verifies model before enabling and never retu
     assert.equal((await call("POST", "/test")).status, 401);
     assert.equal((await call("GET", "?supabaseId=forged-admin")).status, 401);
     assert.equal((await call("GET", "", undefined, "member")).status, 403);
+    assert.equal((await call("PUT", "", { model: "gpt-5", enabled: true }, "member")).status, 403);
     const saved = await call("PUT", "", { apiKey: fakeKey, model: "gpt-5-nano", enabled: false }, "admin");
     assert.equal(saved.status, 200);
     assert.equal(saved.payload.keySource, "encrypted");
@@ -192,6 +197,23 @@ test("admin-only Secrets lifecycle verifies model before enabling and never retu
     await assert.rejects(generateAISummary("other-test-article"), /required format/);
     assert.equal(summaryCalls, 3, "invalid output must receive only one corrective retry");
     assert.equal(articleFixture.aiSummary, simultaneous[0].summary, "failed output must not replace cached content");
+    invalidSummary = false;
+    for (const model of ["gpt-5-mini", "gpt-5", "gpt-5-nano"]) {
+      const changed = await call("PUT", "", { model, enabled: true }, "admin");
+      assert.equal(changed.status, 200);
+      assert.equal(changed.payload.model, model);
+      assert.equal(await visibleAiSummary(articleFixture), null, "a previous-model cache must not be displayed");
+      const before = summaryCalls;
+      const regenerated = await generateAISummary(articleFixture.id);
+      assert.equal(regenerated.cached, false, "switching models must generate a summary with the new model");
+      assert.equal(summaryModels.at(-1), model, "the saved administrator choice must reach OpenAI");
+      assert.equal(await visibleAiSummary(articleFixture), regenerated.summary);
+      assert.equal((await generateAISummary(articleFixture.id)).cached, true);
+      assert.equal(summaryCalls, before + 1, "repeated requests must reuse the selected-model cache");
+    }
+    const unsupported = await call("PUT", "", { model: "unsupported-model", enabled: true }, "admin");
+    assert.equal(unsupported.status, 400);
+    assert.equal((await call("GET", "", undefined, "admin")).payload.model, "gpt-5-nano");
     unavailable = true;
     const denied = await call("PUT", "", { model: "gpt-5-mini", enabled: true }, "admin");
     assert.equal(denied.status, 400);

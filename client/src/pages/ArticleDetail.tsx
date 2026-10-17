@@ -91,6 +91,8 @@ export default function ArticleDetail() {
 
   const { data: aiSummaryStatus } = useQuery<{ enabled: boolean; model: string } | null>({
     queryKey: ["/api/ai-summary/status"],
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       try {
         const response = await fetch("/api/ai-summary/status", { credentials: "same-origin" });

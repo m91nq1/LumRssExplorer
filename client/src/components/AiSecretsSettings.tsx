@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { queryClient } from "@/lib/queryClient";
 
 type AiSettings = {
   model: string;
@@ -24,9 +25,15 @@ type AiSecretsSettingsProps = {
 };
 
 const endpoint = "/api/admin/ai-settings";
+const modelLabels: Record<string, string> = {
+  "gpt-5-nano": "GPT-5 nano (default)",
+  "gpt-5-mini": "GPT-5 mini",
+  "gpt-5": "GPT-5",
+};
 
 export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSecretsSettingsProps) {
   const [settings, setSettings] = useState<AiSettings | null>(null);
+  const [appliedSettings, setAppliedSettings] = useState<AiSettings | null>(null);
   const [apiKey, setApiKey] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -75,6 +82,7 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
       const response = await authorizedFetch("GET");
       const data = await readResponse(response);
       setSettings(data);
+      setAppliedSettings(data);
       onAdminAccessChange(true);
     } catch (requestError) {
       if (!(requestError instanceof Error && requestError.message === "Admin access is required.")) {
@@ -85,6 +93,17 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
       setLoading(false);
     }
   }, [authorizedFetch, onAdminAccessChange]);
+
+  const applySavedSettings = (data: AiSettings) => {
+    setSettings(data);
+    setAppliedSettings(data);
+    // The server checks model provenance before returning a cached summary.
+    // Refresh local article/status caches too, so old-model summaries aren't reused by this browser.
+    void queryClient.invalidateQueries({ queryKey: ["/api/ai-summary/status"] });
+    void queryClient.invalidateQueries({
+      predicate: query => typeof query.queryKey[0] === "string" && query.queryKey[0].startsWith("/api/articles/"),
+    });
+  };
 
   useEffect(() => {
     void loadSettings();
@@ -109,8 +128,10 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
         enabled: settings.enabled,
       });
       const updated = await readResponse(response);
-      setSettings(updated);
-      setMessage(updated.enabled ? "Configuration saved and connection verified." : "AI summaries are disabled.");
+      applySavedSettings(updated);
+      setMessage(updated.enabled
+        ? `Saved and verified. Article summaries now use ${updated.model}.`
+        : `Model saved as ${updated.model}. AI summaries are switched off.`);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Unable to save AI settings.");
     } finally {
@@ -126,7 +147,7 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
     try {
       const response = await authorizedFetch("POST");
       const data = await readResponse(response) as AiSettings & { message?: string };
-      setSettings(data);
+      applySavedSettings(data);
       setMessage(data.message || "Connection test completed.");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Connection test failed.");
@@ -142,7 +163,7 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
     setMessage("");
     try {
       const response = await authorizedFetch("DELETE");
-      setSettings(await readResponse(response));
+      applySavedSettings(await readResponse(response));
       setApiKey("");
       setMessage("Saved key removed. AI summaries are disabled.");
     } catch (requestError) {
@@ -180,48 +201,60 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
     : settings.keySource === "environment"
       ? "Managed by the deployment environment"
       : "No key configured";
+  const applied = appliedSettings || settings;
+  const busy = saving || testing || removing;
+  const hasUnsavedChanges = settings.model !== applied.model ||
+    settings.enabled !== applied.enabled || Boolean(apiKey.trim());
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><KeyRound className="h-5 w-5" /> AI summaries</CardTitle>
-          <CardDescription>Configure the model that produces article summaries. New keys are sent securely and are never shown again.</CardDescription>
+          <CardTitle className="flex items-center gap-2"><KeyRound className="h-5 w-5" /> OpenAI model for summaries</CardTitle>
+          <CardDescription>Administrator settings for AI-powered article summaries. The saved model applies across LUM News.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={save} className="space-y-6">
             <div className="flex flex-col gap-1 rounded-lg border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-medium">Credential source</p>
+                <p className="font-medium">Active summary model</p>
+                <p className="text-sm" data-testid="text-active-summary-model">{modelLabels[applied.model] || applied.model}</p>
+                <p className="mt-2 text-xs font-medium">Secrets: OpenAI API key</p>
                 <p className="text-sm text-muted-foreground">{sourceLabel}</p>
                 {settings.keySource === "environment" && (
                   <p className="mt-1 max-w-xl text-xs text-muted-foreground">Removing the environment-managed key here disables AI summaries at the application level; it does not delete workspace or deployment secrets.</p>
                 )}
               </div>
-              <span className={`mt-2 inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium sm:mt-0 ${settings.enabled ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-muted text-muted-foreground"}`}>
-                {settings.enabled ? <Check className="h-3.5 w-3.5" /> : <AlertTriangle className="h-3.5 w-3.5" />}
-                {settings.enabled ? "Enabled" : "Disabled"}
+              <span className={`mt-2 inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium sm:mt-0 ${applied.enabled ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-muted text-muted-foreground"}`}>
+                {applied.enabled ? <Check className="h-3.5 w-3.5" /> : <AlertTriangle className="h-3.5 w-3.5" />}
+                {applied.enabled ? "Enabled" : "Disabled"}
               </span>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="ai-model">Model</Label>
+                <Label htmlFor="ai-model">OpenAI model for article summaries</Label>
                 <select
                   id="ai-model"
+                  data-testid="select-ai-summary-model"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={settings.model}
+                  disabled={busy}
                   onChange={(event) => setSettings({ ...settings, model: event.target.value })}
                 >
-                  {Array.from(new Set([settings.model, ...settings.models])).map((model) => <option key={model} value={model}>{model}</option>)}
+                  {Array.from(new Set([settings.model, ...settings.models])).map((model) => <option key={model} value={model}>{modelLabels[model] || model}</option>)}
                 </select>
+                <p className="text-xs text-muted-foreground">Choose a model, then save to verify access and apply it. Models have different API costs; they never switch automatically.</p>
+                {settings.model !== applied.model && (
+                  <p className="text-xs text-amber-700 dark:text-amber-300" role="status">Unsaved model change. Summaries still use {applied.model} until you save.</p>
+                )}
               </div>
               <div className="flex items-center justify-between gap-4 rounded-lg border p-3">
                 <div>
                   <Label htmlFor="ai-enabled">AI summaries</Label>
                   <p className="text-xs text-muted-foreground">Turning on verifies the live connection.</p>
                 </div>
-                <Switch id="ai-enabled" checked={settings.enabled} onCheckedChange={(enabled) => setSettings({ ...settings, enabled })} />
+                <Switch id="ai-enabled" disabled={busy} checked={settings.enabled} onCheckedChange={(enabled) => setSettings({ ...settings, enabled })} />
               </div>
             </div>
 
@@ -233,27 +266,30 @@ export default function AiSecretsSettings({ onAdminAccessChange, active }: AiSec
                 autoComplete="new-password"
                 placeholder={settings.keyConfigured ? "Leave blank to keep the current key" : "Paste a new API key"}
                 value={apiKey}
+                disabled={busy}
                 onChange={(event) => setApiKey(event.target.value)}
               />
               <p className="text-xs text-muted-foreground">The key is held only in this form while you type and is cleared when submitted.</p>
             </div>
 
-            {settings.verifiedAt && (
-              <p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-emerald-600" />Last verified {new Date(settings.verifiedAt).toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">New summaries use the saved model. If a cached summary was made with a different model, it is regenerated when requested. Summary length remains two paragraphs, 120–180 words total.</p>
+            {applied.verifiedAt && (
+              <p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-emerald-600" />{applied.model} last verified {new Date(applied.verifiedAt).toLocaleString()}</p>
             )}
             {settings.lastError && <p className="text-sm text-destructive" role="status">{settings.lastError}</p>}
             {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
             {message && <p className="text-sm text-emerald-700 dark:text-emerald-300" role="status">{message}</p>}
 
             <div className="flex flex-wrap gap-3">
-              <Button type="submit" disabled={saving || testing || removing}>
+              <Button type="submit" data-testid="button-save-ai-model" disabled={busy}>
                 {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {saving ? "Saving…" : "Save settings"}
+                {saving ? "Saving…" : "Save model and settings"}
               </Button>
-              <Button type="button" variant="outline" onClick={() => void testConnection()} disabled={testing || saving || removing || !settings.keyConfigured}>
+              <Button type="button" variant="outline" onClick={() => void testConnection()} disabled={busy || !settings.keyConfigured || hasUnsavedChanges}>
                 {testing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wifi className="mr-2 h-4 w-4" />}
                 Test connection
               </Button>
+              {hasUnsavedChanges && <p className="w-full text-xs text-muted-foreground">Save your changes before testing the saved configuration.</p>}
               {settings.keyConfigured && (
                 <Button type="button" variant="outline" className="text-destructive hover:text-destructive" onClick={() => void removeKey()} disabled={removing || saving || testing}>
                   {removing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
