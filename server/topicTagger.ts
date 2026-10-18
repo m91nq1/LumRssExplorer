@@ -334,29 +334,19 @@ const TOPIC_KEYWORDS: TopicKeywords[] = [
       "fresco", "mosaic", "ceramics", "pottery", "printmaking", "lithograph",
       "engraving", "installation art", "performance art", "conceptual art",
       "street art", "graffiti", "mural", "public art", "art fair",
-      "art auction", "sotheby", "christie", "art market", "masterpiece",
+      "art auction", "art market", "masterpiece",
       "renaissance", "baroque", "impressionism", "surrealism", "cubism",
       "expressionism", "dadaism", "pop art", "minimalism", "abstract expressionism",
       // Photography
       "photography", "photographer", "photo essay", "photojournalism",
-      // Architecture & design
-      "architecture", "architect", "design award", "interior design",
-      "landscape design", "urban design", "graphic design",
-      // Craft & applied arts
-      "artisan", "craft", "handmade", "weaving", "textile art", "tapestry",
-      // Literature & poetry (distinct from Celebrity news)
-      "poetry", "poem", "poet", "literary fiction", "short story collection",
-      "debut novel", "booker prize", "pulitzer prize literature", "man booker",
-      // Theatre & opera (distinct from pop music)
-      "theatre", "theater", "opera", "ballet", "dance performance",
-      "broadway", "west end", "choreography", "stage design",
-      // Film as art (distinct from celebrity blockbusters)
-      "arthouse", "art house", "film festival", "cannes", "sundance",
-      "venice film festival", "berlin film festival", "bafta", "documentary film",
-      "cinematography", "auteur",
+      // Visual artists, media and collections, not general entertainment/design.
+      "painter", "sculptor", "visual artist", "digital art", "3d artist",
+      "textile art", "tapestry", "art collection", "art restoration",
+      "art conservation", "art history", "visual art", "art exhibition",
+      "art gallery", "art photography", "fine art photography", "art park",
       // Art institutions
-      "louvre", "moma", "tate", "guggenheim", "metropolitan museum",
-      "national gallery", "hermitage", "uffizi", "prado"
+      "louvre", "moma", "tate modern", "tate britain", "guggenheim", "metropolitan museum",
+      "national gallery", "hermitage museum", "uffizi", "prado museum"
     ],
   },
   {
@@ -431,21 +421,27 @@ function countSignalMatches(text: string, signals: string[]): number {
 // These words also occur frequently in software, sport and general reporting.
 // They need an unambiguous arts signal, not merely another ambiguous word.
 const CONTEXTUAL_ART_WORDS = new Set([
-  "abstract", "architecture", "architect", "craft", "handmade", "exhibition",
-  "gallery", "portrait", "photography", "photographer", "minimalism",
+  "abstract", "artist", "exhibition", "museum", "masterpiece",
+  "gallery", "portrait", "photography", "photographer", "photo essay", "photojournalism", "minimalism",
   "renaissance", "baroque", "mosaic", "ceramics", "pottery", "weaving",
-  "tate", "prado", "christie", "sotheby",
 ]);
 
 function artKeywordMatches(text: string): number {
   const keywords = TOPIC_KEYWORDS.find(entry => entry.topic === "Art")!.keywords;
   const matched = keywords.filter(keyword => {
     const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+    const plural = escaped.endsWith("y") ? `${escaped.slice(0, -1)}(?:y|ies)` : `${escaped}(?:s|es)?`;
+    return new RegExp(`\\b${plural}\\b`, "i").test(text);
   });
-  const hasContext = matched.some(keyword => !CONTEXTUAL_ART_WORDS.has(keyword))
-    || /\b(?:visual arts?|art exhibition|art gallery|art photography|tate modern|tate britain|prado museum)\b/i.test(text);
-  return hasContext ? Math.max(matched.length, 1) : 0;
+  // An explicit visual-art subject qualifies even when it overlaps another topic.
+  if (matched.some(keyword => !CONTEXTUAL_ART_WORDS.has(keyword))) return matched.length;
+  // Museums, galleries and exhibitions qualify, but not celebrity museum galas,
+  // sports exhibitions, trade shows or generic news photo galleries.
+  const nonVisualContext = /\b(?:gala|red carpet|concert|album|song|singer|rapper|music video|film festival|movie premiere|basketball|football|soccer|hockey|cricket|tennis|preseason|trade show|trade fair|auto show|motor show|photo gallery|camera app|camera review)\b/i.test(text);
+  if (!nonVisualContext && matched.some(keyword => ["museum", "gallery", "exhibition"].includes(keyword))) {
+    return matched.length;
+  }
+  return 0;
 }
 
 /** Remove stale/provider-supplied Art tags that have no arts evidence. */
@@ -454,8 +450,7 @@ export function correctArticleArtTopics(
   sourceName: string | null | undefined, topics: string[],
 ): string[] {
   if (!topics.includes("Art")) return topics;
-  if ((sourceName && getSourceProfileBonus(sourceName)?.topic === "Art")
-    || artKeywordMatches(`${title} ${summary || ""}`)) return topics;
+  if (artKeywordMatches(`${title} ${summary || ""}`)) return topics;
   const remaining = topics.filter(topic => topic !== "Art");
   return remaining.length ? remaining : tagArticleTopics(title, summary, sourceName);
 }
@@ -504,7 +499,7 @@ export function tagArticleTopics(
   // Apply source profile bonus (overrides weak keyword matches)
   if (sourceName) {
     const profileMatch = getSourceProfileBonus(sourceName);
-    if (profileMatch) {
+    if (profileMatch && (profileMatch.topic !== "Art" || artKeywordMatches(text) > 0)) {
       const current = topicScores.get(profileMatch.topic) ?? 0;
       topicScores.set(profileMatch.topic, current + profileMatch.bonus);
     }

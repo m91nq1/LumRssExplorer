@@ -17,7 +17,8 @@ test("all requested art and football feeds have unique IDs, URLs and correct top
     assert.equal(new URL(feed.url).protocol, "https:");
     const topic = feed.category === "art" ? "Art" : "Sports";
     assert.equal(curatedFeedTopic(feed.url), topic);
-    assert.ok(tagArticleTopics("Latest update", "", feed.name).includes(topic), feed.name);
+    const title = topic === "Art" ? "Museum opens a painting exhibition" : "Latest update";
+    assert.ok(tagArticleTopics(title, "", feed.name).includes(topic), feed.name);
   }
 });
 

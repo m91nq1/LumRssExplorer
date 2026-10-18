@@ -2,8 +2,8 @@
 name: Art topic scope
 description: User expectation for Art filtering and ambiguous topic language.
 ---
-The user expects the Art topic to show art news, not software or sports stories that use arts-related words incidentally.
+The user defines Art as visual-art news: museums, paintings, sculpture, galleries and art exhibitions. Do not include general entertainment, literature or design merely because they are cultural subjects or come from a broad arts feed.
 
-**Why:** The user asked how Art selections are chosen and said, “when i select the art topic i want to see art news.”
+**Why:** The user clarified, “art news should be about art news, like museuems, paintings, etc,” after the broader arts classification still included unrelated stories.
 
-**How to apply:** Preserve relevant arts reporting and specialist arts feeds, but do not treat software architecture, crafting software, or exhibition sports matches as evidence of art coverage.
+**How to apply:** Require visual-art relevance in each article, including articles from specialist feeds. Do not treat software architecture, exhibition sports, celebrity museum galas or camera product news as visual-art reporting.

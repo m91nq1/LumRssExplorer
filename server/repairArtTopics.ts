@@ -5,7 +5,7 @@ import { correctArticleArtTopics } from "./topicTagger";
 
 /** Versioned, repeat-safe correction: articles and their other data are retained. */
 export async function repairArtTopics(): Promise<void> {
-  const key = "art-topic-word-boundaries-v1";
+  const key = "art-topic-visual-arts-v3";
   const [done] = await db.select().from(systemSettings).where(eq(systemSettings.key, key));
   if (done) return;
   const rows = await db.select({

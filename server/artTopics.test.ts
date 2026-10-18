@@ -22,10 +22,31 @@ test("genuine art reporting and dedicated art feeds remain available", () => {
     ["Tate Modern announces its next show", "A new art exhibition opens this week.", "News"],
     ["Architecture of a new museum", "The architect describes the building.", "News"],
     ["New exhibition announced", "The latest programme.", "ArtReview"],
-    ["Latest update", "", "Contemporary Art Daily"],
+    ["Paintings from the permanent collection", "", "Contemporary Art Daily"],
+    ["Museums announce their autumn exhibitions", "", "News"],
+    ["Galleries show emerging sculptors", "", "News"],
+    ["Artist Dorothy O’Connor speaks at the Art Park", "", "News"],
   ]) {
     assert.ok(tagArticleTopics(title, summary, source).includes("Art"), title);
     assert.ok(correctArticleArtTopics(title, summary, source, ["Art"]).includes("Art"), title);
+  }
+});
+
+test("Art means visual arts, not broad culture or a publisher's whole feed", () => {
+  for (const [title, summary, source] of [
+    ["New poetry collection wins the Booker Prize", "", "News"],
+    ["Theatre and ballet programme announced", "", "News"],
+    ["Cannes film festival opens", "A documentary film premieres.", "ArtReview"],
+    ["Taylor Swift performs at Academy Museum gala", "The singer performed a new song.", "News"],
+    ["Rapper named artist of the year", "", "News"],
+    ["Netflix removes Cillian Murphy's masterpiece drama", "The film leaves streaming soon.", "Digital Spy"],
+    ["Restaurant unveils new interior design", "", "Wallpaper*"],
+    ["Circle13 updates pétanque", "Design-led interiors and small plates.", "Wallpaper*"],
+    ["New iPhone camera app", "Black-and-white photography tools.", "PetaPixel"],
+    ["Latest update", "", "Contemporary Art Daily"],
+  ]) {
+    assert.ok(!tagArticleTopics(title, summary, source).includes("Art"), title);
+    assert.ok(!correctArticleArtTopics(title, summary, source, ["Art"]).includes("Art"), title);
   }
 });
 
