@@ -428,6 +428,38 @@ function countSignalMatches(text: string, signals: string[]): number {
   return signals.filter(kw => text.includes(kw.toLowerCase())).length;
 }
 
+// These words also occur frequently in software, sport and general reporting.
+// They need an unambiguous arts signal, not merely another ambiguous word.
+const CONTEXTUAL_ART_WORDS = new Set([
+  "abstract", "architecture", "architect", "craft", "handmade", "exhibition",
+  "gallery", "portrait", "photography", "photographer", "minimalism",
+  "renaissance", "baroque", "mosaic", "ceramics", "pottery", "weaving",
+  "tate", "prado", "christie", "sotheby",
+]);
+
+function artKeywordMatches(text: string): number {
+  const keywords = TOPIC_KEYWORDS.find(entry => entry.topic === "Art")!.keywords;
+  const matched = keywords.filter(keyword => {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+  });
+  const hasContext = matched.some(keyword => !CONTEXTUAL_ART_WORDS.has(keyword))
+    || /\b(?:visual arts?|art exhibition|art gallery|art photography|tate modern|tate britain|prado museum)\b/i.test(text);
+  return hasContext ? Math.max(matched.length, 1) : 0;
+}
+
+/** Remove stale/provider-supplied Art tags that have no arts evidence. */
+export function correctArticleArtTopics(
+  title: string, summary: string | null | undefined,
+  sourceName: string | null | undefined, topics: string[],
+): string[] {
+  if (!topics.includes("Art")) return topics;
+  if ((sourceName && getSourceProfileBonus(sourceName)?.topic === "Art")
+    || artKeywordMatches(`${title} ${summary || ""}`)) return topics;
+  const remaining = topics.filter(topic => topic !== "Art");
+  return remaining.length ? remaining : tagArticleTopics(title, summary, sourceName);
+}
+
 /**
  * Tag an article's topics based on keyword scoring + source profile.
  *
@@ -447,6 +479,11 @@ export function tagArticleTopics(
   const topicScores: Map<string, number> = new Map();
 
   for (const { topic, keywords, minMatches = 1 } of TOPIC_KEYWORDS) {
+    if (topic === "Art") {
+      const matches = artKeywordMatches(text);
+      if (matches >= minMatches) topicScores.set(topic, matches);
+      continue;
+    }
     let matchCount = 0;
     for (const keyword of keywords) {
       if (keyword.length <= 3) {

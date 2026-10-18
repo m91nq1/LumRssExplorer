@@ -27,6 +27,7 @@ import {
   type PolarisationReasonType,
 } from "@shared/schema";
 import { db } from "./db";
+import { correctArticleArtTopics } from "./topicTagger";
 import { eq, desc, ilike, gte, and, or, sql, inArray, count, isNull } from "drizzle-orm";
 
 export interface IStorage {
@@ -528,6 +529,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertArticle(article: InsertArticle): Promise<Article> {
+    article = {
+      ...article,
+      topics: correctArticleArtTopics(article.title, article.summary, article.sourceName, article.topics || []),
+    };
     const [result] = await db
       .insert(articles)
       .values(article)
@@ -538,6 +543,7 @@ export class DatabaseStorage implements IStorage {
           summary: article.summary,
           imageUrl: article.imageUrl,
           publishedAt: article.publishedAt,
+          topics: article.topics,
         },
       })
       .returning();
@@ -560,7 +566,10 @@ export class DatabaseStorage implements IStorage {
         if (seen.has(a.id)) return false;
         seen.add(a.id);
         return true;
-      });
+      }).map(article => ({
+        ...article,
+        topics: correctArticleArtTopics(article.title, article.summary, article.sourceName, article.topics || []),
+      }));
       if (batch.length === 0) continue;
       try {
         await db
