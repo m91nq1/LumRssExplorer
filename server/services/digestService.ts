@@ -1,189 +1,119 @@
-import { storage } from '../storage';
-import { sendTopicDigestEmail, type StorySummary } from './emailService';
-import type { User, UserPreferences } from '@shared/schema';
-import cron from 'node-cron';
+import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { articles, feedSources, type UserPreferences } from "@shared/schema";
+import { db } from "../db";
+import { storage } from "../storage";
+import { sendTopicDigestEmail, type StorySummary } from "./emailService";
+import { emailConfig } from "./emailConfig";
+import { EmailDeliveryError } from "./emailDelivery";
+import { initializeEmailDatabase } from "./emailDatabase";
+import { getNotificationPreferences } from "./notificationPreferences";
+import cron from "node-cron";
 
-export async function buildUserDigest(
-  preferences: UserPreferences
-): Promise<StorySummary[]> {
-  if (!preferences.favouriteTopics || preferences.favouriteTopics.length === 0) {
-    return [];
-  }
+async function selectStories(topics: string[], regions: string[], countries: string[], days: number, breaking = false) {
+  if (!topics.length) return [];
+  const conditions = [
+    sql`${articles.topics} && ARRAY[${sql.join(topics.map(t => sql`${t}`), sql`, `)}]::text[]`,
+    gte(articles.publishedAt, new Date(Date.now() - days * 86_400_000)),
+  ];
+  if (regions.length) conditions.push(inArray(feedSources.region, regions));
+  if (countries.length) conditions.push(inArray(feedSources.country, countries));
+  // No AI-invented urgency: only headlines explicitly marked breaking.
+  if (breaking) conditions.push(sql`${articles.title} ~* '\\mbreaking\\M'`);
+  return db.select({
+    id: articles.id, title: articles.title, source: articles.sourceName,
+    region: feedSources.region, url: articles.link, summary: articles.summary,
+    publishedAt: articles.publishedAt,
+  }).from(articles).innerJoin(feedSources, eq(articles.sourceId, feedSources.id))
+    .where(and(...conditions)).orderBy(desc(articles.publishedAt)).limit(breaking ? 3 : 15);
+}
 
-  // Get articles from our database that match user's topic preferences
-  const oneDayAgo = new Date();
-  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-
-  const { articles } = await storage.getArticles({
-    topics: preferences.favouriteTopics,
-    regions: preferences.preferredRegions || undefined,
-    since: oneDayAgo,
-    page: 1,
-    pageSize: 15,
-  });
-
-  // Convert database articles to StorySummary format
-  return articles.map(article => ({
-    title: article.title,
-    source: article.sourceName || 'Unknown Source',
-    region: article.sourceRegion || undefined,
-    url: article.link,
-    summary: article.summary || article.aiSummary || undefined,
-    publishedAt: article.publishedAt,
+function asStories(rows: Awaited<ReturnType<typeof selectStories>>): StorySummary[] {
+  return rows.map(row => ({
+    title: row.title, source: row.source, url: row.url,
+    summary: row.summary || undefined, region: row.region || undefined,
+    publishedAt: row.publishedAt.toISOString(),
   }));
 }
 
-export async function buildBehaviorBasedDigest(
-  userId: number
-): Promise<{ topics: string[]; stories: StorySummary[] }> {
-  // Get inferred topics from user's reading behavior (bookmarks + read history)
-  const inferredTopics = await storage.getUserInferredTopics(userId);
-  
-  if (inferredTopics.length === 0) {
-    return { topics: [], stories: [] };
-  }
-
-  // Get articles from the last 2 days matching inferred topics
-  const twoDaysAgo = new Date();
-  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-
-  const { articles } = await storage.getArticles({
-    topics: inferredTopics,
-    since: twoDaysAgo,
-    page: 1,
-    pageSize: 15,
-  });
-
-  const stories = articles.map(article => ({
-    title: article.title,
-    source: article.sourceName || 'Unknown Source',
-    region: article.sourceRegion || undefined,
-    url: article.link,
-    summary: article.summary || article.aiSummary || undefined,
-    publishedAt: article.publishedAt,
-  }));
-
-  return { topics: inferredTopics, stories };
+export async function buildUserDigest(preferences: UserPreferences): Promise<StorySummary[]> {
+  const extra = await getNotificationPreferences(preferences.userId);
+  return asStories(await selectStories(preferences.favouriteTopics || [],
+    preferences.preferredRegions || [], extra.countries, extra.frequency === "weekly" ? 7 : 1));
+}
+export async function buildBehaviorBasedDigest(userId: number) {
+  const prefs = await storage.getUserPreferences(userId);
+  const extra = await getNotificationPreferences(userId);
+  const topics = await storage.getUserInferredTopics(userId);
+  return { topics, stories: asStories(await selectStories(topics,
+    prefs?.preferredRegions || [], extra.countries, 2)) };
 }
 
-export async function runDigestsForAllUsers(): Promise<{
-  usersProcessed: number;
-  emailsSent: number;
-  errors: number;
-}> {
+/** UTC Monday anchor: stable across retries, manual runs and worker restarts. */
+export function digestPeriod(frequency: string, now = new Date()): string {
+  const day = new Date(now);
+  if (frequency === "weekly") day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
+  return `${frequency}:${day.toISOString().slice(0, 10)}`;
+}
+
+async function runNotifications(kind: "digest" | "personalized" | "breaking", scheduled = false) {
   const stats = { usersProcessed: 0, emailsSent: 0, errors: 0 };
-
-  try {
-    const usersWithPrefs = await storage.getUsersWithDigestPreferences();
-    console.log(`[DigestService] Found ${usersWithPrefs.length} users with digest preferences`);
-
-    for (const { user, preferences } of usersWithPrefs) {
-      stats.usersProcessed++;
-
-      try {
-        if (!user.email) {
-          console.log(`[DigestService] User ${user.username} has no email, skipping`);
-          continue;
-        }
-
-        const stories = await buildUserDigest(preferences);
-
-        if (stories.length === 0) {
-          console.log(`[DigestService] No stories for user ${user.username}, skipping`);
-          continue;
-        }
-
-        const name = user.firstName || user.username || 'there';
-        await sendTopicDigestEmail(
-          user.email,
-          name,
-          preferences.favouriteTopics || [],
-          stories
-        );
-
-        stats.emailsSent++;
-      } catch (error) {
-        console.error(`[DigestService] Error processing user ${user.username}:`, error);
-        stats.errors++;
-      }
-    }
-  } catch (error) {
-    console.error('[DigestService] Fatal error running digests:', error);
-    throw error;
-  }
-
-  console.log(`[DigestService] Complete: ${stats.usersProcessed} users, ${stats.emailsSent} emails, ${stats.errors} errors`);
-  return stats;
-}
-
-export async function runBehaviorBasedDigests(): Promise<{
-  usersProcessed: number;
-  emailsSent: number;
-  errors: number;
-}> {
-  const stats = { usersProcessed: 0, emailsSent: 0, errors: 0 };
-
-  try {
-    // Get all users with email addresses
-    const usersWithEmail = await storage.getAllUsersWithEmail();
-    console.log(`[DigestService] Running behavior-based digests for ${usersWithEmail.length} users with email`);
-
-    for (const user of usersWithEmail) {
-      stats.usersProcessed++;
-
-      try {
-        const { topics, stories } = await buildBehaviorBasedDigest(user.id);
-
-        if (stories.length === 0) {
-          console.log(`[DigestService] No behavior-based stories for user ${user.username}, skipping`);
-          continue;
-        }
-
-        const name = user.firstName || user.username || 'there';
-        await sendTopicDigestEmail(
-          user.email!,
-          name,
-          topics,
-          stories
-        );
-
-        stats.emailsSent++;
-        console.log(`[DigestService] Sent behavior-based digest to ${user.email} with topics: ${topics.join(', ')}`);
-      } catch (error) {
-        console.error(`[DigestService] Error processing user ${user.username}:`, error);
-        stats.errors++;
-      }
-    }
-  } catch (error) {
-    console.error('[DigestService] Fatal error running behavior-based digests:', error);
-    throw error;
-  }
-
-  console.log(`[DigestService] Behavior-based digests complete: ${stats.usersProcessed} users, ${stats.emailsSent} emails, ${stats.errors} errors`);
-  return stats;
-}
-
-// Guard to prevent duplicate scheduler registrations
-let schedulerStarted = false;
-
-// Schedule behavior-based digests every 2 days at 9 AM
-export function startDigestScheduler(): void {
-  if (schedulerStarted) {
-    console.log('[DigestService] Scheduler already running, skipping duplicate registration');
-    return;
-  }
-  
-  // Cron expression: "0 9 */2 * *" = At 09:00 every 2nd day
-  cron.schedule('0 9 */2 * *', async () => {
-    console.log('[DigestService] Running scheduled behavior-based digest...');
+  emailConfig(); // no fake success when delivery isn't configured
+  await initializeEmailDatabase();
+  const recipients = await storage.getUsersWithDigestPreferences();
+  for (const { user, preferences } of recipients) {
+    if (!user.email) continue;
     try {
-      const stats = await runBehaviorBasedDigests();
-      console.log(`[DigestService] Scheduled digest complete:`, stats);
+      const extra = await getNotificationPreferences(user.id);
+      if (kind === "personalized" && !extra.personalizedEnabled) continue;
+      if (kind === "breaking" && !extra.breakingEnabled) continue;
+      if (kind === "digest" && scheduled && extra.frequency === "weekly" && new Date().getUTCDay() !== 1) continue;
+      stats.usersProcessed++;
+      const name = user.firstName || user.username || "there";
+      if (kind === "breaking") {
+        const rows = await selectStories(preferences.favouriteTopics || [],
+          preferences.preferredRegions || [], extra.countries, 1 / 24, true);
+        for (const row of rows) {
+          const result = await sendTopicDigestEmail(user.email, name, preferences.favouriteTopics || [],
+            asStories([row]), { kind: "breaking", period: row.id });
+          if (result === "sent") stats.emailsSent++;
+        }
+      } else {
+        const digest = kind === "personalized" ? await buildBehaviorBasedDigest(user.id)
+          : { topics: preferences.favouriteTopics || [], stories: await buildUserDigest(preferences) };
+        if (!digest.stories.length) continue;
+        const result = await sendTopicDigestEmail(user.email, name, digest.topics, digest.stories, {
+          kind, period: digestPeriod(kind === "personalized" ? "weekly" : extra.frequency),
+        });
+        if (result === "sent") stats.emailsSent++;
+      }
     } catch (error) {
-      console.error('[DigestService] Scheduled digest failed:', error);
+      stats.errors++;
+      console.error("[DigestService] Delivery failed.", error instanceof EmailDeliveryError ? error.code : "configuration_or_storage_error");
+      if (error instanceof EmailDeliveryError && error.code === "application_budget_exceeded") break;
     }
-  });
-  
+  }
+  return stats;
+}
+
+export const runDigestsForAllUsers = () => runNotifications("digest");
+export const runBehaviorBasedDigests = () => runNotifications("personalized");
+
+let schedulerStarted = false;
+export function startDigestScheduler(): void {
+  if (schedulerStarted) return;
   schedulerStarted = true;
-  console.log('[DigestService] Behavior-based digest scheduler started (every 2 days at 9 AM)');
+  // Schedules share the same durable duplicate guard as manual sends.
+  for (const [schedule, kind] of [
+    ["0 9 * * *", "digest"], ["0 10 * * 1", "personalized"], ["*/10 * * * *", "breaking"],
+  ] as const) {
+    let running = false;
+    cron.schedule(schedule, async () => {
+      if (running) return;
+      running = true;
+      try { await runNotifications(kind, true); }
+      catch { console.error(`[DigestService] ${kind} emails unavailable; check email configuration.`); }
+      finally { running = false; }
+    }, { timezone: "UTC" });
+  }
+  console.log("[DigestService] Resend news notification schedules started (UTC).");
 }

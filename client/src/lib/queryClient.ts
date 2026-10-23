@@ -1,5 +1,11 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import { ApiRequestError } from "./apiErrors";
+import { supabase } from "./supabase";
+
+async function authHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession();
+  return data.session ? { Authorization: `Bearer ${data.session.access_token}` } : {};
+}
 
 // Get or create username for user identification
 function getUsername(): string {
@@ -25,6 +31,7 @@ export async function apiRequest(
 ): Promise<Response> {
   const headers: Record<string, string> = {
     "X-Username": getUsername(),
+    ...await authHeaders(),
   };
   if (data) {
     headers["Content-Type"] = "application/json";
@@ -51,6 +58,7 @@ export const getQueryFn: <T>(options: {
       credentials: "include",
       headers: {
         "X-Username": getUsername(),
+        ...await authHeaders(),
       },
     });
 

@@ -284,6 +284,31 @@ export const systemSettings = pgTable("system_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Resend delivery metadata only. Never store API keys, passwords or reset links.
+export const emailNotificationPreferences = pgTable("email_notification_preferences", {
+  userId: integer("user_id").primaryKey().references(() => users.id),
+  frequency: text("frequency").notNull().default("daily"),
+  countries: text("countries").array().notNull().default(sql`'{}'::text[]`),
+  breakingEnabled: boolean("breaking_enabled").notNull().default(false),
+  personalizedEnabled: boolean("personalized_enabled").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+export const emailDeliveries = pgTable("email_deliveries", {
+  id: text("id").primaryKey(), recipient: text("recipient").notNull(), kind: text("kind").notNull(),
+  providerId: text("provider_id"), status: text("status").notNull().default("pending"),
+  attempts: integer("attempts").notNull().default(0), errorCode: text("error_code"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, table => [index("email_deliveries_provider_idx").on(table.providerId)]);
+export const emailDeliveryEvents = pgTable("email_delivery_events", {
+  id: text("id").primaryKey(), providerId: text("provider_id").notNull(), type: text("type").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+export const emailSuppressions = pgTable("email_suppressions", {
+  recipient: text("recipient").primaryKey(), reason: text("reason").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // News Providers table (external API providers)
 export const newsProviders = pgTable("news_providers", {
   id: varchar("id", { length: 50 }).primaryKey(),

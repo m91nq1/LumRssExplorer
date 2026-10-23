@@ -8,7 +8,7 @@ import {
 import { AiServiceError, requestOpenAiSummary, verifyModelAccess } from "./openaiClient";
 
 // Secrets endpoints must never trust x-supabase-id, x-username, or query identities.
-async function verifiedAdmin(req: Request, res: Response, next: NextFunction) {
+export async function verifiedAdmin(req: Request, res: Response, next: NextFunction) {
   res.setHeader("Cache-Control", "no-store");
   const allowedEmails = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com,8468bbr9@gmail.com")
     .split(",").map(email => email.trim().toLowerCase());

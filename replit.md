@@ -1,5 +1,15 @@
 # LUM News
 
+## Resend Email Delivery
+
+Application email uses the official Resend SDK, never SMTP. Supabase remains the
+authentication provider; do not replace it. Registration sends a welcome message,
+not a verification email. Supabase's **Confirm email** setting must be off, and its
+signed Send Email HTTP hook must be configured for password resets to use Resend.
+See [docs/resend-setup.md](docs/resend-setup.md) for required environment variables,
+domain verification, webhook URLs, notification schedules and verification steps.
+Email tests must mock delivery; never email real users without authorisation.
+
 ## Overview
 
 LUM News (formerly LUM RSS Explorer) is a full-stack TypeScript web application that aggregates and displays world news articles from multiple RSS feeds and external news APIs. The application provides a modern, Material Design 3-inspired interface for browsing, filtering, and searching news articles in real-time.

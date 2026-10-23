@@ -56,7 +56,7 @@ export default function Signup() {
     } else {
       toast({
         title: 'Account created!',
-        description: 'Please check your email to verify your account.',
+        description: 'Welcome to LUM News. You can now sign in.',
       });
       setLocation('/login');
     }

@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { TOPICS, REGIONS, type UserPreferences } from "@shared/schema";
 import AiSecretsSettings from "@/components/AiSecretsSettings";
+import EmailNotificationSettings from "@/components/EmailNotificationSettings";
+import EmailDeliveryStatus from "@/components/EmailDeliveryStatus";
 
 export default function Settings() {
   const { toast } = useToast();
@@ -142,6 +144,7 @@ export default function Settings() {
           )}
         </div>
         <AiSecretsSettings active={activeTab === "secrets"} onAdminAccessChange={handleAdminAccessChange} />
+        {activeTab === "secrets" && hasAdminAccess && <EmailDeliveryStatus />}
         {activeTab === "preferences" && <>
         <Card>
           <CardHeader>
@@ -158,7 +161,7 @@ export default function Settings() {
               <div className="space-y-1">
                 <Label htmlFor="email-digest">News Digests</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receive personalized news digests based on your reading history
+                  Enable news digests, breaking alerts and optional personalized recommendations
                 </p>
               </div>
               <Switch
@@ -187,6 +190,8 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+
+        <EmailNotificationSettings />
 
         <Card>
           <CardHeader>

@@ -9,7 +9,12 @@ import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { newsProviderService } from "./newsProviderService";
 import { generateAISummary, visibleAiSummary } from "./summaryService";
-import { registerAiSettingsRoutes } from "./services/aiSettingsRoutes";
+import { registerAiSettingsRoutes, verifiedAdmin } from "./services/aiSettingsRoutes";
+import { registerEmailRoutes } from "./services/emailRoutes";
+import { initializeEmailDatabase } from "./services/emailDatabase";
+import { verifyEmailUser } from "./services/verifiedEmailUser";
+import { emailIdentity } from "./services/emailDelivery";
+import { sendAuthEmailForLogin } from "./services/authEmailLifecycle";
 import { AiServiceError } from "./services/openaiClient";
 import { mapCountryToRegion } from "./topicTagger";
 import { runDigestsForAllUsers, runBehaviorBasedDigests, startDigestScheduler } from "./services/digestService";
@@ -111,6 +116,15 @@ async function isAdmin(req: Request, res: Response, next: NextFunction) {
 
 // Middleware to extract user ID from session or X-Username header (fallback)
 async function userMiddleware(req: Request, res: Response, next: NextFunction) {
+  if (req.headers.authorization) {
+    try {
+      const verified = await verifyEmailUser(req);
+      if (!verified) return res.status(401).json({ error: "Please sign in again." });
+      const local = await storage.getUserBySupabaseId(verified.id);
+      if (local) (req as any).userId = local.id;
+      return next();
+    } catch { return res.status(503).json({ error: "Unable to verify your session." }); }
+  }
   const sessionUser = req.user as any;
   
   if (sessionUser?.claims?.sub) {
@@ -127,7 +141,8 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
     if (username) {
       try {
         const user = await storage.getOrCreateUser(username);
-        (req as any).userId = user.id;
+        // Guest identifiers are never authority over an email-enabled account.
+        if (!user.email && !user.supabaseId) (req as any).userId = user.id;
       } catch (error) {
         console.error("Error looking up user:", error);
       }
@@ -137,6 +152,8 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  await initializeEmailDatabase();
+  registerEmailRoutes(app);
   // Start the behavior-based digest scheduler (every 2 days)
   startDigestScheduler();
 
@@ -160,11 +177,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Supabase auth - handle login/signup and send notifications
   app.post("/api/auth/supabase-login", async (req, res) => {
     try {
-      const { supabaseId, email, firstName, lastName } = req.body;
-      
-      if (!supabaseId || !email) {
-        return res.status(400).json({ error: "supabaseId and email are required" });
-      }
+      const verified = await verifyEmailUser(req);
+      if (!verified?.email) return res.status(401).json({ error: "Authentication required." });
+      const supabaseId = verified.id;
+      const email = verified.email;
+      const firstName = typeof verified.user_metadata?.first_name === "string" ? verified.user_metadata.first_name : undefined;
+      const lastName = typeof verified.user_metadata?.last_name === "string" ? verified.user_metadata.last_name : undefined;
+      // getUser has verified the token before any claims are used for deduplication.
+      const token = req.headers.authorization!.slice(7);
+      const claims = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString());
+      const loginEvent = typeof claims.session_id === "string" ? claims.session_id : emailIdentity("login", token, email);
 
       const { user, isNewUser } = await storage.upsertUserBySupabaseId({
         supabaseId,
@@ -173,21 +195,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lastName,
       });
 
-      // Send appropriate email
-      if (isNewUser) {
-        // Send welcome email for new users
-        sendWelcomeEmail(email, firstName || user.username).catch(err => 
-          console.error("Failed to send welcome email:", err)
-        );
-      } else {
-        // Send login notification for existing users (if enabled)
-        const prefs = await storage.getUserPreferences(user.id);
-        if (!prefs || prefs.loginNotificationEnabled !== false) {
-          sendLoginNotificationEmail(email, firstName || user.username).catch(err =>
-            console.error("Failed to send login notification:", err)
-          );
-        }
-      }
+      // Notification failures must not prevent registration or sign-in.
+      void sendAuthEmailForLogin(user, isNewUser, loginEvent).catch(() =>
+        console.error("[EmailService] Account notification unavailable; inspect email delivery configuration."));
 
       res.json({ user, isNewUser });
     } catch (error) {
@@ -199,6 +209,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user by Supabase ID
   app.get("/api/auth/supabase-user/:supabaseId", async (req, res) => {
     try {
+      const verified = await verifyEmailUser(req);
+      if (!verified || verified.id !== req.params.supabaseId) return res.status(401).json({ error: "Authentication required." });
       const user = await storage.getUserBySupabaseId(req.params.supabaseId);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -650,6 +662,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         emailDigestEnabled: emailDigestEnabled ?? existingPrefs?.emailDigestEnabled ?? true,
         loginNotificationEnabled: loginNotificationEnabled ?? existingPrefs?.loginNotificationEnabled ?? true,
       });
+      if (req.headers.authorization && emailDigestEnabled === true) {
+        const user = await storage.getUser(userId);
+        if (user?.email) await db.execute(sql`DELETE FROM email_suppressions
+          WHERE recipient = ${user.email.toLowerCase()} AND reason = 'unsubscribed'`);
+      }
 
       res.json({ preferences });
     } catch (error) {
@@ -1031,7 +1048,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== ADMIN: DIGEST EMAILS ====================
-  app.post("/api/admin/run-digests", async (req, res) => {
+  app.post("/api/admin/run-digests", verifiedAdmin, async (req, res) => {
     try {
       console.log("[Admin] Running digest emails for all users...");
       const stats = await runDigestsForAllUsers();
@@ -1047,7 +1064,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== BEHAVIOR-BASED DIGESTS (learns from reading history) ====================
-  app.post("/api/admin/run-behavior-digests", async (req, res) => {
+  app.post("/api/admin/run-behavior-digests", verifiedAdmin, async (req, res) => {
     try {
       console.log("[Admin] Running behavior-based digest emails...");
       const stats = await runBehaviorBasedDigests();
@@ -1063,7 +1080,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== WELCOME EMAIL (for testing) ====================
-  app.post("/api/admin/send-welcome", async (req, res) => {
+  app.post("/api/admin/send-welcome", verifiedAdmin, async (req, res) => {
     try {
       const { email, name } = req.body;
       

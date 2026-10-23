@@ -1,5 +1,7 @@
-import nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
+import { randomUUID } from "node:crypto";
+import { emailConfig, escapeEmailHtml, safeEmailUrl } from "./emailConfig";
+import { sendEmail, plainTextEmail, type DeliveryResult } from "./emailDelivery";
+import { unsubscribeUrl } from "./emailUnsubscribe";
 
 export interface StorySummary {
   title: string;
@@ -10,49 +12,37 @@ export interface StorySummary {
   publishedAt?: string;
 }
 
-let transporter: Transporter | null = null;
-
-function getTransporter(): Transporter | null {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-    console.warn('[EmailService] SMTP credentials not configured - emails will be skipped');
-    return null;
-  }
-  
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
-  }
-  
-  return transporter;
+async function deliverTemplate(
+  message: { to: string; subject: string; html: string },
+  kind: string, identity: string, nonEssential = false,
+): Promise<DeliveryResult> {
+  const config = emailConfig();
+  const unsubscribe = nonEssential ? unsubscribeUrl(message.to) : undefined;
+  const footer = `<p style="text-align:center;font:12px Arial;color:#777">Need help? <a href="mailto:${escapeEmailHtml(config.supportEmail)}">${escapeEmailHtml(config.supportEmail)}</a>${unsubscribe ? ` · <a href="${escapeEmailHtml(unsubscribe)}">Unsubscribe from news emails</a>` : ""}</p>`;
+  const html = message.html.replace("</body>", `${footer}</body>`);
+  return sendEmail({
+    ...message, html, text: plainTextEmail(html), kind, identity, nonEssential,
+    ...(unsubscribe ? { headers: {
+      "List-Unsubscribe": `<${unsubscribe}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    } } : {}),
+  });
 }
 
-const FROM_EMAIL = process.env.EMAIL_FROM || 'LUM News <noreply@lumnews.app>';
-const APP_URL = process.env.REPLIT_DEV_DOMAIN 
-  ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
-  : 'https://lumnews.app';
+export async function sendWelcomeEmail(to: string, name?: string): Promise<DeliveryResult> {
+  const APP_URL = escapeEmailHtml(emailConfig().appUrl);
 
-export async function sendWelcomeEmail(to: string, name?: string): Promise<void> {
-  const transport = getTransporter();
-  if (!transport) return;
-
-  const greeting = name ? `Hello ${name}` : 'Hello';
+  const greeting = name ? `Hello ${escapeEmailHtml(name)}` : 'Hello';
 
   try {
-    await transport.sendMail({
-      from: FROM_EMAIL,
+    return await deliverTemplate({
       to,
       subject: "Welcome to LUM News – The world's narratives in your hand",
       html: `
         <!DOCTYPE html>
         <html>
         <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
@@ -97,19 +87,17 @@ export async function sendWelcomeEmail(to: string, name?: string): Promise<void>
         </body>
         </html>
       `,
-    });
-    console.log(`[EmailService] Welcome email sent to ${to}`);
+    }, "welcome", "registration");
   } catch (error) {
     console.error('[EmailService] Failed to send welcome email:', error);
     throw error;
   }
 }
 
-export async function sendLoginNotificationEmail(to: string, name?: string): Promise<void> {
-  const transport = getTransporter();
-  if (!transport) return;
+export async function sendLoginNotificationEmail(to: string, name?: string, eventId: string = randomUUID()): Promise<DeliveryResult> {
+  const APP_URL = escapeEmailHtml(emailConfig().appUrl);
 
-  const greeting = name ? `Hi ${name}` : 'Hi there';
+  const greeting = name ? `Hi ${escapeEmailHtml(name)}` : 'Hi there';
   const loginTime = new Date().toLocaleString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -121,14 +109,14 @@ export async function sendLoginNotificationEmail(to: string, name?: string): Pro
   });
 
   try {
-    await transport.sendMail({
-      from: FROM_EMAIL,
+    return await deliverTemplate({
       to,
       subject: 'New sign-in to your LUM News account',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
@@ -176,10 +164,10 @@ export async function sendLoginNotificationEmail(to: string, name?: string): Pro
         </body>
         </html>
       `,
-    });
-    console.log(`[EmailService] Login notification sent to ${to}`);
+    }, "login", eventId);
   } catch (error) {
-    console.error('[EmailService] Failed to send login notification:', error);
+    console.error('[EmailService] Login notification failed.');
+    throw error;
   }
 }
 
@@ -187,40 +175,39 @@ export async function sendTopicDigestEmail(
   to: string,
   name: string,
   topics: string[],
-  stories: StorySummary[]
-): Promise<void> {
-  const transport = getTransporter();
-  if (!transport) return;
+  stories: StorySummary[],
+  options: { kind?: "digest" | "personalized" | "breaking"; period?: string } = {},
+): Promise<DeliveryResult | "empty"> {
+  const APP_URL = escapeEmailHtml(emailConfig().appUrl);
 
   if (stories.length === 0) {
-    console.log(`[EmailService] No stories for digest, skipping email to ${to}`);
-    return;
+    return "empty";
   }
 
   const topicsList = topics.join(', ');
   const storiesHtml = stories.map(story => `
     <tr>
       <td style="padding: 16px 0; border-bottom: 1px solid #eee;">
-        <a href="${story.url}" style="color: #1E174B; font-size: 16px; font-weight: 600; text-decoration: none; display: block; margin-bottom: 8px;">
-          ${story.title}
+        <a href="${escapeEmailHtml(safeEmailUrl(story.url))}" style="color: #1E174B; font-size: 16px; font-weight: 600; text-decoration: none; display: block; margin-bottom: 8px;">
+          ${escapeEmailHtml(story.title)}
         </a>
         <div style="color: #888; font-size: 12px; margin-bottom: 6px;">
-          ${story.source}${story.region ? ` • ${story.region}` : ''}${story.publishedAt ? ` • ${new Date(story.publishedAt).toLocaleDateString()}` : ''}
+          ${escapeEmailHtml(story.source)}${story.region ? ` • ${escapeEmailHtml(story.region)}` : ''}${story.publishedAt ? ` • ${escapeEmailHtml(new Date(story.publishedAt).toLocaleDateString())}` : ''}
         </div>
-        ${story.summary ? `<p style="color: #555; font-size: 14px; margin: 0; line-height: 1.5;">${story.summary.substring(0, 200)}${story.summary.length > 200 ? '...' : ''}</p>` : ''}
+        ${story.summary ? `<p style="color: #555; font-size: 14px; margin: 0; line-height: 1.5;">${escapeEmailHtml(story.summary.substring(0, 200))}${story.summary.length > 200 ? '...' : ''}</p>` : ''}
       </td>
     </tr>
   `).join('');
 
   try {
-    await transport.sendMail({
-      from: FROM_EMAIL,
+    return await deliverTemplate({
       to,
-      subject: `Your LUM News update – Stories about ${topicsList}`,
+      subject: options.kind === "breaking" ? `LUM News breaking alert – ${topicsList}` : `Your LUM News update – Stories about ${topicsList}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
@@ -239,13 +226,13 @@ export async function sendTopicDigestEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1>Your Daily News Digest</h1>
+              <h1>${options.kind === "breaking" ? "Breaking News" : "Your News Digest"}</h1>
             </div>
             <div class="content">
-              <p class="greeting">Hi ${name},</p>
+              <p class="greeting">Hi ${escapeEmailHtml(name)},</p>
               <p class="intro">
                 Here are today's top stories for the topics you follow:
-                ${topics.map(t => `<span class="topics-badge">${t}</span>`).join(' ')}
+                ${topics.map(t => `<span class="topics-badge">${escapeEmailHtml(t)}</span>`).join(' ')}
               </p>
               <table style="width: 100%; border-collapse: collapse;">
                 ${storiesHtml}
@@ -259,8 +246,7 @@ export async function sendTopicDigestEmail(
         </body>
         </html>
       `,
-    });
-    console.log(`[EmailService] Topic digest sent to ${to} with ${stories.length} stories`);
+    }, options.kind || "digest", options.period || new Date().toISOString().slice(0, 10), true);
   } catch (error) {
     console.error('[EmailService] Failed to send topic digest email:', error);
     throw error;

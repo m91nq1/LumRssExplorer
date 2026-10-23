@@ -36,6 +36,18 @@ export default function ForgotPassword() {
     setIsLoading(true);
     
     const redirectUrl = `${window.location.origin}/reset-password`;
+
+    try {
+      const status = await fetch("/api/email/auth-status");
+      const config = status.ok ? await status.json() : null;
+      if (!config?.passwordResetAvailable) throw new Error("unavailable");
+    } catch {
+      setIsLoading(false);
+      toast({ title: "Password-reset email is unavailable",
+        description: "The email service is not configured yet. Please contact LUM News support.",
+        variant: "destructive" });
+      return;
+    }
     
     const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
       redirectTo: redirectUrl,

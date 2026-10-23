@@ -23,11 +23,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-async function syncUserWithBackend(supabaseUser: User): Promise<LocalUser | null> {
+async function syncUserWithBackend(supabaseUser: User, accessToken: string): Promise<LocalUser | null> {
   try {
     const response = await fetch('/api/auth/supabase-login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify({
         supabaseId: supabaseUser.id,
         email: supabaseUser.email,
@@ -67,10 +67,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch local user data without triggering login notification
       if (session?.user) {
         try {
-          const response = await fetch(`/api/auth/supabase-user/${session.user.id}`);
+          const response = await fetch(`/api/auth/supabase-user/${session.user.id}`, {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
           if (response.ok) {
             const userData = await response.json();
             setLocalUser(userData);
+          } else if (response.status === 404) {
+            setLocalUser(await syncUserWithBackend(session.user, session.access_token));
           }
         } catch (error) {
           console.error('Failed to fetch local user:', error);
@@ -95,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const sessionId = session.access_token.slice(-20); // Use last 20 chars as session identifier
           if (syncedSessionId.current !== sessionId) {
             syncedSessionId.current = sessionId;
-            void syncUserWithBackend(session.user).then(local => {
+            void syncUserWithBackend(session.user, session.access_token).then(local => {
               if (syncedSessionId.current === sessionId) setLocalUser(local);
             });
           }
