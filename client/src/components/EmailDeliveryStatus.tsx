@@ -12,12 +12,12 @@ export default function EmailDeliveryStatus() {
     queryKey:["/api/admin/email-status"], staleTime:30_000,
   });
   return <Card><CardHeader>
-    <CardTitle>Resend email delivery</CardTitle>
+    <CardTitle>Gmail email delivery</CardTitle>
     <CardDescription>Administrator-only configuration and delivery records. Credentials and reset links are never shown.</CardDescription>
   </CardHeader><CardContent className="space-y-4">
     {error ? <p role="alert">Email status is unavailable.</p> : data ? <>
-      <p>{data.configured ? "Sending environment configured. The sender domain must also be verified in Resend." : `Setup needed: ${data.missing.join(", ")}`}</p>
-      <p className="text-sm text-muted-foreground">Password-reset hook secret: {data.authHookConfigured ? "present" : "not configured"} · Delivery webhook secret: {data.webhookConfigured ? "present" : "not configured"}. Hooks also need to be enabled in the provider dashboards.</p>
+      <p>{data.configured ? "Sending environment configured. Google must accept the account's App Password." : `Setup needed: ${data.missing.join(", ") || "check email configuration values"}`}</p>
+      <p className="text-sm text-muted-foreground">Password-reset hook secret: {data.authHookConfigured ? "present" : "not configured"}. Enable the Send Email hook in Supabase. SMTP acceptance does not confirm inbox delivery; Gmail does not provide delivery webhooks here.</p>
       <div className="space-y-1 text-sm">
         {data.counts.map(row => <p key={`${row.kind}-${row.status}`}>{row.kind} · {row.status}: {row.count} (last 30 days)</p>)}
         {!data.counts.length && <p>No delivery records yet.</p>}

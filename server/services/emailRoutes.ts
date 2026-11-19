@@ -1,5 +1,4 @@
 import type { Express, Request } from "express";
-import { Resend } from "resend";
 import { Webhook } from "svix";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -73,43 +72,7 @@ export function registerEmailRoutes(app: Express) {
   });
 
   app.post("/api/email/webhooks/resend", async (req, res) => {
-    const secret = process.env.RESEND_WEBHOOK_SECRET;
-    if (!secret) return res.status(503).json({ error: "Webhook is not configured." });
-    let event: any;
-    try {
-      event = new Resend(process.env.RESEND_API_KEY || "unused").webhooks.verify({
-        payload: rawBody(req), webhookSecret: secret,
-        headers: { id: String(req.headers["svix-id"] || ""),
-          timestamp: String(req.headers["svix-timestamp"] || ""),
-          signature: String(req.headers["svix-signature"] || "") },
-      });
-    } catch { return res.status(400).json({ error: "Invalid webhook signature." }); }
-    const id = String(req.headers["svix-id"]);
-    const providerId = event?.data?.email_id;
-    if (typeof providerId !== "string" || typeof event.type !== "string") return res.sendStatus(200);
-    try {
-      await initializeEmailDatabase();
-      await db.transaction(async tx => {
-        const inserted = await tx.execute(sql`INSERT INTO email_delivery_events (id, provider_id, type)
-          VALUES (${id}, ${providerId}, ${event.type}) ON CONFLICT DO NOTHING RETURNING id`);
-        if (!inserted.rows.length) return;
-        const states: Record<string, string> = {
-          "email.delivered": "delivered", "email.bounced": "bounced", "email.complained": "complained",
-          "email.failed": "failed_permanent",
-        };
-        const status = states[event.type];
-        if (status) await tx.execute(sql`UPDATE email_deliveries SET status = ${status}, updated_at = now()
-          WHERE provider_id = ${providerId} AND status NOT IN ('bounced', 'complained')
-          AND NOT (status = 'delivered' AND ${status} = 'failed_permanent')`);
-        if (["email.bounced", "email.complained"].includes(event.type)) {
-          // Only suppress recipients from our own records, not untrusted payload addresses.
-          await tx.execute(sql`INSERT INTO email_suppressions (recipient, reason)
-            SELECT recipient, ${event.type} FROM email_deliveries WHERE provider_id = ${providerId}
-            ON CONFLICT (recipient) DO UPDATE SET reason = EXCLUDED.reason`);
-        }
-      });
-      res.json({ received: true });
-    } catch { res.status(503).json({ error: "Please retry this event." }); }
+    res.status(410).json({ error: "Resend delivery is no longer used." });
   });
 
   app.get("/api/admin/email-status", verifiedAdmin, async (_req, res) => {
@@ -119,11 +82,13 @@ export function registerEmailRoutes(app: Express) {
         WHERE created_at > now() - interval '30 days' GROUP BY kind, status`);
       const recent = await db.execute(sql`SELECT kind, status, error_code, attempts, created_at, updated_at
         FROM email_deliveries ORDER BY updated_at DESC LIMIT 20`);
-      const missing = ["RESEND_API_KEY", "RESEND_FROM_EMAIL", "APP_URL", "SUPPORT_EMAIL"]
+      const missing = ["SMTP_USER", "SMTP_PASS", "APP_URL"]
         .filter(key => !process.env[key]);
-      res.json({ provider: "Resend", configured: missing.length === 0, missing,
+      let configured = false;
+      try { emailConfig(); configured = true; } catch {}
+      res.json({ provider: "Gmail SMTP", configured, missing,
         authHookConfigured: Boolean(process.env.SUPABASE_SEND_EMAIL_HOOK_SECRET),
-        webhookConfigured: Boolean(process.env.RESEND_WEBHOOK_SECRET),
+        webhookConfigured: false,
         counts: counts.rows, recent: recent.rows });
     } catch { res.status(503).json({ error: "Email status unavailable." }); }
   });

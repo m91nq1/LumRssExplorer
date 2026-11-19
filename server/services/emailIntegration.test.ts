@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import express from "express";
+import nodemailer from "nodemailer";
 import { Webhook } from "svix";
 import { PgDialect } from "drizzle-orm/pg-core";
 import { db, pool } from "../db";
@@ -14,9 +15,10 @@ import { digestPeriod } from "./digestService";
 import { sendAuthEmailForLogin } from "./authEmailLifecycle";
 
 // Every provider request and database operation is intercepted. Never real mail.
-test("Resend integration: templates, duplicate sends, retries, preferences, reset hook and unsubscribe", async () => {
+test("Gmail integration: templates, duplicate sends, retries, preferences, reset hook and unsubscribe", async () => {
   const env = { ...process.env };
   const oldFetch = globalThis.fetch;
+  const oldTransport = nodemailer.createTransport;
   const oldExecute = db.execute;
   const oldTransaction = db.transaction;
   const oldUser = storage.getUserBySupabaseId;
@@ -30,6 +32,7 @@ test("Resend integration: templates, duplicate sends, retries, preferences, rese
   const deliveries: any[] = [];
   let rateLimitNext = false;
   let rejectNext = false;
+  let disconnectNext = false;
   const dialect = new PgDialect();
   const execute = async (query: any) => {
     const compiled = dialect.sqlToQuery(query);
@@ -65,22 +68,28 @@ test("Resend integration: templates, duplicate sends, retries, preferences, rese
   storage.getFeedSources = async () => [{country:"South Africa"}] as any;
   storage.getUserPreferences = async () => ({emailDigestEnabled:true}) as any;
   Object.assign(process.env, {
-    RESEND_API_KEY:"re_synthetic_not_a_real_key", RESEND_FROM_EMAIL:"LUM News <news@example.test>",
+    SMTP_USER:"news@example.test", SMTP_PASS:"synthetic-app-password",
     APP_URL:"https://lum.example.test", SUPPORT_EMAIL:"support@example.test",
     SESSION_SECRET:"synthetic-unsubscribe-signing-secret-long-enough",
     SUPABASE_URL:"https://supabase.example.test", SUPABASE_ANON_KEY:"synthetic-anon-key",
     RESEND_WEBHOOK_SECRET:`whsec_${Buffer.from("test-webhook-secret-32-characters!").toString("base64")}`,
   });
   process.env.SUPABASE_SEND_EMAIL_HOOK_SECRET = `v1,${process.env.RESEND_WEBHOOK_SECRET}`;
+  (nodemailer as any).createTransport = (options: any) => {
+    assert.equal(options.host, "smtp.gmail.com");
+    assert.equal(options.port, 465);
+    assert.equal(options.secure, true);
+    assert.equal(options.auth.pass, "synthetic-app-password");
+    return {sendMail: async (body: any) => {
+      deliveries.push({body, headers:body.headers});
+      if (rateLimitNext) { rateLimitNext = false; throw Object.assign(new Error("Synthetic temporary refusal"), {responseCode:421}); }
+      if (rejectNext) { rejectNext = false; throw Object.assign(new Error("Synthetic auth failure"), {code:"EAUTH",responseCode:535}); }
+      if (disconnectNext) { disconnectNext = false; throw Object.assign(new Error("Synthetic connection loss"), {code:"ECONNECTION"}); }
+      return {messageId:`provider-${deliveries.length}`,accepted:[body.to]};
+    }};
+  };
   globalThis.fetch = (async (input: any, init: any) => {
     const url = String(input);
-    if (url.startsWith("https://api.resend.com/")) {
-      const body = JSON.parse(init.body);
-      deliveries.push({body, headers:init.headers});
-      if (rateLimitNext) { rateLimitNext = false; return new Response(JSON.stringify({name:"rate_limit_exceeded",message:"Slow down"}), {status:429}); }
-      if (rejectNext) { rejectNext = false; return new Response(JSON.stringify({name:"validation_error",message:"Unverified sender"}), {status:403}); }
-      return new Response(JSON.stringify({id:`provider-${deliveries.length}`}), {status:200});
-    }
     if (url.startsWith("https://supabase.example.test/auth/v1/user")) {
       if (new Headers(init?.headers).get("authorization") !== "Bearer valid-test-token") {
         return new Response(JSON.stringify({msg:"Invalid token"}), {status:401});
@@ -168,32 +177,29 @@ test("Resend integration: templates, duplicate sends, retries, preferences, rese
     assert.equal(deliveries.length, afterReset);
     assert.equal((await api("/api/email/hooks/supabase", {method:"POST",headers:hookHeaders,body:resetBody + " "})).status, 401);
 
-    const eventBody = JSON.stringify({type:"email.delivered",data:{email_id:`provider-${afterReset}`}});
-    const eventId = "resend-event-1";
-    const eventHeaders = {"Content-Type":"application/json","svix-id":eventId,
-      "svix-timestamp":String(Math.floor(now.getTime()/1000)),
-      "svix-signature":new Webhook(process.env.RESEND_WEBHOOK_SECRET!).sign(eventId,now,eventBody)};
-    assert.equal((await api("/api/email/webhooks/resend", {method:"POST",headers:eventHeaders,body:eventBody})).status, 200);
-    assert.equal((await api("/api/email/webhooks/resend", {method:"POST",headers:eventHeaders,body:eventBody})).status, 200);
-    assert.equal(events.size, 1);
-    assert.equal((await api("/api/email/webhooks/resend", {method:"POST",headers:{"Content-Type":"application/json"},body:eventBody})).status, 400);
+    assert.equal((await api("/api/email/webhooks/resend", {method:"POST",headers:{"Content-Type":"application/json"},body:"{}"})).status, 410);
     assert.equal((await api("/api/admin/email-status")).status, 401);
-    const bounceBody = JSON.stringify({type:"email.bounced",data:{email_id:"provider-1"}});
-    const bounceId = "bounce-1";
-    const bounceHeaders = {"Content-Type":"application/json","svix-id":bounceId,
-      "svix-timestamp":String(Math.floor(now.getTime()/1000)),
-      "svix-signature":new Webhook(process.env.RESEND_WEBHOOK_SECRET!).sign(bounceId,now,bounceBody)};
-    assert.equal((await api("/api/email/webhooks/resend", {method:"POST",headers:bounceHeaders,body:bounceBody})).status, 200);
-    assert.equal(records.get(emailIdentity("welcome","registration","member@example.test")).status, "bounced");
 
     const basic = {to:"retry@example.test",subject:"Test",html:"<p>Test</p>",text:"Test",kind:"test",identity:"retry"};
     rateLimitNext = true;
     assert.equal(await sendEmail(basic), "sent");
     const lastTwo = deliveries.slice(-2);
-    assert.equal(new Headers(lastTwo[0].headers).get("idempotency-key"), new Headers(lastTwo[1].headers).get("idempotency-key"));
+    assert.equal(lastTwo[0].body.messageId, lastTwo[1].body.messageId);
     rejectNext = true;
-    await assert.rejects(sendEmail({...basic, identity:"unverified"}), /validation_error/);
-    delete process.env.RESEND_API_KEY;
+    await assert.rejects(sendEmail({...basic, identity:"invalid-password"}), /smtp_auth_failed/);
+    disconnectNext = true;
+    const disconnected = {...basic, identity:"connection-lost"};
+    await assert.rejects(sendEmail(disconnected), /delivery_status_unknown/);
+    const afterDisconnect = deliveries.length;
+    await assert.rejects(sendEmail(disconnected), /delivery_status_unknown/);
+    assert.equal(deliveries.length, afterDisconnect, "an uncertain SMTP send must not be retried");
+    const ambiguous = {...basic, identity:"ambiguous"};
+    const ambiguousId = emailIdentity(ambiguous.kind, ambiguous.identity, ambiguous.to);
+    records.set(ambiguousId, {status:"delivery_unknown",created_at:new Date().toISOString(),updated_at:new Date().toISOString()});
+    const countBeforeUnknown = deliveries.length;
+    await assert.rejects(sendEmail(ambiguous), /delivery_status_unknown/);
+    assert.equal(deliveries.length, countBeforeUnknown);
+    delete process.env.SMTP_PASS;
     assert.equal((await (await api("/api/email/auth-status")).json()).passwordResetAvailable, false);
     await assert.rejects(sendWelcomeEmail("missing@example.test"), /configuration incomplete/);
     assert.equal(safeEmailError("raw-secret-value"), "provider_error");
@@ -202,6 +208,7 @@ test("Resend integration: templates, duplicate sends, retries, preferences, rese
     assert.equal(digestPeriod("weekly", new Date("2026-10-21T09:00:00Z")), "weekly:2026-10-19");
   } finally {
     globalThis.fetch = oldFetch;
+    nodemailer.createTransport = oldTransport;
     (db as any).execute = oldExecute;
     (db as any).transaction = oldTransaction;
     storage.getUserBySupabaseId = oldUser;

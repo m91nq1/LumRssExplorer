@@ -51,6 +51,9 @@ EMAIL_FROM = "LUM News <Ljmginqi0.1@gmail.com>"
 VITE_SUPABASE_URL = "https://qxgymimnfxkdcadpjwle.supabase.co"
 VITE_SUPABASE_ANON_KEY = "sb_publishable_MtOjm2tF1BjbwIeB1xvFUw_TvL_grxL"
 
+[userenv.development]
+APP_URL = "https://dec56cb0-1ed7-4fd5-8dcd-40ca73be1819-00-3ay15bgfmj65j.janeway.replit.dev"
+
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 60000

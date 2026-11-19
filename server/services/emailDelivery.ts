@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { sql } from "drizzle-orm";
 import { db } from "../db";
 import { initializeEmailDatabase } from "./emailDatabase";
@@ -18,7 +18,7 @@ export function emailIdentity(kind: string, identity: string, recipient: string)
 
 export class EmailDeliveryError extends Error {
   constructor(public code: string) {
-    super(`Email delivery failed (${code}). Check Resend sender configuration or delivery records.`);
+    super(`Email delivery failed (${code}). Check Gmail App Password configuration or delivery records.`);
   }
 }
 
@@ -26,7 +26,8 @@ export class EmailDeliveryError extends Error {
 export function safeEmailError(code?: string): string {
   return ["validation_error", "missing_api_key", "invalid_api_key", "restricted_api_key",
     "rate_limit_exceeded", "daily_quota_exceeded", "monthly_quota_exceeded",
-    "application_error", "internal_server_error"].includes(code || "") ? code! : "provider_error";
+    "application_error", "internal_server_error", "smtp_auth_failed", "smtp_rejected",
+    "smtp_temporary_failure", "delivery_status_unknown"].includes(code || "") ? code! : "provider_error";
 }
 
 export function plainTextEmail(html: string): string {
@@ -43,7 +44,7 @@ let nextSendAt = 0;
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // A single-process rate limiter plus bounded retries; database claims protect
-// duplicate logical sends across workers, and Resend receives the same key.
+// duplicate logical sends across workers. SMTP has no provider idempotency API.
 export function sendEmail(message: EmailMessage): Promise<DeliveryResult> {
   const result = sendQueue.then(() => deliverEmail(message));
   sendQueue = result.then(() => {}, () => {});
@@ -66,10 +67,9 @@ async function deliverEmail(message: EmailMessage): Promise<DeliveryResult> {
     await tx.execute(sql`SELECT pg_advisory_xact_lock(7619234)`);
     const existing = await tx.execute(sql`SELECT status, updated_at, created_at FROM email_deliveries WHERE id = ${id}`);
     const row = existing.rows[0] as {status: string; updated_at: string; created_at: string} | undefined;
-    if (row && ["pending", "failed_retryable"].includes(row.status)
-      && Date.now() - new Date(row.created_at).getTime() > 23 * 60 * 60 * 1000) {
-      // Resend's idempotency retention is limited. Do not risk resending an
-      // ambiguous old attempt after its provider-side duplicate guard expires.
+    if (row && (row.status === "delivery_unknown" || row.status === "pending")) {
+      // A crash or connection loss may occur after Gmail accepts the message.
+      // Never automatically resend an ambiguous SMTP attempt.
       throw new EmailDeliveryError("delivery_status_unknown");
     }
     if (row && (["sent", "delivered", "bounced", "complained"].includes(row.status)
@@ -88,34 +88,43 @@ async function deliverEmail(message: EmailMessage): Promise<DeliveryResult> {
     return true;
   });
   if (!claimed) return "duplicate";
-  const client = new Resend(config.apiKey);
+  const client = nodemailer.createTransport({
+    host: "smtp.gmail.com", port: 465, secure: true,
+    auth: { user: config.user, pass: config.password },
+    connectionTimeout: 15_000, greetingTimeout: 15_000, socketTimeout: 30_000,
+    logger: false, debug: false,
+  });
   for (let attempt = 0; attempt < 3; attempt++) {
     await delay(Math.max(0, nextSendAt - Date.now()));
     nextSendAt = Date.now() + 600;
     await db.execute(sql`UPDATE email_deliveries SET attempts = attempts + 1, updated_at = now() WHERE id = ${id}`);
-    let code = "network_error";
-    let retryable = true;
+    let code = "delivery_status_unknown";
+    let retryable = false;
+    let accepted = false;
     try {
-      const { data, error } = await client.emails.send({
-        from: config.from, to: [recipient], replyTo: config.supportEmail,
+      const data = await client.sendMail({
+        from: config.from, to: recipient, replyTo: config.supportEmail,
         subject: message.subject, html: message.html, text: message.text,
-        headers: message.headers,
-      }, { idempotencyKey: id });
-      if (data?.id && !error) {
+        headers: message.headers, messageId: `<${id}@${config.user.split("@")[1]}>`,
+      });
+      accepted = Boolean(data.accepted?.length);
+      if (accepted) {
         await db.execute(sql`UPDATE email_deliveries
-          SET provider_id = ${data.id}, status = 'sent', error_code = NULL, updated_at = now()
+          SET provider_id = ${String(data.messageId)}, status = 'sent', error_code = NULL, updated_at = now()
           WHERE id = ${id}`);
         return "sent";
       }
-      code = safeEmailError(error?.name);
-      retryable = error?.name === "rate_limit_exceeded"
-        || error?.name === "application_error"
-        || (error?.statusCode ?? 0) >= 500;
-    } catch {
-      // Never serialize SDK request objects, recipients, API keys or reset links.
+      code = "smtp_rejected";
+    } catch (error) {
+      // Never serialize SMTP responses, credentials, recipients or reset links.
+      const smtp = error as { code?: string; responseCode?: number };
+      if (!accepted && smtp.code === "EAUTH") code = "smtp_auth_failed";
+      else if (!accepted && smtp.responseCode && smtp.responseCode >= 400 && smtp.responseCode < 500) {
+        code = "smtp_temporary_failure"; retryable = true;
+      } else if (!accepted && smtp.responseCode && smtp.responseCode >= 500) code = "smtp_rejected";
     }
     await db.execute(sql`UPDATE email_deliveries
-      SET status = ${retryable ? "failed_retryable" : "failed_permanent"}, error_code = ${code}, updated_at = now()
+      SET status = ${code === "delivery_status_unknown" ? "delivery_unknown" : retryable ? "failed_retryable" : "failed_permanent"}, error_code = ${code}, updated_at = now()
       WHERE id = ${id}`);
     if (!retryable || attempt === 2) throw new EmailDeliveryError(code);
     await delay(1000 * 2 ** attempt);

@@ -1,13 +1,13 @@
 # LUM News
 
-## Resend Email Delivery
+## Gmail Email Delivery
 
-Application email uses the official Resend SDK, never SMTP. Supabase remains the
+Application email uses Gmail SMTP with a Google App Password, not Resend. Supabase remains the
 authentication provider; do not replace it. Registration sends a welcome message,
 not a verification email. Supabase's **Confirm email** setting must be off, and its
-signed Send Email HTTP hook must be configured for password resets to use Resend.
-See [docs/resend-setup.md](docs/resend-setup.md) for required environment variables,
-domain verification, webhook URLs, notification schedules and verification steps.
+signed Send Email HTTP hook must be configured for password resets to use Gmail.
+See [docs/gmail-setup.md](docs/gmail-setup.md) for required environment variables,
+Google App Password setup and Supabase hook instructions.
 Email tests must mock delivery; never email real users without authorisation.
 
 ## Overview
@@ -190,7 +190,7 @@ Preferred communication style: Simple, everyday language.
 - **Error Handling**: Clear error messages for invalid API keys, rate limits, and insufficient credits
 
 ### Email Digest Feature
-- **Resend Integration**: Sends welcome and digest emails via Resend API (RESEND_API_KEY)
+- **Gmail Integration**: Sends welcome and digest emails via Gmail SMTP (SMTP_USER, SMTP_PASS)
 - **Welcome Emails**: Automatic welcome email after user registration
 - **Personalized Digests**: Email digests based on user's favorite topics and preferred regions
 - **Multiple News Sources**: Aggregates stories from NewsAPI.org, Newsdata.io, and Mediastack APIs
@@ -221,7 +221,7 @@ Preferred communication style: Simple, everyday language.
 - **node-cron**: Scheduled task execution
 
 ### Email & External News APIs
-- **Resend**: Email delivery service for welcome and digest emails
+- **Gmail SMTP**: Email delivery service for welcome and digest emails
 - **NewsAPI.org**: External news API for digest stories
 - **Newsdata.io**: External news API for digest stories
 - **Mediastack**: External news API for digest stories
