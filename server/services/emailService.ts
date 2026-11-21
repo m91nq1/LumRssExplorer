@@ -94,7 +94,7 @@ export async function sendWelcomeEmail(to: string, name?: string): Promise<Deliv
   }
 }
 
-export async function sendLoginNotificationEmail(to: string, name?: string, eventId: string = randomUUID()): Promise<DeliveryResult> {
+export async function sendLoginNotificationEmail(to: string, name?: string, eventId: string = randomUUID(), registration = false): Promise<DeliveryResult> {
   const APP_URL = escapeEmailHtml(emailConfig().appUrl);
 
   const greeting = name ? `Hi ${escapeEmailHtml(name)}` : 'Hi there';
@@ -111,7 +111,7 @@ export async function sendLoginNotificationEmail(to: string, name?: string, even
   try {
     return await deliverTemplate({
       to,
-      subject: 'New sign-in to your LUM News account',
+      subject: registration ? 'Successful registration and login to LUM News' : 'Successful login to your LUM News account',
       html: `
         <!DOCTYPE html>
         <html>
@@ -138,11 +138,11 @@ export async function sendLoginNotificationEmail(to: string, name?: string, even
         <body>
           <div class="container">
             <div class="header">
-              <h1>Sign-in Notification</h1>
+              <h1>${registration ? 'Registration and Login Successful' : 'Login Successful'}</h1>
             </div>
             <div class="content">
               <p class="greeting">${greeting},</p>
-              <p>We noticed a new sign-in to your LUM News account:</p>
+              <p>${registration ? 'Your LUM News account was created and you signed in successfully.' : 'There has been a successful login to your LUM News account.'}</p>
               <div class="info-box">
                 <div style="margin-bottom: 8px;">
                   <span style="color: #888; font-size: 14px;">Time: </span>
@@ -157,7 +157,7 @@ export async function sendLoginNotificationEmail(to: string, name?: string, even
               </p>
             </div>
             <div class="footer">
-              <p>You can disable login notifications in your <a href="${APP_URL}/settings" style="color: #1E174B;">account settings</a>.</p>
+              <p>This account-security notification is sent after every successful login or registration. Your news-email preferences do not affect it.</p>
               <p>&copy; ${new Date().getFullYear()} LUM News. All rights reserved.</p>
             </div>
           </div>

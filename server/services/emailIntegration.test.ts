@@ -120,11 +120,15 @@ test("Gmail integration: templates, duplicate sends, retries, preferences, reset
     assert.equal(await sendLoginNotificationEmail("member@example.test", "Member", "session-2"), "sent");
     const localUser = {id:7,email:"registered@example.test",username:"Registered"} as any;
     assert.equal(await sendAuthEmailForLogin(localUser, true, "registration"), "sent");
-    assert.equal(deliveries[deliveries.length-1].body.subject.startsWith("Welcome"), true);
+    assert.equal(deliveries[deliveries.length-1].body.subject, "Successful registration and login to LUM News");
+    assert.ok(deliveries[deliveries.length-1].body.text.includes("signed in successfully"));
+    assert.equal(await sendAuthEmailForLogin(localUser, false, "registration"), "duplicate", "registration session sync must not send a second notification");
     const beforeOptOut = deliveries.length;
     storage.getUserPreferences = async () => ({loginNotificationEnabled:false}) as any;
-    assert.equal(await sendAuthEmailForLogin(localUser, false, "disabled-session"), undefined);
-    assert.equal(deliveries.length, beforeOptOut);
+    assert.equal(await sendAuthEmailForLogin(localUser, false, "disabled-session"), "sent");
+    assert.equal(deliveries.length, beforeOptOut + 1, "successful login security emails are always enabled");
+    assert.equal(deliveries[deliveries.length-1].body.subject, "Successful login to your LUM News account");
+    assert.equal(await sendAuthEmailForLogin(localUser, false, "disabled-session"), "duplicate");
     storage.getUserPreferences = async () => null as any;
     assert.equal(await sendAuthEmailForLogin(localUser, false, "default-enabled-session"), "sent");
     const stories = [{title:"<Painting>",url:"javascript:alert(1)",source:"Museum",summary:"A new collection."}];

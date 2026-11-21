@@ -1,10 +1,17 @@
 # Gmail App Password email delivery
 
-LUM News sends welcome messages, login notifications, news digests and signed
+LUM News sends successful registration/login notifications, news digests and signed
 Supabase auth-hook emails through Nodemailer and Gmail SMTP over TLS
 (`smtp.gmail.com`, port 465). Resend is no longer used.
 The existing database, Supabase authentication, email preferences, unsubscribes,
 delivery history and application sending budgets are preserved.
+
+Account-security notifications are always enabled, including for accounts with
+legacy login notifications disabled. Each verified session receives one message;
+page refreshes and duplicate synchronization do not send additional messages.
+Registration's authenticated session receives a successful registration/login
+message instead of a separate welcome message. Signup email verification remains
+disabled as requested.
 
 ## Required settings
 

@@ -115,18 +115,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
+    if (!error && data.session && data.user) {
+      // Explicitly complete signup synchronization even if the auth listener
+      // fires before initial session restoration finishes.
+      setLocalUser(await syncUserWithBackend(data.user, data.session.access_token));
+    }
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    if (!error && data.session && data.user) {
+      // Backend session-based deduplication also covers the auth listener.
+      setLocalUser(await syncUserWithBackend(data.user, data.session.access_token));
+    }
     return { error };
   };
 

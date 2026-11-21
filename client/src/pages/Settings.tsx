@@ -36,7 +36,7 @@ export default function Settings() {
       setFavouriteTopics(prefsData.preferences.favouriteTopics || []);
       setPreferredRegions(prefsData.preferences.preferredRegions || []);
       setEmailDigestEnabled(prefsData.preferences.emailDigestEnabled ?? true);
-      setLoginNotificationEnabled(prefsData.preferences.loginNotificationEnabled ?? true);
+      setLoginNotificationEnabled(true);
     }
   }, [prefsData]);
 
@@ -178,13 +178,13 @@ export default function Settings() {
                   <Label htmlFor="login-notification">Login Notifications</Label>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Get notified when someone signs into your account
+                  Always sent after successful login or registration for account security
                 </p>
               </div>
               <Switch
                 id="login-notification"
-                checked={loginNotificationEnabled}
-                onCheckedChange={setLoginNotificationEnabled}
+                checked={true}
+                disabled
                 data-testid="switch-login-notification"
               />
             </div>

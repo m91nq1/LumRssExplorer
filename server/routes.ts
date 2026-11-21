@@ -660,7 +660,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultSearchQuery: existingPrefs?.defaultSearchQuery,
         defaultTimeFilter: existingPrefs?.defaultTimeFilter,
         emailDigestEnabled: emailDigestEnabled ?? existingPrefs?.emailDigestEnabled ?? true,
-        loginNotificationEnabled: loginNotificationEnabled ?? existingPrefs?.loginNotificationEnabled ?? true,
+        loginNotificationEnabled: true,
       });
       if (req.headers.authorization && emailDigestEnabled === true) {
         const user = await storage.getUser(userId);

@@ -3,8 +3,11 @@
 ## Gmail Email Delivery
 
 Application email uses Gmail SMTP with a Google App Password, not Resend. Supabase remains the
-authentication provider; do not replace it. Registration sends a welcome message,
-not a verification email. Supabase's **Confirm email** setting must be off, and its
+authentication provider; do not replace it. Every successful login and registration
+sends a security notification, regardless of news or legacy login-email opt-outs.
+Registration sends a successful registration/login message, not a verification email.
+Deduplicate by verified session, not by user, so subsequent logins still notify.
+Supabase's **Confirm email** setting must be off, and its
 signed Send Email HTTP hook must be configured for password resets to use Gmail.
 See [docs/gmail-setup.md](docs/gmail-setup.md) for required environment variables,
 Google App Password setup and Supabase hook instructions.
