@@ -111,7 +111,7 @@ export async function sendLoginNotificationEmail(to: string, name?: string, even
   try {
     return await deliverTemplate({
       to,
-      subject: registration ? 'Successful registration and login to LUM News' : 'Successful login to your LUM News account',
+      subject: 'Welcome to LUM News',
       html: `
         <!DOCTYPE html>
         <html>
@@ -138,11 +138,15 @@ export async function sendLoginNotificationEmail(to: string, name?: string, even
         <body>
           <div class="container">
             <div class="header">
-              <h1>${registration ? 'Registration and Login Successful' : 'Login Successful'}</h1>
+              <h1>Welcome to LUM News</h1>
             </div>
             <div class="content">
               <p class="greeting">${greeting},</p>
+              <p>${registration ? 'Welcome to LUM News! We are glad you have joined our community of curious readers.' : 'Welcome back to LUM News! We are glad to see you again.'}</p>
               <p>${registration ? 'Your LUM News account was created and you signed in successfully.' : 'There has been a successful login to your LUM News account.'}</p>
+              <p>Explore the latest stories from publishers around the world, follow the topics that matter to you, and save articles to read later.</p>
+              <p>Make LUM News your own by choosing your favourite topics and regions in <a href="${APP_URL}/settings">Settings</a>. Open an article to read its AI-powered summary when available, or follow the original publisher link for the full story.</p>
+              <p>Thank you for choosing LUM News. We hope you discover something worth reading today.</p>
               <div class="info-box">
                 <div style="margin-bottom: 8px;">
                   <span style="color: #888; font-size: 14px;">Time: </span>

@@ -5,7 +5,8 @@
 Application email uses Gmail SMTP with a Google App Password, not Resend. Supabase remains the
 authentication provider; do not replace it. Every successful login and registration
 sends a security notification, regardless of news or legacy login-email opt-outs.
-Registration sends a successful registration/login message, not a verification email.
+Both registration and each new sign-in send a "Welcome to LUM News" message,
+including welcome/welcome-back guidance and successful login details, not a verification email.
 Deduplicate by verified session, not by user, so subsequent logins still notify.
 Supabase's **Confirm email** setting must be off, and its
 signed Send Email HTTP hook must be configured for password resets to use Gmail.

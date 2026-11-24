@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowLeft, FileText, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import termsDocument from "@assets/Pasted-LUM-NEWS-TERMS-OF-SERVICE-Last-Updated-INSERT-DATE-Effe_1788303663516.txt?raw";
+import Eula from "./Eula";
 
 const LAST_UPDATED = "September 2, 2026";
 const VERSION = "1.0";
@@ -136,8 +137,8 @@ export default function Terms() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
               <Newspaper className="h-4 w-4 text-white" />
             </div>
-            <h1 className="text-lg font-semibold text-white">
-              Terms of Service
+            <h1 className="text-sm font-semibold text-white sm:text-lg">
+              Terms of Service &amp; End User License Agreement
             </h1>
           </div>
         </div>
@@ -157,6 +158,16 @@ export default function Terms() {
           <span>Effective date: {LAST_UPDATED}</span>
           <span>Version: {VERSION}</span>
         </div>
+
+        <p className="mb-6 text-gray-300">
+          This page brings together the Terms of Service (Part A) and the End User License Agreement (Part B).
+          Both sets of existing provisions are included below. The software license supplements the service terms;
+          the Privacy Policy remains a separate document.
+        </p>
+        <a href="#software-license" className="mb-8 inline-block text-indigo-300 underline underline-offset-4">
+          Jump to Part B — End User License Agreement
+        </a>
+        <h2 className="mb-6 text-2xl font-semibold text-white">Part A — Terms of Service</h2>
 
         <nav className="mb-10 rounded-xl border border-white/10 bg-white/5 p-6">
           <h2 className="mb-4 text-lg font-semibold text-white">
@@ -199,6 +210,11 @@ export default function Terms() {
           ))}
         </div>
 
+        <section id="software-license" className="mt-16 scroll-mt-24 border-t border-white/10 pt-8">
+          <h2 className="mb-6 text-2xl font-semibold text-white">Part B — End User License Agreement</h2>
+          <Eula embedded />
+        </section>
+
         <div className="mt-16 flex flex-wrap justify-center gap-3 border-t border-white/10 pt-8">
           <Link href="/privacy">
             <Button
@@ -207,15 +223,6 @@ export default function Terms() {
               data-testid="link-privacy"
             >
               View Privacy Policy
-            </Button>
-          </Link>
-          <Link href="/eula">
-            <Button
-              variant="outline"
-              className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10"
-              data-testid="link-eula"
-            >
-              End User License Agreement
             </Button>
           </Link>
           <Link href="/copyright">

@@ -162,7 +162,7 @@ function PolicyLinks() {
   );
 }
 
-export default function Eula() {
+export default function Eula({ embedded = false }: { embedded?: boolean }) {
   const sections = useMemo(
     () => parseEulaSections(prepareEulaDocument(eulaDocument)),
     [],
@@ -174,6 +174,31 @@ export default function Eula() {
       block: "start",
     });
   };
+
+  if (embedded) return (
+    <div className="space-y-10">
+      <p className="text-sm text-gray-400">Software license provisions · Last updated: {LAST_UPDATED} · Version: {VERSION}</p>
+      <nav aria-label="Software license sections" className="rounded-xl border border-white/10 bg-white/5 p-6">
+        <h3 className="mb-4 text-lg font-semibold text-white">Software License Contents</h3>
+        <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+          {sections.map(section => (
+            <button key={section.number} onClick={() => scrollToSection(section.number)}
+              className="rounded px-2 py-1.5 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-indigo-400">
+              {section.number}. {section.title}
+            </button>
+          ))}
+        </div>
+      </nav>
+      {sections.map(section => (
+        <section key={section.number} id={sectionId(section.number)} className="scroll-mt-24">
+          <h3 className="mb-4 text-2xl font-semibold text-white">
+            <span className="text-indigo-400">{section.number}. </span>{section.title}
+          </h3>
+          <div className="space-y-4 text-[15px] leading-7 text-gray-300">{renderLines(section.lines)}</div>
+        </section>
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#0f0a1f] text-gray-200">

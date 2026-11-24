@@ -9,8 +9,9 @@ delivery history and application sending budgets are preserved.
 Account-security notifications are always enabled, including for accounts with
 legacy login notifications disabled. Each verified session receives one message;
 page refreshes and duplicate synchronization do not send additional messages.
-Registration's authenticated session receives a successful registration/login
-message instead of a separate welcome message. Signup email verification remains
+Both registration and later sign-ins receive a "Welcome to LUM News" email,
+with tailored welcome guidance and successful login details in one message.
+Signup email verification remains
 disabled as requested.
 
 ## Required settings

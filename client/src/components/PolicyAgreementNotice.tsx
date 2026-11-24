@@ -18,7 +18,7 @@ export default function PolicyAgreementNotice({
         className="text-violet-300 underline underline-offset-2 hover:text-violet-200"
         data-testid="link-agreement-terms"
       >
-        Terms of Service
+        Terms of Service &amp; End User License Agreement
       </Link>
       ,{" "}
       <Link
@@ -27,14 +27,6 @@ export default function PolicyAgreementNotice({
         data-testid="link-agreement-privacy"
       >
         Privacy Policy
-      </Link>
-      ,{" "}
-      <Link
-        href="/eula"
-        className="text-violet-300 underline underline-offset-2 hover:text-violet-200"
-        data-testid="link-agreement-eula"
-      >
-        End User License Agreement
       </Link>
       , and{" "}
       <Link
