@@ -58,7 +58,7 @@ export default function Login() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4"
+      className="relative isolate min-h-screen flex items-center justify-center p-4"
       style={{
         backgroundImage: `url(${heroBackground})`,
         backgroundSize: 'cover',
@@ -66,7 +66,7 @@ export default function Login() {
         backgroundAttachment: 'fixed',
       }}
     >
-      <div className="absolute inset-0 bg-black/60" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/60" />
       
       <Card className="w-full max-w-md relative z-10 bg-black/80 border-white/20 backdrop-blur-md">
         <CardHeader className="text-center space-y-4">
@@ -95,6 +95,7 @@ export default function Login() {
                     <FormControl>
                       <Input
                         type="email"
+                        autoComplete="username"
                         placeholder="you@example.com"
                         className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                         data-testid="input-email"
@@ -111,25 +112,27 @@ export default function Login() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-200">Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
+                    <div className="relative">
+                      <FormControl>
                         <Input
                           type={showPassword ? 'text' : 'password'}
+                          autoComplete="current-password"
                           placeholder="Enter your password"
                           className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10"
                           data-testid="input-password"
                           {...field}
                         />
+                      </FormControl>
                         <button
                           type="button"
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                           data-testid="button-toggle-password"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
-                      </div>
-                    </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
