@@ -18,7 +18,7 @@ export default function PolicyAgreementNotice({
         className="text-violet-300 underline underline-offset-2 hover:text-violet-200"
         data-testid="link-agreement-terms"
       >
-        Terms of Service &amp; End User License Agreement
+        Terms of Service
       </Link>
       ,{" "}
       <Link

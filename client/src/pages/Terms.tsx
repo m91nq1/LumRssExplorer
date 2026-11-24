@@ -138,7 +138,7 @@ export default function Terms() {
               <Newspaper className="h-4 w-4 text-white" />
             </div>
             <h1 className="text-sm font-semibold text-white sm:text-lg">
-              Terms of Service &amp; End User License Agreement
+              Terms of Service
             </h1>
           </div>
         </div>

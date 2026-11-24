@@ -212,7 +212,7 @@ export default function Privacy() {
               className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10"
               data-testid="link-terms"
             >
-              Terms of Service &amp; End User License Agreement
+              Terms of Service
             </Button>
           </Link>
           <Link href="/copyright">
