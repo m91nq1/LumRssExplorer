@@ -67,7 +67,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
 
   return (
     <Card
-      className={`group p-4 sm:p-[18px] cursor-pointer rounded-xl border border-border/80 bg-card shadow-none transition-all duration-150 hover:border-foreground/25 hover:bg-muted/35 active:scale-[0.995] dark:bg-[#1a1a1f] dark:border-[#37373e] dark:hover:bg-[#202025] ${article.isRead ? 'opacity-[0.65]' : ''}`}
+      className={`article-card group p-4 sm:p-[18px] cursor-pointer rounded-xl border border-border/80 bg-card shadow-none transition-all duration-150 hover:border-foreground/25 hover:bg-muted/35 active:scale-[0.995] dark:bg-[#1a1a1f] dark:border-[#37373e] dark:hover:bg-[#202025] ${article.isRead ? 'opacity-[0.65]' : ''}`}
       onClick={handleClick}
       data-testid={`card-article-${article.id}`}
     >
@@ -76,7 +76,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className="h-[21px] rounded-md px-2 text-[10px] font-semibold uppercase tracking-[0.07em] shrink-0 border-border/80 text-foreground/80 dark:border-white/30 dark:text-white/90"
+              className="article-card-badge h-[21px] rounded-md px-2 text-[10px] font-semibold uppercase tracking-[0.07em] shrink-0 border-border/80 text-foreground/80 dark:border-white/30 dark:text-white/90"
               data-testid={`badge-source-${article.id}`}
             >
               {article.sourceName}
@@ -84,7 +84,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
             {topicBadge && (
               <Badge
                 variant="outline"
-                className="h-[21px] rounded-md px-2 text-[10px] font-medium shrink-0 border-border/80 text-muted-foreground dark:border-white/25 dark:text-white/75"
+                className="article-card-badge h-[21px] rounded-md px-2 text-[10px] font-medium shrink-0 border-border/80 text-muted-foreground dark:border-white/25 dark:text-white/75"
                 data-testid={`badge-topic-${article.id}`}
               >
                 {topicBadge}

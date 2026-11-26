@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import feedBgImage from "@/assets/news-feed-blue.jpg";
+import feedBgLightImage from "@/assets/news-feed-light.jpg";
 
 type TimeFilterValue = "24h" | "7d" | "all";
 
@@ -282,6 +283,7 @@ export default function Home() {
     <div 
       style={{
         "--news-feed-image": `url(${feedBgImage})`,
+        "--news-feed-light-image": `url(${feedBgLightImage})`,
       } as React.CSSProperties}
       className="news-feed-background flex h-screen w-full overflow-hidden"
     >

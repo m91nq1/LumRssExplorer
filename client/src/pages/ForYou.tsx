@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Sparkles, Zap, Layers, Clock, BookOpen } from "lucide-react";
 import { Link } from "wouter";
 import feedBgImage from "@/assets/news-feed-blue.jpg";
+import feedBgLightImage from "@/assets/news-feed-light.jpg";
 
 interface ForYouResponse {
   articles: ArticleWithStatus[];
@@ -129,7 +130,10 @@ export default function ForYou() {
       
       <div
         className="news-feed-background flex-1 flex"
-        style={{ "--news-feed-image": `url(${feedBgImage})` } as React.CSSProperties}
+        style={{
+          "--news-feed-image": `url(${feedBgImage})`,
+          "--news-feed-light-image": `url(${feedBgLightImage})`,
+        } as React.CSSProperties}
       >
         <aside className="w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0" data-testid="sidebar-for-you">
           <ScrollArea className="h-full">

@@ -175,9 +175,13 @@
   }
 }
 
-/* Shared article-feed backdrop: retain the blue strokes without a tint layer. */
+/* Feed-only surfaces: keep the reader's light palette independent of app-wide tokens. */
 .news-feed-background {
-  background-color: #fff;
+  background-color: #e8eef3;
+  background-image: var(--news-feed-light-image, none);
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
 }
 
 .dark .news-feed-background {
@@ -188,9 +192,41 @@
   background-attachment: fixed;
 }
 
-/* Feed chrome sits above the artwork; keep it nearly black with only a quiet violet cast. */
+:root:not(.dark) .news-feed-background > aside {
+  background-color: rgba(232, 238, 243, 0.96);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+.news-feed-header {
+  background-color: rgba(233, 239, 244, 0.97);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+:root:not(.dark) .news-feed-background .article-card {
+  background-color: rgba(250, 252, 253, 0.96);
+  border-color: rgba(148, 163, 184, 0.34);
+  box-shadow: 0 3px 12px rgba(43, 69, 86, 0.12), 0 1px 2px rgba(43, 69, 86, 0.08);
+}
+
+:root:not(.dark) .news-feed-background .article-card:hover {
+  background-color: rgba(255, 255, 255, 0.98);
+  border-color: rgba(92, 155, 181, 0.48);
+  box-shadow: 0 6px 18px rgba(43, 69, 86, 0.15), 0 2px 4px rgba(43, 69, 86, 0.08);
+}
+
+:root:not(.dark) .news-feed-background .article-card-badge {
+  background-color: rgba(232, 241, 246, 0.84);
+  border-color: rgba(115, 147, 163, 0.34);
+}
+
+/* Feed chrome sits above the artwork; keep dark styling unchanged. */
 .dark .news-feed-header {
   background-color: rgba(13, 11, 20, 0.97);
+}
+
+.dark .news-feed-background > aside {
+  background-color: rgba(0, 0, 0, 0.9);
+  border-color: hsl(var(--border));
 }
 
 /**
