@@ -84,34 +84,9 @@ function startTopicSnapshotScheduler() {
   console.log("[TopicSnapshot] Nightly snapshot scheduler started (00:05 daily)");
 }
 
-// Admin email addresses from environment variable (comma-separated)
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "ljmginqi0.1@gmail.com,lumginqi1@gmail.com,8468bbr9@gmail.com")
-  .split(",")
-  .map(e => e.trim().toLowerCase());
-
-function isAdminEmail(email: string | undefined | null): boolean {
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(email.toLowerCase());
-}
-
-// Admin middleware - checks if user is an admin (via query param or header)
+// Admin identities must come from verified credentials, never a caller-supplied ID.
 async function isAdmin(req: Request, res: Response, next: NextFunction) {
-  const supabaseId = req.query.supabaseId as string || req.headers['x-supabase-id'] as string;
-  
-  if (!supabaseId) {
-    return res.status(401).json({ error: "Authentication required" });
-  }
-  
-  try {
-    const user = await storage.getUserBySupabaseId(supabaseId);
-    if (!user || !isAdminEmail(user.email)) {
-      return res.status(403).json({ error: "Admin access required" });
-    }
-    next();
-  } catch (error) {
-    console.error("Error checking admin status:", error);
-    return res.status(500).json({ error: "Failed to verify admin status" });
-  }
+  return verifiedAdmin(req, res, next);
 }
 
 // Middleware to extract user ID from session or X-Username header (fallback)
@@ -129,7 +104,7 @@ async function userMiddleware(req: Request, res: Response, next: NextFunction) {
   
   if (sessionUser?.claims?.sub) {
     try {
-      const user = await storage.getUserBySupabaseId(sessionUser.claims.sub);
+      const user = await storage.getUserByReplitId(sessionUser.claims.sub);
       if (user) {
         (req as any).userId = user.id;
       }
@@ -155,11 +130,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await initializeEmailDatabase();
   registerEmailRoutes(app);
   // Start the behavior-based digest scheduler (every 2 days)
-  startDigestScheduler();
+  if (process.env.RUN_BACKGROUND_JOBS !== "false") startDigestScheduler();
 
   // ==================== TOPIC SNAPSHOT SCHEDULER ====================
   // Guard against duplicate registration on hot-reload
-  startTopicSnapshotScheduler();
+  if (process.env.RUN_BACKGROUND_JOBS !== "false") startTopicSnapshotScheduler();
 
   await setupAuth(app);
 
@@ -338,7 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: error.message });
       }
       
-      res.status(500).json({ error: error.message || "Failed to generate AI summary" });
+      res.status(500).json({ error: "AI summaries are temporarily unavailable. The original article link remains usable." });
     }
   });
 
@@ -376,21 +351,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==================== ADMIN CHECK ====================
-  app.get("/api/admin/check", async (req: any, res) => {
-    try {
-      const supabaseId = req.query.supabaseId as string;
-      if (!supabaseId) {
-        return res.json({ isAdmin: false });
-      }
-      const user = await storage.getUserBySupabaseId(supabaseId);
-      const userEmail = user?.email?.toLowerCase();
-      const adminStatus = userEmail ? ADMIN_EMAILS.includes(userEmail) : false;
-      console.log("[Admin Check] User email:", userEmail, "Admin emails:", ADMIN_EMAILS, "Is admin:", adminStatus);
-      res.json({ isAdmin: adminStatus });
-    } catch (error) {
-      console.error("Error checking admin status:", error);
-      res.json({ isAdmin: false });
-    }
+  app.get("/api/admin/check", verifiedAdmin, (_req, res) => {
+    res.json({ isAdmin: true });
   });
 
   // ==================== FEED MANAGEMENT (Admin Only) ====================
@@ -1100,6 +1062,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve cached database articles immediately. External feeds must not delay
   // the web server opening its port or leave the preview blank during startup.
   httpServer.once("listening", () => {
+    if (process.env.RUN_BACKGROUND_JOBS === "false") return;
     void (async () => {
       console.log("Initializing news providers in the background...");
       await newsProviderService.initialize();

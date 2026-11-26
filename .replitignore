@@ -1,0 +1,4 @@
+/generated-artifacts/
+.env
+.env.*
+!.env.example

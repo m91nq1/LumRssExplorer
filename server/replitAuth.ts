@@ -28,9 +28,12 @@ export function getSession() {
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: true,
-    ttl: sessionTtl,
+    ttl: sessionTtl / 1000,
     tableName: "sessions",
   });
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET is required for persistent sessions.");
+  }
   
   const isProduction = process.env.NODE_ENV === "production";
   const secureCookie = process.env.SESSION_COOKIE_SECURE === "true" || 
@@ -75,6 +78,19 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Supabase is the app's primary login. Legacy OIDC is optional outside Replit.
+  const enableReplitAuth = process.env.ENABLE_REPLIT_AUTH === "true" ||
+    (process.env.ENABLE_REPLIT_AUTH !== "false" && Boolean(process.env.REPL_ID));
+  if (!enableReplitAuth) {
+    app.get("/api/login", (_req, res) => res.redirect("/login"));
+    app.get("/api/callback", (_req, res) => res.status(404).json({ error: "Legacy login is not enabled." }));
+    app.get("/api/logout", (req, res, next) => {
+      req.logout(error => error ? next(error) : res.redirect("/login"));
+    });
+    return;
+  }
+  if (!process.env.REPL_ID) throw new Error("REPL_ID is required when ENABLE_REPLIT_AUTH=true.");
 
   const config = await getOidcConfig();
 

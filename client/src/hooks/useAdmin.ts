@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSupabaseAuth } from "@/contexts/AuthContext";
+import { authHeaders } from "@/lib/queryClient";
 
 export function useAdmin() {
   const { user, isLoading: isAuthLoading } = useSupabaseAuth();
@@ -8,7 +9,7 @@ export function useAdmin() {
     queryKey: ["/api/admin/check", user?.id],
     queryFn: async () => {
       if (!user?.id) return { isAdmin: false };
-      const response = await fetch(`/api/admin/check?supabaseId=${user.id}`);
+      const response = await fetch("/api/admin/check", { headers: await authHeaders() });
       if (!response.ok) return { isAdmin: false };
       return response.json();
     },

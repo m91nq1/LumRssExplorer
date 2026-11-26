@@ -2,7 +2,7 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import { ApiRequestError } from "./apiErrors";
 import { supabase } from "./supabase";
 
-async function authHeaders(): Promise<Record<string, string>> {
+export async function authHeaders(): Promise<Record<string, string>> {
   const { data } = await supabase.auth.getSession();
   return data.session ? { Authorization: `Bearer ${data.session.access_token}` } : {};
 }

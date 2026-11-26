@@ -115,5 +115,5 @@ export function startDigestScheduler(): void {
       finally { running = false; }
     }, { timezone: "UTC" });
   }
-  console.log("[DigestService] Resend news notification schedules started (UTC).");
+  console.log("[DigestService] Gmail news notification schedules started (UTC).");
 }

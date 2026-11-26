@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "gM7Na2xg6wYP1qtrKhR8Q"
+uri = "file://generated-artifacts/lum-news-render-migration.html"
+type = "html"
+title = "LUM News — Render migration report"
+description = "Verified fixes, install/build/start results, environment-variable names, Render settings, external setup requirements and remaining security risks."
+logical_id = "09ec26dc-b2fa-4240-95ec-c517fe98e8d0"
+content_hash = "sha256:f04e1b06778dcc0534a16eac5245f97d9c3bd40f949907cccbdccc6cc13a29aa"
+size = 21199
+mtime_ms = 1795730425973
+storage_uri = "gcs://replit-rams-assets-riker/rams/assets/repl:dec56cb0-1ed7-4fd5-8dcd-40ca73be1819/09ec26dc-b2fa-4240-95ec-c517fe98e8d0/049f2865-0002-4f48-a0f2-f2cdf876cb67"
+storage_version_token = "1795730440713784"
+content_type = "text/html"

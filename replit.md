@@ -247,6 +247,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Known Issues
 
+### Render portability
+
+- Preserve the existing Supabase authentication, Neon-compatible database, OpenAI summaries and Gmail email transport when working on Render deployment. Do not replace providers or migrate/reset production data to solve hosting issues.
+- Standalone deployment instructions, tested commands, environment names and limitations are in `docs/render-migration.md`; use `render.yaml` only as a free testing blueprint.
+- Free Render instances block Gmail SMTP and sleep when idle. Do not promise full email/scheduler behavior there or provision paid alternatives without approval.
+- Preserve existing encryption and signing secrets when moving hosts, including the session-secret fallback used by encrypted AI keys.
+
 - **Washington Post RSS**: Feed times out occasionally (gracefully handled)
 - **OpenAI Blog RSS**: Returns 403 (blocked by Cloudflare, gracefully handled)
 - **CoinDesk RSS**: Feed format not recognized (gracefully handled)

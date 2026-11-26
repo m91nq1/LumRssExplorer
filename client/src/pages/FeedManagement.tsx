@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { FeedSource, NewsProvider } from "@shared/schema";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, authHeaders } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useSupabaseAuth } from "@/contexts/AuthContext";
@@ -144,7 +144,7 @@ export default function FeedManagement() {
   const { data, isLoading } = useQuery<FeedsResponse>({
     queryKey: ["/api/feeds", supabaseId],
     queryFn: async () => {
-      const response = await fetch(`/api/feeds?supabaseId=${supabaseId}`);
+      const response = await fetch("/api/feeds", { headers: await authHeaders() });
       if (!response.ok) throw new Error("Failed to fetch feeds");
       return response.json();
     },
@@ -154,7 +154,7 @@ export default function FeedManagement() {
   const { data: providersData, isLoading: providersLoading } = useQuery<ProvidersResponse>({
     queryKey: ["/api/providers", supabaseId],
     queryFn: async () => {
-      const response = await fetch(`/api/providers?supabaseId=${supabaseId}`);
+      const response = await fetch("/api/providers", { headers: await authHeaders() });
       if (!response.ok) throw new Error("Failed to fetch providers");
       return response.json();
     },
@@ -169,7 +169,7 @@ export default function FeedManagement() {
   const { data: topicStatsData, isLoading: topicStatsLoading, refetch: refetchTopicStats, isFetching: topicStatsFetching } = useQuery<TopicStatsResponse>({
     queryKey: ["/api/admin/topic-stats", supabaseId],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/topic-stats?supabaseId=${supabaseId}`);
+      const response = await fetch("/api/admin/topic-stats", { headers: await authHeaders() });
       if (!response.ok) throw new Error("Failed to fetch topic stats");
       return response.json();
     },
@@ -180,7 +180,7 @@ export default function FeedManagement() {
   const { data: snapshotsData, refetch: refetchSnapshots } = useQuery<TopicSnapshotsResponse>({
     queryKey: ["/api/admin/topic-snapshots", supabaseId],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/topic-snapshots?supabaseId=${supabaseId}`);
+      const response = await fetch("/api/admin/topic-snapshots", { headers: await authHeaders() });
       if (!response.ok) throw new Error("Failed to fetch snapshots");
       return response.json();
     },
@@ -213,6 +213,7 @@ export default function FeedManagement() {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
+        ...await authHeaders(),
       },
     });
     if (!response.ok) throw new Error('Request failed');

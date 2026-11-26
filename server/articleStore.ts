@@ -247,7 +247,7 @@ export class ArticleStore {
   private initialized = false;
 
   constructor() {
-    this.scheduleRefresh();
+    if (process.env.RUN_BACKGROUND_JOBS !== "false") this.scheduleRefresh();
   }
 
   async initialize() {
@@ -329,18 +329,18 @@ export class ArticleStore {
       const feeds = await storage.getEnabledFeedSources();
       const allArticles: InsertArticle[] = [];
 
-      const results = await Promise.allSettled(
-        feeds.map(async (feed) => {
-          const articles = await ingestFeed(feed);
-          return articles;
-        })
-      );
-
-      for (const result of results) {
-        if (result.status === "fulfilled") {
-          allArticles.push(...result.value);
+      // Avoid opening hundreds of connections at once on a small web instance.
+      let nextFeed = 0;
+      await Promise.all(Array.from({ length: Math.min(8, feeds.length) }, async () => {
+        while (nextFeed < feeds.length) {
+          const feed = feeds[nextFeed++];
+          try {
+            allArticles.push(...await ingestFeed(feed));
+          } catch {
+            console.error("An RSS source could not be ingested; continuing with other sources.");
+          }
         }
-      }
+      }));
 
       // Tag articles with topics and polarisation scores
       const taggedArticles = allArticles.map(article => {

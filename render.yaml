@@ -1,0 +1,33 @@
+# No database or paid service is created by this Blueprint.
+# Free instances cannot deliver Gmail SMTP emails or guarantee scheduled jobs.
+services:
+  - type: web
+    name: lum-news
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENABLE_REPLIT_AUTH
+        value: "false"
+      - key: RUN_BACKGROUND_JOBS
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: APP_URL
+        sync: false
