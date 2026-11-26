@@ -2,7 +2,7 @@ import { ArticleWithStatus } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, Bookmark, BookmarkCheck, ExternalLink, ImageIcon } from "lucide-react";
+import { Clock, Bookmark, BookmarkCheck } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useLocation } from "wouter";
 import { PolarisationBadge } from "./PolarisationBadge";
@@ -18,7 +18,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
   const [, setLocation] = useLocation();
 
   const handleClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('button')) {
+    if ((e.target as HTMLElement).closest('button, a')) {
       return;
     }
     if (e.ctrlKey || e.metaKey) {
@@ -67,31 +67,16 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
 
   return (
     <Card
-      className={`p-5 cursor-pointer hover-elevate active-elevate-2 transition-all duration-150 dark:bg-[#1a1a1f] dark:border-[#3a3a3f] ${article.isRead ? 'opacity-60' : ''}`}
+      className={`group p-4 sm:p-[18px] cursor-pointer rounded-xl border border-border/80 bg-card shadow-none transition-all duration-150 hover:border-foreground/25 hover:bg-muted/35 active:scale-[0.995] dark:bg-[#1a1a1f] dark:border-[#37373e] dark:hover:bg-[#202025] ${article.isRead ? 'opacity-[0.65]' : ''}`}
       onClick={handleClick}
       data-testid={`card-article-${article.id}`}
     >
-      <div className="space-y-4">
-        {article.imageUrl ? (
-          <div className="aspect-[16/9] rounded-md overflow-hidden bg-muted/30">
-            <img 
-              src={article.imageUrl} 
-              alt="" 
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
-        ) : (
-          <div className="aspect-[16/9] rounded-md bg-muted/20 dark:bg-[#1a1a1a] flex items-center justify-center">
-            <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
-          </div>
-        )}
-
-        <div className="flex items-start justify-between gap-3">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className="text-xs font-bold uppercase tracking-wider shrink-0 dark:border-white/40 dark:text-white"
+              className="h-[21px] rounded-md px-2 text-[10px] font-semibold uppercase tracking-[0.07em] shrink-0 border-border/80 text-foreground/80 dark:border-white/30 dark:text-white/90"
               data-testid={`badge-source-${article.id}`}
             >
               {article.sourceName}
@@ -99,7 +84,7 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
             {topicBadge && (
               <Badge
                 variant="outline"
-                className="text-xs font-medium shrink-0 dark:border-white/30 dark:text-white/90"
+                className="h-[21px] rounded-md px-2 text-[10px] font-medium shrink-0 border-border/80 text-muted-foreground dark:border-white/25 dark:text-white/75"
                 data-testid={`badge-topic-${article.id}`}
               >
                 {topicBadge}
@@ -111,9 +96,11 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 shrink-0"
+              className="-mr-1 h-7 w-7 shrink-0 rounded-md text-muted-foreground hover:text-foreground"
               onClick={handleBookmarkClick}
               disabled={isBookmarking}
+              aria-label={article.isBookmarked ? "Remove bookmark" : "Bookmark article"}
+              aria-pressed={!!article.isBookmarked}
               data-testid={`button-bookmark-${article.id}`}
             >
               {article.isBookmarked ? (
@@ -125,25 +112,39 @@ export function ArticleCard({ article, onBookmark, onRead, isBookmarking }: Arti
           )}
         </div>
 
-        <h3
-          className={`text-base font-semibold leading-snug line-clamp-2 dark:text-white ${article.isRead ? 'dark:text-white/60' : ''}`}
-          data-testid={`text-title-${article.id}`}
-        >
-          {article.title}
+        <h3 className={`text-[15px] font-semibold leading-[1.3] tracking-[-0.015em] line-clamp-2 text-foreground dark:text-white ${article.isRead ? 'dark:text-white/65' : ''}`}>
+          <a
+            href={`/article/${article.id}`}
+            className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                onRead?.(article.id);
+                window.open(article.link, "_blank", "noopener,noreferrer");
+              } else {
+                e.preventDefault();
+                setLocation(`/article/${article.id}`);
+              }
+            }}
+            data-testid={`text-title-${article.id}`}
+          >
+            {article.title}
+          </a>
         </h3>
 
         {article.summary && (
           <p
-            className="text-sm text-muted-foreground leading-relaxed line-clamp-2 dark:text-white/60"
+            className="text-[13px] text-muted-foreground leading-[1.45] line-clamp-2 dark:text-white/60"
             data-testid={`text-summary-${article.id}`}
           >
             {article.summary}
           </p>
         )}
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-white/50">
-            <Clock className="w-3 h-3" />
+        <div className="flex items-center justify-between gap-2 pt-0.5">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground dark:text-white/50">
+            <Clock className="w-3 h-3" aria-hidden="true" />
             <time dateTime={article.publishedAt} data-testid={`text-time-${article.id}`}>
               {formattedTime}
             </time>
