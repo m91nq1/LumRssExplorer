@@ -8,7 +8,6 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
 import feedBgImage from "@assets/Vector-black-abstract-background-free-vector-download-01-scale_1766257999979.jpg";
 
 type TimeFilterValue = "24h" | "7d" | "all";
@@ -19,7 +18,6 @@ interface PreferencesResponse {
 
 export default function Home() {
   const { toast } = useToast();
-  const { theme } = useTheme();
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -282,14 +280,10 @@ export default function Home() {
 
   return (
     <div 
-      className="flex h-screen w-full overflow-hidden"
       style={{
-        backgroundColor: theme === 'light' ? '#ffffff' : 'transparent',
-        backgroundImage: theme === 'dark' ? `url(${feedBgImage})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
+        "--news-feed-image": `url(${feedBgImage})`,
+      } as React.CSSProperties}
+      className="news-feed-background flex h-screen w-full overflow-hidden"
     >
       <Sidebar
         sources={sources}

@@ -175,6 +175,24 @@
   }
 }
 
+/* Shared article-feed backdrop: retain the original red strokes without a tint layer. */
+.news-feed-background {
+  background-color: #fff;
+}
+
+.dark .news-feed-background {
+  background-color: #050505;
+  background-image: var(--news-feed-image, none);
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+/* Feed chrome sits above the artwork; keep it nearly black with only a quiet violet cast. */
+.dark .news-feed-header {
+  background-color: rgba(13, 11, 20, 0.97);
+}
+
 /**
  * Using the elevate system.
  * Automatic contrast adjustment.

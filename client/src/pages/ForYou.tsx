@@ -11,7 +11,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Sparkles, Zap, Layers, Clock, BookOpen } from "lucide-react";
 import { Link } from "wouter";
-import { useTheme } from "@/components/ThemeProvider";
 import feedBgImage from "@assets/Vector-black-abstract-background-free-vector-download-01-scale_1766257999979.jpg";
 
 interface ForYouResponse {
@@ -43,7 +42,6 @@ function estimateReadTime(summary?: string | null): number {
 
 export default function ForYou() {
   const { toast } = useToast();
-  const { theme } = useTheme();
   const [page, setPage] = useState(1);
 
   const { data: forYouData, isLoading: isLoadingForYou } = useQuery<ForYouResponse>({
@@ -108,7 +106,7 @@ export default function ForYou() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="h-14 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-6">
+      <header className="news-feed-header h-14 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
           <Link href="/">
             <h1 className="text-xl font-bold text-primary cursor-pointer" data-testid="logo">LUM</h1>
@@ -130,13 +128,8 @@ export default function ForYou() {
       </header>
       
       <div
-        className="flex-1 flex"
-        style={{
-          backgroundImage: theme === "dark" ? `url(${feedBgImage})` : "none",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
-        }}
+        className="news-feed-background flex-1 flex"
+        style={{ "--news-feed-image": `url(${feedBgImage})` } as React.CSSProperties}
       >
         <aside className="w-[280px] border-r border-border bg-sidebar dark:bg-black/90 flex-shrink-0" data-testid="sidebar-for-you">
           <ScrollArea className="h-full">
