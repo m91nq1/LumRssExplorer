@@ -175,7 +175,7 @@
   }
 }
 
-/* Shared article-feed backdrop: retain the original red strokes without a tint layer. */
+/* Shared article-feed backdrop: retain the blue strokes without a tint layer. */
 .news-feed-background {
   background-color: #fff;
 }

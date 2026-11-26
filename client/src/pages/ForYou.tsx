@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Sparkles, Zap, Layers, Clock, BookOpen } from "lucide-react";
 import { Link } from "wouter";
-import feedBgImage from "@assets/Vector-black-abstract-background-free-vector-download-01-scale_1766257999979.jpg";
+import feedBgImage from "@/assets/news-feed-blue.jpg";
 
 interface ForYouResponse {
   articles: ArticleWithStatus[];
