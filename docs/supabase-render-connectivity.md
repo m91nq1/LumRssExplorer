@@ -4,6 +4,14 @@ Date: 27 November 2026.
 
 ## Status
 
+**Latest retest after the secret update:** The supplied `SUPABASE_DATABASE_URL`
+is now a Supabase **direct** endpoint on port 5432, not the shared Session
+Pooler. DNS returned IPv6 only (no IPv4), and the read-only connection attempt
+failed with `ENOTFOUND` before authentication. The updated password has therefore
+not been validated. Replace this value with the exact **Session pooler** URL
+from the same project's Connect dialog. The results below describe the earlier
+saved pooler credentials, not the newly submitted direct URL.
+
 **The driver/protocol defect has been corrected. An authenticated connection to
 the existing Supabase database is NOT yet confirmed.** The saved Supabase
 credentials are rejected with PostgreSQL error `28P01`, on both the saved
