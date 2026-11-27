@@ -70,7 +70,7 @@ Preferred communication style: Simple, everyday language.
 
 **Development vs Production**: Separate entry points (`index-dev.ts` uses Vite middleware for HMR, `index-prod.ts` serves pre-built static assets).
 
-**Data Storage**: PostgreSQL database using Drizzle ORM for type-safe queries. Neon serverless driver for connection pooling.
+**Data Storage**: PostgreSQL database using Drizzle ORM with `pg` / `drizzle-orm/node-postgres`. Queries and session storage share one bounded TCP pool. Supabase on Render uses the existing project's IPv4 Session Pooler on port 5432, not Neon WebSockets. See `docs/supabase-render-connectivity.md`.
 
 **User Authentication**: Supabase Auth for email/password authentication. Users table has `supabaseId` column linking Supabase auth to local user records. AuthContext syncs user data with backend on login and fetches local user data on session restore (without triggering login notifications).
 
@@ -232,7 +232,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Database
 - **Drizzle ORM**: Type-safe ORM for PostgreSQL
-- **@neondatabase/serverless**: Neon PostgreSQL serverless driver
+- **pg**: Standard PostgreSQL TCP driver with verified TLS in production
 - **drizzle-zod**: Zod schema generation from Drizzle schemas
 
 ### 3D Visualization
@@ -249,7 +249,8 @@ Preferred communication style: Simple, everyday language.
 
 ### Render portability
 
-- Preserve the existing Supabase authentication, Neon-compatible database, OpenAI summaries and Gmail email transport when working on Render deployment. Do not replace providers or migrate/reset production data to solve hosting issues.
+- Preserve the existing Supabase authentication, existing PostgreSQL database, OpenAI summaries and Gmail email transport when working on Render deployment. Do not replace providers or migrate/reset production data to solve hosting issues.
+- Runtime database selection uses only `DATABASE_URL`; never silently fall back to a different database secret. Use the same Supabase project's Session Pooler URL on Render. TLS uses Supabase's public CA for Supabase hosts, system trust for other hosts, or the explicit `DATABASE_SSL_CA` override. `sslmode=disable` is permitted only outside production for the existing private development database.
 - Standalone deployment instructions, tested commands, environment names and limitations are in `docs/render-migration.md`; use `render.yaml` only as a free testing blueprint.
 - Free Render instances block Gmail SMTP and sleep when idle. Do not promise full email/scheduler behavior there or provision paid alternatives without approval.
 - Preserve existing encryption and signing secrets when moving hosts, including the session-secret fallback used by encrypted AI keys.

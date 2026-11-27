@@ -2,6 +2,13 @@
 
 Audit date: 26 November 2026.
 
+**Database follow-up, 27 November 2026:** The runtime driver has since changed to
+standard `pg` / `drizzle-orm/node-postgres`, preserving the schema and queries.
+The original standalone database test below used the development database, not
+Render's Supabase endpoint. Do not infer Supabase connectivity from that earlier
+pass. See [Supabase connectivity report](supabase-render-connectivity.md) for
+current test results and the remaining Supabase credential requirement.
+
 ## Assessment
 
 **The application builds and starts independently of Replit, and the reported npm registry blocker is fixed. It has NOT been deployed to Render by this audit.**
@@ -121,7 +128,8 @@ Set values in Render's secure environment settings. Do not commit populated `.en
 | --- | --- |
 | `NODE_ENV` | `production` |
 | `PORT` | Render supplies this; app respects it. Do not hardcode 5000 on Render. |
-| `DATABASE_URL` | The SAME existing database connection. Current application uses the Neon WebSocket PostgreSQL driver; a different arbitrary PostgreSQL host is not a drop-in replacement. No new Render database is required. |
+| `DATABASE_URL` | The SAME existing database, using standard PostgreSQL TCP. For Supabase on Render copy the existing project's Session Pooler URL (5432). No new Render database is required. |
+| `DATABASE_SSL_CA` | Optional trusted database CA PEM override. Supabase's published 2021 root CA is included for Supabase hosts; other hosts use system trust. Production always verifies TLS. |
 | `SESSION_SECRET` | Copy the existing stable secret securely. Do not regenerate if it is also the AI-key encryption fallback or unsubscribe signing key. |
 | `SUPABASE_URL` | Existing Supabase project URL, backend |
 | `SUPABASE_ANON_KEY` | Existing Supabase public/anon key used by backend to verify access tokens; never substitute a service-role key |
@@ -160,7 +168,7 @@ Environment presence audit found the current development `APP_URL` points to the
 2. **Password reset:** configure Supabase's signed Send Email Hook to `https://YOUR_ACTUAL_ORIGIN/api/email/hooks/supabase` and install its signing secret securely. Placeholder is illustrative, not a provisioned hostname. Keep the current no-signup-verification experience; do not enable email confirmation as part of this migration. Do not configure duplicate custom-SMTP and hook delivery.
 3. **Google OAuth:** current Login/Signup/AuthContext source implements email/password, not a Google OAuth button or `signInWithOAuth` call. No Google login flow was added or claimed tested. If the existing Supabase project separately uses Google OAuth, preserve its Supabase callback in Google Cloud and update Supabase's application redirect allowlist. Inspect dashboard settings manually before changing them.
 4. **Gmail:** preserve the configured account/App Password; it requires outbound TLS port 465. Render Free web instances block ports 25, 465 and 587. Continuing Gmail on Render therefore requires a user-approved SMTP-capable hosting plan/service, or a separately approved provider change. No paid resource was created and Gmail was NOT silently replaced with Resend.
-5. **Database:** reconnect to the same existing Neon-compatible database, preserving schemas, users, articles, bookmarks, preferences and AI cache. Existing startup email setup uses additive `CREATE TABLE IF NOT EXISTS`/indexes. No destructive migration or `db:push` was run. The deployment role must be able to run those already-existing initialization statements.
+5. **Database:** reconnect to the same existing PostgreSQL database, preserving schemas, users, articles, bookmarks, preferences and AI cache. Supabase on Render should use its IPv4 Session Pooler (5432) with the `pg` driver. Existing startup email setup uses additive `CREATE TABLE IF NOT EXISTS`/indexes. No destructive migration or `db:push` was run. The deployment role must be able to run those already-existing initialization statements.
 6. **AI encrypted storage:** keys/settings and generated summaries remain in the existing database. Stable encryption/signing secrets must follow the app.
 7. **Filesystem:** no runtime application upload/database/file-write persistence path was found. App assets are checked into the repository and copied by the build. Runtime logs and generated validation outputs are disposable. Future uploads must use an external durable object store rather than Render's ephemeral filesystem; no new paid store is needed for current behavior.
 8. **Networking:** frontend/backend remain same-origin; no permissive CORS wildcard was added. The server trusts one reverse-proxy hop. Reassess trusted proxy handling if adding another CDN/proxy.

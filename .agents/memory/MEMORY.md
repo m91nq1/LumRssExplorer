@@ -3,3 +3,4 @@
 - [AI summary priorities](ai-summary-priorities.md) — the user wants reliable, low-cost news summaries; do not introduce expensive automatic model upgrades.
 - [Startup availability](startup-availability.md) — prefer serving stored news immediately over waiting for fresh external feeds during startup.
 - [Art topic scope](art-topic-scope.md) — Art means genuine arts reporting, not software architecture or exhibition sports.
+- [Portable npm lockfiles](portable-npm-lockfiles.md) — dependency installation can restore internal registry URLs despite a public .npmrc; recheck before Render releases.
